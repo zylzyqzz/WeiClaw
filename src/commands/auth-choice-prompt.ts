@@ -24,7 +24,7 @@ export async function promptAuthChoiceGrouped(params: {
     ];
 
     const providerSelection = (await params.prompter.select({
-      message: "Model/auth provider",
+      message: "Model provider (OpenAI-compatible)",
       options: providerOptions,
     })) as string;
 

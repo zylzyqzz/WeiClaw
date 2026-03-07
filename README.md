@@ -1,3 +1,11 @@
+# WeiClaw Private
+
+WeiClaw is a private, learning-focused subtractive edition built from OpenClaw.
+It keeps the upstream license, attribution, and notices intact.
+This round keeps the browser Control UI / Dashboard, terminal onboarding/setup, terminal TUI, OpenClaw-native skills compatibility, Telegram, OpenAI-compatible model paths, automation/scheduling, and minimal cloud deployment structure.
+
+Original upstream project: https://github.com/openclaw/openclaw
+
 # 🦞 OpenClaw — Personal AI Assistant
 
 <p align="center">
@@ -69,7 +77,7 @@ Full beginner guide (auth, pairing, channels): [Getting started](https://docs.op
 ```bash
 openclaw onboard --install-daemon
 
-openclaw gateway --port 18789 --verbose
+openclaw gateway --port 19789 --verbose
 
 # Send a message
 openclaw message send --to +1234567890 --message "Hello from OpenClaw"
@@ -191,7 +199,7 @@ WhatsApp / Telegram / Slack / Discord / Google Chat / Signal / iMessage / BlueBu
 ┌───────────────────────────────┐
 │            Gateway            │
 │       (control plane)         │
-│     ws://127.0.0.1:18789      │
+│     ws://127.0.0.1:19789      │
 └──────────────┬────────────────┘
                │
                ├─ Pi agent (RPC)

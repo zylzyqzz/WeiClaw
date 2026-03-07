@@ -43,6 +43,8 @@ type ChannelStatusSummary = {
   statusLines: string[];
 };
 
+const WEICLAW_DEFAULT_ONBOARD_CHANNELS = new Set<ChannelChoice>(["telegram"]);
+
 function formatAccountLabel(accountId: string): string {
   return accountId === DEFAULT_ACCOUNT_ID ? "default (primary)" : accountId;
 }
@@ -115,23 +117,30 @@ async function collectChannelStatus(params: {
   options?: SetupChannelsOptions;
   accountOverrides: Partial<Record<ChannelChoice, string>>;
 }): Promise<ChannelStatusSummary> {
-  const installedPlugins = listChannelPlugins();
+  const installedPlugins = listChannelPlugins().filter((plugin) =>
+    WEICLAW_DEFAULT_ONBOARD_CHANNELS.has(plugin.id as ChannelChoice),
+  );
   const installedIds = new Set(installedPlugins.map((plugin) => plugin.id));
   const workspaceDir = resolveAgentWorkspaceDir(params.cfg, resolveDefaultAgentId(params.cfg));
   const catalogEntries = listChannelPluginCatalogEntries({ workspaceDir }).filter(
-    (entry) => !installedIds.has(entry.id),
+    (entry) =>
+      WEICLAW_DEFAULT_ONBOARD_CHANNELS.has(entry.id as ChannelChoice) &&
+      !installedIds.has(entry.id),
   );
   const statusEntries = await Promise.all(
-    listChannelOnboardingAdapters().map((adapter) =>
+    listChannelOnboardingAdapters()
+      .filter((adapter) => WEICLAW_DEFAULT_ONBOARD_CHANNELS.has(adapter.channel))
+      .map((adapter) =>
       adapter.getStatus({
         cfg: params.cfg,
         options: params.options,
         accountOverrides: params.accountOverrides,
       }),
-    ),
+      ),
   );
   const statusByChannel = new Map(statusEntries.map((entry) => [entry.channel, entry]));
   const fallbackStatuses = listChatChannels()
+    .filter((meta) => WEICLAW_DEFAULT_ONBOARD_CHANNELS.has(meta.id as ChannelChoice))
     .filter((meta) => !statusByChannel.has(meta.id))
     .map((meta) => {
       const configured = isChannelConfigured(params.cfg, meta.id);
@@ -314,18 +323,20 @@ export async function setupChannels(
   const shouldConfigure = options?.skipConfirm
     ? true
     : await prompter.confirm({
-        message: "Configure chat channels now?",
+        message: "Configure Telegram now?",
         initialValue: true,
       });
   if (!shouldConfigure) {
     return cfg;
   }
 
-  const corePrimer = listChatChannels().map((meta) => ({
-    id: meta.id,
-    label: meta.label,
-    blurb: meta.blurb,
-  }));
+  const corePrimer = listChatChannels()
+    .filter((meta) => WEICLAW_DEFAULT_ONBOARD_CHANNELS.has(meta.id as ChannelChoice))
+    .map((meta) => ({
+      id: meta.id,
+      label: meta.label,
+      blurb: meta.blurb,
+    }));
   const coreIds = new Set(corePrimer.map((entry) => entry.id));
   const primerChannels = [
     ...corePrimer,
@@ -410,12 +421,18 @@ export async function setupChannels(
     });
 
   const getChannelEntries = () => {
-    const core = listChatChannels();
-    const installed = listChannelPlugins();
+    const core = listChatChannels().filter((meta) =>
+      WEICLAW_DEFAULT_ONBOARD_CHANNELS.has(meta.id as ChannelChoice),
+    );
+    const installed = listChannelPlugins().filter((plugin) =>
+      WEICLAW_DEFAULT_ONBOARD_CHANNELS.has(plugin.id as ChannelChoice),
+    );
     const installedIds = new Set(installed.map((plugin) => plugin.id));
     const workspaceDir = resolveAgentWorkspaceDir(next, resolveDefaultAgentId(next));
     const catalog = listChannelPluginCatalogEntries({ workspaceDir }).filter(
-      (entry) => !installedIds.has(entry.id),
+      (entry) =>
+        WEICLAW_DEFAULT_ONBOARD_CHANNELS.has(entry.id as ChannelChoice) &&
+        !installedIds.has(entry.id),
     );
     const metaById = new Map<string, ChannelMeta>();
     for (const meta of core) {
@@ -680,7 +697,7 @@ export async function setupChannels(
   if (options?.quickstartDefaults) {
     const { entries } = getChannelEntries();
     const choice = (await prompter.select({
-      message: "Select channel (QuickStart)",
+      message: "Primary channel (QuickStart)",
       options: [
         ...buildSelectionOptions(entries),
         {

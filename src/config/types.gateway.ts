@@ -353,7 +353,7 @@ export type GatewayToolsConfig = {
 };
 
 export type GatewayConfig = {
-  /** Single multiplexed port for Gateway WS + HTTP (default: 18789). */
+  /** Single multiplexed port for Gateway WS + HTTP (default: 19789). */
   port?: number;
   /**
    * Explicit gateway mode. When set to "remote", local gateway start is disabled.

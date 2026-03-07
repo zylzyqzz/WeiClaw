@@ -334,7 +334,7 @@ export async function runConfigureWizard(
       }
     }
 
-    const localUrl = "ws://127.0.0.1:18789";
+    const localUrl = "ws://127.0.0.1:19789";
     const baseLocalProbeToken = await resolveGatewaySecretInputForWizard({
       cfg: baseConfig,
       value: baseConfig.gateway?.auth?.token,

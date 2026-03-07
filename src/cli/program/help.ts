@@ -23,13 +23,13 @@ const EXAMPLES = [
   ["openclaw models --help", "Show detailed help for the models command."],
   [
     "openclaw channels login --verbose",
-    "Link personal WhatsApp Web and show QR + connection logs.",
+    "Link a Telegram-first WeiClaw gateway and inspect connection logs.",
   ],
   [
     'openclaw message send --target +15555550123 --message "Hi" --json',
-    "Send via your web session and print JSON result.",
+    "Send via your configured Telegram channel and print JSON result.",
   ],
-  ["openclaw gateway --port 18789", "Run the WebSocket Gateway locally."],
+  ["openclaw gateway --port 19789", "Run the WebSocket Gateway locally."],
   ["openclaw --dev gateway", "Run a dev Gateway (isolated state/config) on ws://127.0.0.1:19001."],
   ["openclaw gateway --force", "Kill anything bound to the default gateway port, then start it."],
   ["openclaw gateway ...", "Gateway control via WebSocket."],

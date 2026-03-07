@@ -32,15 +32,15 @@ async function requireRiskAcknowledgement(params: {
     [
       "Security warning — please read.",
       "",
-      "OpenClaw is a hobby project and still in beta. Expect sharp edges.",
-      "By default, OpenClaw is a personal agent: one trusted operator boundary.",
+      "WeiClaw Private is a minimal private edition built from OpenClaw. Expect sharp edges.",
+      "By default, WeiClaw keeps OpenClaw's personal-agent trust model: one trusted operator boundary.",
       "This bot can read files and run actions if tools are enabled.",
       "A bad prompt can trick it into doing unsafe things.",
       "",
-      "OpenClaw is not a hostile multi-tenant boundary by default.",
+      "WeiClaw is not a hostile multi-tenant boundary by default.",
       "If multiple users can message one tool-enabled agent, they share that delegated tool authority.",
       "",
-      "If you’re not comfortable with security hardening and access control, don’t run OpenClaw.",
+      "If you’re not comfortable with security hardening and access control, don’t run WeiClaw.",
       "Ask someone experienced to help before enabling tools or exposing it to the internet.",
       "",
       "Recommended baseline:",
@@ -77,7 +77,7 @@ export async function runOnboardingWizard(
 ) {
   const onboardHelpers = await import("../commands/onboard-helpers.js");
   onboardHelpers.printWizardHeader(runtime);
-  await prompter.intro("OpenClaw onboarding");
+  await prompter.intro("WeiClaw onboarding");
   await requireRiskAcknowledgement({ opts, prompter });
 
   const snapshot = await readConfigFileSnapshot();
@@ -102,7 +102,7 @@ export async function runOnboardingWizard(
     return;
   }
 
-  const quickstartHint = `Configure details later via ${formatCliCommand("openclaw configure")}.`;
+  const quickstartHint = `Telegram-first minimal setup. Configure details later via ${formatCliCommand("openclaw configure")}.`;
   const manualHint = "Configure port, network, Tailscale, and auth options.";
   const explicitFlowRaw = opts.flow?.trim();
   const normalizedExplicitFlow = explicitFlowRaw === "manual" ? "advanced" : explicitFlowRaw;
@@ -267,14 +267,14 @@ export async function runOnboardingWizard(
             : []),
           `Gateway auth: ${formatAuth(quickstartGateway.authMode)}`,
           `Tailscale exposure: ${formatTailscale(quickstartGateway.tailscaleMode)}`,
-          "Direct to chat channels.",
+          "Direct to Telegram-first channel setup.",
         ]
       : [
           `Gateway port: ${DEFAULT_GATEWAY_PORT}`,
           "Gateway bind: Loopback (127.0.0.1)",
           "Gateway auth: Token (default)",
           "Tailscale exposure: Off",
-          "Direct to chat channels.",
+          "Direct to Telegram-first channel setup.",
         ];
     await prompter.note(quickstartLines.join("\n"), "QuickStart");
   }
