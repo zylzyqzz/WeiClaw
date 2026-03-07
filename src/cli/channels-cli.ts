@@ -9,6 +9,7 @@ import {
   channelsStatusCommand,
 } from "../commands/channels.js";
 import { danger } from "../globals.js";
+import { isTruthyEnvValue } from "../infra/env.js";
 import { defaultRuntime } from "../runtime.js";
 import { formatDocsLink } from "../terminal/links.js";
 import { theme } from "../terminal/theme.js";
@@ -68,10 +69,13 @@ function runChannelsCommandWithDanger(action: () => Promise<void>, label: string
 }
 
 export function registerChannelsCli(program: Command) {
+  const showAllChannelFlags =
+    isTruthyEnvValue(process.env.WEICLAW_ENABLE_ALL_CHANNELS) ||
+    isTruthyEnvValue(process.env.OPENCLAW_ENABLE_ALL_CHANNELS);
   const channelNames = formatCliChannelOptions();
   const channels = program
     .command("channels")
-    .description("Manage connected chat channels and accounts")
+    .description("Manage connected chat channels and accounts (Telegram-first)")
     .addHelpText(
       "after",
       () =>
@@ -82,7 +86,7 @@ export function registerChannelsCli(program: Command) {
             "openclaw channels add --channel telegram --token <token>",
             "Add or update a channel account non-interactively.",
           ],
-          ["openclaw channels login --channel whatsapp", "Link a WhatsApp Web account."],
+          ["openclaw channels login --channel telegram", "Verify Telegram auth/runtime state."],
         ])}\n\n${theme.muted("Docs:")} ${formatDocsLink(
           "/cli/channels",
           "docs.openclaw.ai/cli/channels",
@@ -114,7 +118,7 @@ export function registerChannelsCli(program: Command) {
 
   channels
     .command("capabilities")
-    .description("Show provider capabilities (intents/scopes + supported features)")
+    .description("Show channel capabilities (intents/scopes + supported features)")
     .option("--channel <name>", `Channel (${formatCliChannelOptions(["all"])})`)
     .option("--account <id>", "Account id (only with --channel)")
     .option("--target <dest>", "Channel target for permission audit (Discord channel:<id>)")
@@ -167,36 +171,8 @@ export function registerChannelsCli(program: Command) {
     .option("--channel <name>", `Channel (${channelNames})`)
     .option("--account <id>", "Account id (default when omitted)")
     .option("--name <name>", "Display name for this account")
-    .option("--token <token>", "Bot token (Telegram/Discord)")
+    .option("--token <token>", "Telegram bot token")
     .option("--token-file <path>", "Bot token file (Telegram)")
-    .option("--bot-token <token>", "Slack bot token (xoxb-...)")
-    .option("--app-token <token>", "Slack app token (xapp-...)")
-    .option("--signal-number <e164>", "Signal account number (E.164)")
-    .option("--cli-path <path>", "CLI path (signal-cli or imsg)")
-    .option("--db-path <path>", "iMessage database path")
-    .option("--service <service>", "iMessage service (imessage|sms|auto)")
-    .option("--region <region>", "iMessage region (for SMS)")
-    .option("--auth-dir <path>", "WhatsApp auth directory override")
-    .option("--http-url <url>", "Signal HTTP daemon base URL")
-    .option("--http-host <host>", "Signal HTTP host")
-    .option("--http-port <port>", "Signal HTTP port")
-    .option("--webhook-path <path>", "Webhook path (Google Chat/BlueBubbles)")
-    .option("--webhook-url <url>", "Google Chat webhook URL")
-    .option("--audience-type <type>", "Google Chat audience type (app-url|project-number)")
-    .option("--audience <value>", "Google Chat audience value (app URL or project number)")
-    .option("--homeserver <url>", "Matrix homeserver URL")
-    .option("--user-id <id>", "Matrix user ID")
-    .option("--access-token <token>", "Matrix access token")
-    .option("--password <password>", "Matrix password")
-    .option("--device-name <name>", "Matrix device name")
-    .option("--initial-sync-limit <n>", "Matrix initial sync limit")
-    .option("--ship <ship>", "Tlon ship name (~sampel-palnet)")
-    .option("--url <url>", "Tlon ship URL")
-    .option("--code <code>", "Tlon login code")
-    .option("--group-channels <list>", "Tlon group channels (comma-separated)")
-    .option("--dm-allowlist <list>", "Tlon DM allowlist (comma-separated ships)")
-    .option("--auto-discover-channels", "Tlon auto-discover group channels")
-    .option("--no-auto-discover-channels", "Disable Tlon auto-discovery")
     .option("--use-env", "Use env token (default account only)", false)
     .action(async (opts, command) => {
       await runChannelsCommand(async () => {
@@ -204,6 +180,41 @@ export function registerChannelsCli(program: Command) {
         await channelsAddCommand(opts, defaultRuntime, { hasFlags });
       });
     });
+
+  if (showAllChannelFlags) {
+    const addCommand = channels.commands.find((entry) => entry.name() === "add");
+    if (addCommand) {
+      addCommand
+        .option("--bot-token <token>", "Slack bot token (xoxb-...)")
+        .option("--app-token <token>", "Slack app token (xapp-...)")
+        .option("--signal-number <e164>", "Signal account number (E.164)")
+        .option("--cli-path <path>", "CLI path (signal-cli or imsg)")
+        .option("--db-path <path>", "iMessage database path")
+        .option("--service <service>", "iMessage service (imessage|sms|auto)")
+        .option("--region <region>", "iMessage region (for SMS)")
+        .option("--auth-dir <path>", "WhatsApp auth directory override")
+        .option("--http-url <url>", "Signal HTTP daemon base URL")
+        .option("--http-host <host>", "Signal HTTP host")
+        .option("--http-port <port>", "Signal HTTP port")
+        .option("--webhook-path <path>", "Webhook path (Google Chat/BlueBubbles)")
+        .option("--webhook-url <url>", "Google Chat webhook URL")
+        .option("--audience-type <type>", "Google Chat audience type (app-url|project-number)")
+        .option("--audience <value>", "Google Chat audience value (app URL or project number)")
+        .option("--homeserver <url>", "Matrix homeserver URL")
+        .option("--user-id <id>", "Matrix user ID")
+        .option("--access-token <token>", "Matrix access token")
+        .option("--password <password>", "Matrix password")
+        .option("--device-name <name>", "Matrix device name")
+        .option("--initial-sync-limit <n>", "Matrix initial sync limit")
+        .option("--ship <ship>", "Tlon ship name (~sampel-palnet)")
+        .option("--url <url>", "Tlon ship URL")
+        .option("--code <code>", "Tlon login code")
+        .option("--group-channels <list>", "Tlon group channels (comma-separated)")
+        .option("--dm-allowlist <list>", "Tlon DM allowlist (comma-separated ships)")
+        .option("--auto-discover-channels", "Tlon auto-discover group channels")
+        .option("--no-auto-discover-channels", "Disable Tlon auto-discovery");
+    }
+  }
 
   channels
     .command("remove")

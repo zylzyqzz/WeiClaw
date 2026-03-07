@@ -1,4 +1,4 @@
-import { upsertAuthProfile } from "../../../agents/auth-profiles.js";
+﻿import { upsertAuthProfile } from "../../../agents/auth-profiles.js";
 import { normalizeProviderId } from "../../../agents/model-selection.js";
 import { parseDurationMs } from "../../../cli/parse-duration.js";
 import type { OpenClawConfig } from "../../../config/config.js";
@@ -140,7 +140,7 @@ export async function applyNonInteractiveAuthChoice(params: {
     runtime.error(
       [
         `Auth choice "${authChoice}" is deprecated.`,
-        'Use "--auth-choice openai-api-key", "--auth-choice custom-api-key", "--auth-choice litellm-api-key", or "--auth-choice vllm".',
+        'Use "--auth-choice openai-api-key" or "--auth-choice litellm-api-key".',
       ].join("\n"),
     );
     runtime.exit(1);
@@ -1009,3 +1009,4 @@ export async function applyNonInteractiveAuthChoice(params: {
 
   return nextConfig;
 }
+

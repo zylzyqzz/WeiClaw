@@ -1,4 +1,4 @@
-import fs from "node:fs/promises";
+﻿import fs from "node:fs/promises";
 import path from "node:path";
 import {
   resolveAgentDir,
@@ -178,7 +178,7 @@ export async function agentsAddCommand(
 
   const prompter = createClackPrompter();
   try {
-    await prompter.intro("Add OpenClaw agent");
+    await prompter.intro("Add WeiClaw agent");
     const name =
       nameInput ??
       (await prompter.text({
@@ -366,3 +366,5 @@ export async function agentsAddCommand(
     throw err;
   }
 }
+
+

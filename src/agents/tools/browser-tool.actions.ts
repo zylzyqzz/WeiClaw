@@ -1,4 +1,4 @@
-import type { AgentToolResult } from "@mariozechner/pi-agent-core";
+﻿import type { AgentToolResult } from "@mariozechner/pi-agent-core";
 import { browserAct, browserConsoleMessages } from "../../browser/client-actions.js";
 import { browserSnapshot, browserTabs } from "../../browser/client.js";
 import { DEFAULT_AI_SNAPSHOT_MAX_CHARS } from "../../browser/constants.js";
@@ -334,7 +334,7 @@ export async function executeActAction(params: {
         : await browserTabs(baseUrl, { profile }).catch(() => []);
       if (!tabs.length) {
         throw new Error(
-          "No Chrome tabs are attached via the OpenClaw Browser Relay extension. Click the toolbar icon on the tab you want to control (badge ON), then retry.",
+          "No Chrome tabs are attached via the WeiClaw Browser Relay extension. Click the toolbar icon on the tab you want to control (badge ON), then retry.",
           { cause: err },
         );
       }
@@ -346,3 +346,4 @@ export async function executeActAction(params: {
     throw err;
   }
 }
+

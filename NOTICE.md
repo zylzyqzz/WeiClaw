@@ -1,6 +1,7 @@
 WeiClaw Private
 
 This repository is a private, subtractive fork/derivative of OpenClaw.
+It is maintained for learning and private self-use.
 
 - Upstream project: https://github.com/openclaw/openclaw
 - Upstream product name: OpenClaw

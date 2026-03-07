@@ -1,4 +1,4 @@
-import fs from "node:fs";
+﻿import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Command } from "commander";
@@ -45,7 +45,7 @@ export async function installChromeExtension(opts?: {
 }): Promise<{ path: string }> {
   const src = opts?.sourceDir ?? resolveBundledExtensionRootDir();
   if (!hasManifest(src)) {
-    throw new Error("Bundled Chrome extension is missing. Reinstall OpenClaw and try again.");
+    throw new Error("Bundled Chrome extension is missing. Reinstall WeiClaw and try again.");
   }
 
   const stateDir = opts?.stateDir ?? resolveStateDir();
@@ -99,9 +99,9 @@ export function registerBrowserExtensionCommands(
           [
             copied ? "Copied to clipboard." : "Copy to clipboard unavailable.",
             "Next:",
-            `- Chrome → chrome://extensions → enable “Developer mode”`,
-            `- “Load unpacked” → select: ${displayPath}`,
-            `- Pin “OpenClaw Browser Relay”, then click it on the tab (badge shows ON)`,
+            "- Chrome -> chrome://extensions -> enable Developer mode",
+            `- Load unpacked -> select: ${displayPath}`,
+            "- Pin WeiClaw Browser Relay, then click it on the target tab (badge ON)",
             "",
             `${theme.muted("Docs:")} ${formatDocsLink("/tools/chrome-extension", "docs.openclaw.ai/tools/chrome-extension")}`,
           ].join("\n"),
@@ -138,3 +138,5 @@ export function registerBrowserExtensionCommands(
       }
     });
 }
+
+

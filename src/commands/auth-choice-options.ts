@@ -23,22 +23,10 @@ const AUTH_CHOICE_GROUP_DEFS: Array<{
   choices: AuthChoice[];
 }> = [
   {
-    value: "custom",
-    label: "Custom Provider",
-    hint: "Any OpenAI-compatible endpoint",
-    choices: ["custom-api-key"],
-  },
-  {
     value: "openai",
     label: "OpenAI",
     hint: "Official OpenAI API",
     choices: ["openai-api-key"],
-  },
-  {
-    value: "vllm",
-    label: "vLLM",
-    hint: "Local/self-hosted OpenAI-compatible",
-    choices: ["vllm"],
   },
   {
     value: "litellm",
@@ -50,18 +38,8 @@ const AUTH_CHOICE_GROUP_DEFS: Array<{
 
 const BASE_AUTH_CHOICE_OPTIONS: ReadonlyArray<AuthChoiceOption> = [
   {
-    value: "custom-api-key",
-    label: "Custom Provider",
-    hint: "Generic OpenAI-compatible URL + API key",
-  },
-  {
     value: "openai-api-key",
     label: "OpenAI API key",
-  },
-  {
-    value: "vllm",
-    label: "vLLM (custom URL + model)",
-    hint: "Local/self-hosted OpenAI-compatible server",
   },
   {
     value: "litellm-api-key",

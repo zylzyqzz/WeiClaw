@@ -1,4 +1,5 @@
 import type { Command } from "commander";
+import { isTruthyEnvValue } from "../../infra/env.js";
 import { formatDocsLink } from "../../terminal/links.js";
 import { theme } from "../../terminal/theme.js";
 import { formatHelpExamples } from "../help-format.js";
@@ -13,9 +14,12 @@ import { registerNodesScreenCommands } from "./register.screen.js";
 import { registerNodesStatusCommands } from "./register.status.js";
 
 export function registerNodesCli(program: Command) {
+  const enableNodeMedia =
+    isTruthyEnvValue(process.env.WEICLAW_ENABLE_NODE_MEDIA) ||
+    isTruthyEnvValue(process.env.OPENCLAW_ENABLE_NODE_MEDIA);
   const nodes = program
     .command("nodes")
-    .description("Manage gateway-owned nodes (pairing, status, invoke, and media)")
+    .description("Manage gateway-owned nodes (pairing, status, invoke)")
     .addHelpText(
       "after",
       () =>
@@ -23,7 +27,6 @@ export function registerNodesCli(program: Command) {
           ["openclaw nodes status", "List known nodes with live status."],
           ["openclaw nodes pairing pending", "Show pending node pairing requests."],
           ['openclaw nodes run --node <id> --raw "uname -a"', "Run a shell command on a node."],
-          ["openclaw nodes camera snap --node <id>", "Capture a photo from a node camera."],
         ])}\n\n${theme.muted("Docs:")} ${formatDocsLink("/cli/nodes", "docs.openclaw.ai/cli/nodes")}\n`,
     );
 
@@ -32,8 +35,10 @@ export function registerNodesCli(program: Command) {
   registerNodesInvokeCommands(nodes);
   registerNodesNotifyCommand(nodes);
   registerNodesPushCommand(nodes);
-  registerNodesCanvasCommands(nodes);
-  registerNodesCameraCommands(nodes);
-  registerNodesScreenCommands(nodes);
-  registerNodesLocationCommands(nodes);
+  if (enableNodeMedia) {
+    registerNodesCanvasCommands(nodes);
+    registerNodesCameraCommands(nodes);
+    registerNodesScreenCommands(nodes);
+    registerNodesLocationCommands(nodes);
+  }
 }

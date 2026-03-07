@@ -2,6 +2,7 @@
 
 WeiClaw is a private, learning-focused subtractive edition based on OpenClaw.
 This repo keeps upstream license, attribution, and notice obligations intact.
+This is the author's first project for hands-on learning and private self-hosted use.
 
 - Upstream: https://github.com/openclaw/openclaw
 - License: [LICENSE](LICENSE)
@@ -19,6 +20,11 @@ The default product path is:
 - Control UI / Dashboard retained
 - Terminal onboarding/setup retained
 - Terminal TUI retained
+
+What this repo is not:
+
+- not a full OpenClaw channel/provider matrix distribution
+- not a claim of full originality independent of OpenClaw
 
 ## Quick Start (Telegram-first)
 
@@ -66,3 +72,4 @@ openclaw cron list
 
 - This project is not trying to preserve the full upstream channel/provider matrix in default user-facing flow.
 - Upstream compatibility foundations are retained where required (license, attribution, skills compatibility, scheduler, Dashboard/TUI/onboarding).
+- If you need wider channel/provider exposure, enable the corresponding environment overrides explicitly.

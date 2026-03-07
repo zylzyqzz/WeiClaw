@@ -1,4 +1,4 @@
-import { formatCliCommand } from "../cli/command-format.js";
+﻿import { formatCliCommand } from "../cli/command-format.js";
 import { readConfigFileSnapshot } from "../config/config.js";
 import { assertSupportedRuntime } from "../infra/runtime-guard.js";
 import type { RuntimeEnv } from "../runtime.js";
@@ -20,7 +20,7 @@ export async function onboardCommand(opts: OnboardOptions, runtime: RuntimeEnv =
     runtime.error(
       [
         `Auth choice "${String(originalAuthChoice)}" is deprecated.`,
-        'Use "--auth-choice openai-api-key", "--auth-choice custom-api-key", "--auth-choice litellm-api-key", or "--auth-choice vllm".',
+        'Use "--auth-choice openai-api-key" or "--auth-choice litellm-api-key".',
       ].join("\n"),
     );
     runtime.exit(1);
@@ -77,7 +77,7 @@ export async function onboardCommand(opts: OnboardOptions, runtime: RuntimeEnv =
   if (process.platform === "win32") {
     runtime.log(
       [
-        "Windows detected — OpenClaw runs great on WSL2!",
+        "Windows detected. WeiClaw runs best on WSL2.",
         "Native Windows might be trickier.",
         "Quick setup: wsl --install (one command, one reboot)",
         "Guide: https://docs.openclaw.ai/windows",
@@ -94,3 +94,5 @@ export async function onboardCommand(opts: OnboardOptions, runtime: RuntimeEnv =
 }
 
 export type { OnboardOptions } from "./onboard-types.js";
+
+
