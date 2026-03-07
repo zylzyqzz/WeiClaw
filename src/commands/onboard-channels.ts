@@ -202,9 +202,8 @@ async function noteChannelPrimer(
   );
   await prompter.note(
     [
-      "DM security: default is pairing; unknown DMs get a pairing code.",
-      `Approve with: ${formatCliCommand("openclaw pairing approve <channel> <code>")}`,
-      'Public DMs require dmPolicy="open" + allowFrom=["*"].',
+      "WeiClaw Private defaults to open Telegram DMs for trusted self-hosted use.",
+      'Tighten later with dmPolicy="allowlist" or "pairing" if you need a stricter boundary.',
       "Multi-user DMs: run: " +
         formatCliCommand('openclaw config set session.dmScope "per-channel-peer"') +
         ' (or "per-account-channel-peer" for multi-account channels) to isolate sessions.',
@@ -246,7 +245,7 @@ async function maybeConfigureDmPolicies(params: {
   }
 
   const wants = await prompter.confirm({
-    message: "Configure DM access policies now? (default: pairing)",
+    message: "Configure DM access policies now? (default: open)",
     initialValue: false,
   });
   if (!wants) {
@@ -257,8 +256,8 @@ async function maybeConfigureDmPolicies(params: {
   const selectPolicy = async (policy: ChannelOnboardingDmPolicy) => {
     await prompter.note(
       [
-        "Default: pairing (unknown DMs get a pairing code).",
-        `Approve: ${formatCliCommand(`openclaw pairing approve ${policy.channel} <code>`)}`,
+        "Default: open for private Telegram-first setups.",
+        "Use allowlist or pairing later if you want a stricter trust gate.",
         `Allowlist DMs: ${policy.policyKey}="allowlist" + ${policy.allowFromKey} entries.`,
         `Public DMs: ${policy.policyKey}="open" + ${policy.allowFromKey} includes "*".`,
         "Multi-user DMs: run: " +
@@ -271,11 +270,12 @@ async function maybeConfigureDmPolicies(params: {
     return (await prompter.select({
       message: `${policy.label} DM policy`,
       options: [
-        { value: "pairing", label: "Pairing (recommended)" },
+        { value: "open", label: "Open (WeiClaw private default)" },
         { value: "allowlist", label: "Allowlist (specific users only)" },
-        { value: "open", label: "Open (public inbound DMs)" },
+        { value: "pairing", label: "Pairing (stricter)" },
         { value: "disabled", label: "Disabled (ignore DMs)" },
       ],
+      initialValue: "open",
     })) as DmPolicy;
   };
 

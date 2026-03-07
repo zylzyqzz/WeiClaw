@@ -35,7 +35,7 @@ const EXAMPLES = [
   ["openclaw gateway ...", "Gateway control via WebSocket."],
   [
     'openclaw agent --to +15555550123 --message "Run summary" --deliver',
-    "Talk directly to the agent using the Gateway; optionally send the WhatsApp reply.",
+    "Talk directly to the agent using the Gateway; optionally send the Telegram reply.",
   ],
   [
     'openclaw message send --channel telegram --target @mychat --message "Hi"',

@@ -6,7 +6,7 @@ This round keeps the browser Control UI / Dashboard, terminal onboarding/setup, 
 
 Original upstream project: https://github.com/openclaw/openclaw
 
-# 🦞 OpenClaw — Personal AI Assistant
+# 🦞 WeiClaw Private — Minimal Telegram-first OpenClaw fork
 
 <p align="center">
     <picture>
@@ -80,7 +80,7 @@ openclaw onboard --install-daemon
 openclaw gateway --port 19789 --verbose
 
 # Send a message
-openclaw message send --to +1234567890 --message "Hello from OpenClaw"
+openclaw message send --to +1234567890 --message "Hello from WeiClaw"
 
 # Talk to the assistant (optionally deliver back to any connected channel: WhatsApp/Telegram/Slack/Discord/Google Chat/Signal/iMessage/BlueBubbles/IRC/Microsoft Teams/Matrix/Feishu/LINE/Mattermost/Nextcloud Talk/Nostr/Synology Chat/Tlon/Twitch/Zalo/Zalo Personal/WebChat)
 openclaw agent --message "Ship checklist" --thinking high

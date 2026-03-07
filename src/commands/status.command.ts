@@ -440,7 +440,7 @@ export async function statusCommand(
     },
   ];
 
-  runtime.log(theme.heading("OpenClaw status"));
+  runtime.log(theme.heading("WeiClaw status"));
   runtime.log("");
   runtime.log(theme.heading("Overview"));
   runtime.log(
@@ -453,6 +453,18 @@ export async function statusCommand(
       rows: overviewRows,
     }).trimEnd(),
   );
+  if (
+    cfg.gateway?.auth?.mode === "none" ||
+    cfg.gateway?.controlUi?.allowInsecureAuth === true ||
+    cfg.gateway?.controlUi?.dangerouslyDisableDeviceAuth === true
+  ) {
+    runtime.log("");
+    runtime.log(
+      theme.muted(
+        "Private mode defaults active: relaxed gateway auth, relaxed Control UI trust checks, and Telegram-first inbound defaults.",
+      ),
+    );
+  }
 
   if (pairingRecovery) {
     runtime.log("");

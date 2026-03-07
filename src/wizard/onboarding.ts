@@ -33,7 +33,7 @@ async function requireRiskAcknowledgement(params: {
       "Security warning — please read.",
       "",
       "WeiClaw Private is a minimal private edition built from OpenClaw. Expect sharp edges.",
-      "By default, WeiClaw keeps OpenClaw's personal-agent trust model: one trusted operator boundary.",
+      "Default mode is Telegram-first, OpenAI-compatible-first, and intentionally relaxed for private self-use.",
       "This bot can read files and run actions if tools are enabled.",
       "A bad prompt can trick it into doing unsafe things.",
       "",

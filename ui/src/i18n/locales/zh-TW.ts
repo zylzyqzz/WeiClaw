@@ -71,7 +71,7 @@ export const zh_TW: TranslationMap = {
       uptime: "運行時間",
       tickInterval: "刻度間隔",
       lastChannelsRefresh: "最後頻道刷新",
-      channelsHint: "使用頻道鏈接 WhatsApp、Telegram、Discord、Signal 或 iMessage。",
+      channelsHint: "使用頻道頁連接你的 Telegram 機器人。",
     },
     stats: {
       instances: "實例",
