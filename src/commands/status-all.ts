@@ -24,7 +24,6 @@ import { checkUpdateStatus, formatGitInstallLabel } from "../infra/update-check.
 import { runExec } from "../process/exec.js";
 import type { RuntimeEnv } from "../runtime.js";
 import { VERSION } from "../version.js";
-import { resolveControlUiLinks } from "./onboard-helpers.js";
 import { getAgentLocalStatuses } from "./status-all/agents.js";
 import { buildChannelsTable } from "./status-all/channels.js";
 import { formatDurationPrecise, formatGatewayAuthUsed } from "./status-all/format.js";
@@ -235,16 +234,6 @@ export async function statusAllCommand(
           })()
         : null;
 
-    const controlUiEnabled = cfg.gateway?.controlUi?.enabled ?? true;
-    const dashboard = controlUiEnabled
-      ? resolveControlUiLinks({
-          port,
-          bind: cfg.gateway?.bind,
-          customBindHost: cfg.gateway?.customBindHost,
-          basePath: cfg.gateway?.controlUi?.basePath,
-        }).httpUrl
-      : null;
-
     const updateLine = formatUpdateOneLiner(update).replace(/^Update:\s*/i, "");
 
     const gatewayTarget = remoteUrlMissing ? `fallback ${connection.url}` : connection.url;
@@ -279,9 +268,6 @@ export async function statusAllCommand(
         Item: "Config",
         Value: snap?.path?.trim() ? snap.path.trim() : "(unknown config path)",
       },
-      dashboard
-        ? { Item: "Dashboard", Value: dashboard }
-        : { Item: "Dashboard", Value: "disabled" },
       {
         Item: "Tailscale",
         Value:

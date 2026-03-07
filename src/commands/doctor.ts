@@ -54,7 +54,6 @@ import {
   detectLegacyStateMigrations,
   runLegacyStateMigrations,
 } from "./doctor-state-migrations.js";
-import { maybeRepairUiProtocolFreshness } from "./doctor-ui.js";
 import { maybeOfferUpdateBeforeDoctor } from "./doctor-update.js";
 import { noteWorkspaceStatus } from "./doctor-workspace-status.js";
 import { MEMORY_SYSTEM_PROMPT, shouldSuggestMemorySystem } from "./doctor-workspace.js";
@@ -75,7 +74,7 @@ export async function doctorCommand(
 ) {
   const prompter = createDoctorPrompter({ runtime, options });
   printWizardHeader(runtime);
-  intro("OpenClaw doctor");
+  intro("WeiClaw doctor");
 
   const root = await resolveOpenClawPackageRoot({
     moduleUrl: import.meta.url,
@@ -94,7 +93,6 @@ export async function doctorCommand(
     return;
   }
 
-  await maybeRepairUiProtocolFreshness(runtime, prompter);
   noteSourceInstallIssues(root);
   noteDeprecatedLegacyEnvVars();
   noteStartupOptimizationHints();

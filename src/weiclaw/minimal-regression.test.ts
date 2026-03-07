@@ -1,4 +1,6 @@
 import { Command } from "commander";
+import fs from "node:fs";
+import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { listChannelPlugins } from "../channels/plugins/index.js";
 import type { ChannelPlugin } from "../channels/plugins/types.js";
@@ -85,8 +87,26 @@ describe("WeiClaw minimal regression guardrails", () => {
     const core = getCoreCliCommandNames();
     const sub = getSubCliEntries().map((entry) => entry.name);
 
-    expect(core).toEqual(expect.arrayContaining(["setup", "onboard", "dashboard", "status"]));
+    expect(core).toEqual(expect.arrayContaining(["setup", "onboard", "status"]));
+    expect(core).not.toContain("dashboard");
     expect(sub).toEqual(expect.arrayContaining(["tui", "channels", "skills", "cron"]));
+    expect(sub).not.toContain("browser");
+  });
+
+  it("keeps default build detached from optional UI bundle steps", () => {
+    const packageJson = JSON.parse(
+      fs.readFileSync(path.resolve(process.cwd(), "package.json"), "utf8"),
+    ) as {
+      scripts?: Record<string, string>;
+    };
+    const build = packageJson.scripts?.build ?? "";
+    const strictSmoke = packageJson.scripts?.["build:strict-smoke"] ?? "";
+    const bundle = packageJson.scripts?.["canvas:a2ui:bundle"] ?? "";
+
+    expect(build).not.toContain("bash scripts/bundle-a2ui.sh");
+    expect(build).toContain("node scripts/build-a2ui-if-enabled.mjs");
+    expect(strictSmoke).not.toContain("canvas:a2ui:bundle");
+    expect(bundle).toBe("node scripts/build-a2ui.mjs");
   });
 
   it("disables nodes media/canvas commands by default and allows opt-in", async () => {

@@ -101,6 +101,16 @@ function applyModelProviderToolPolicy(
   return tools.filter((tool) => !TOOL_DENY_FOR_XAI_PROVIDERS.has(tool.name));
 }
 
+function applyWeiClawSurfacePolicy(tools: AnyAgentTool[], cfg?: OpenClawConfig): AnyAgentTool[] {
+  if (process.env.WEICLAW_ENABLE_BROWSER === "1") {
+    return tools;
+  }
+  if (cfg?.browser?.enabled === true) {
+    return tools;
+  }
+  return tools.filter((tool) => tool.name !== "browser");
+}
+
 function isApplyPatchAllowedForModel(params: {
   modelProvider?: string;
   modelId?: string;
@@ -516,7 +526,8 @@ export function createOpenClawCodingTools(options?: {
     }),
   ];
   const toolsForMessageProvider = applyMessageProviderToolPolicy(tools, options?.messageProvider);
-  const toolsForModelProvider = applyModelProviderToolPolicy(toolsForMessageProvider, {
+  const toolsForWeiClaw = applyWeiClawSurfacePolicy(toolsForMessageProvider, options?.config);
+  const toolsForModelProvider = applyModelProviderToolPolicy(toolsForWeiClaw, {
     modelProvider: options?.modelProvider,
     modelId: options?.modelId,
   });

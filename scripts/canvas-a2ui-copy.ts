@@ -10,15 +10,30 @@ export function getA2uiPaths(env = process.env) {
   return { srcDir, outDir };
 }
 
+function isTruthyEnv(value: string | undefined) {
+  if (typeof value !== "string") {
+    return false;
+  }
+  const normalized = value.trim().toLowerCase();
+  return normalized === "1" || normalized === "true" || normalized === "yes";
+}
+
+export function shouldSkipMissingA2uiAssets(env = process.env) {
+  if (isTruthyEnv(env.OPENCLAW_A2UI_SKIP_MISSING)) {
+    return true;
+  }
+  return !isTruthyEnv(env.WEICLAW_BUILD_UI) && !isTruthyEnv(env.OPENCLAW_BUILD_UI);
+}
+
 export async function copyA2uiAssets({ srcDir, outDir }: { srcDir: string; outDir: string }) {
-  const skipMissing = process.env.OPENCLAW_A2UI_SKIP_MISSING === "1";
+  const skipMissing = shouldSkipMissingA2uiAssets(process.env);
   try {
     await fs.stat(path.join(srcDir, "index.html"));
     await fs.stat(path.join(srcDir, "a2ui.bundle.js"));
   } catch (err) {
     const message = 'Missing A2UI bundle assets. Run "pnpm canvas:a2ui:bundle" and retry.';
     if (skipMissing) {
-      console.warn(`${message} Skipping copy (OPENCLAW_A2UI_SKIP_MISSING=1).`);
+      console.warn(`${message} Skipping copy for UI-free WeiClaw build.`);
       return;
     }
     throw new Error(message, { cause: err });

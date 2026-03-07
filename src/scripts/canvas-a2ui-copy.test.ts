@@ -2,7 +2,10 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { copyA2uiAssets } from "../../scripts/canvas-a2ui-copy.js";
+import {
+  copyA2uiAssets,
+  shouldSkipMissingA2uiAssets,
+} from "../../scripts/canvas-a2ui-copy.js";
 
 describe("canvas a2ui copy", () => {
   async function withA2uiFixture(run: (dir: string) => Promise<void>) {
@@ -14,11 +17,29 @@ describe("canvas a2ui copy", () => {
     }
   }
 
-  it("throws a helpful error when assets are missing", async () => {
+  it("skips missing assets by default for the UI-free WeiClaw build", async () => {
     await withA2uiFixture(async (dir) => {
-      await expect(copyA2uiAssets({ srcDir: dir, outDir: path.join(dir, "out") })).rejects.toThrow(
-        'Run "pnpm canvas:a2ui:bundle"',
-      );
+      await expect(
+        copyA2uiAssets({ srcDir: dir, outDir: path.join(dir, "out") }),
+      ).resolves.toBeUndefined();
+    });
+  });
+
+  it("can still enforce missing assets when optional UI build is explicitly enabled", async () => {
+    await withA2uiFixture(async (dir) => {
+      const previous = process.env.WEICLAW_BUILD_UI;
+      process.env.WEICLAW_BUILD_UI = "1";
+      try {
+        await expect(
+          copyA2uiAssets({ srcDir: dir, outDir: path.join(dir, "out") }),
+        ).rejects.toThrow('Run "pnpm canvas:a2ui:bundle"');
+      } finally {
+        if (previous === undefined) {
+          delete process.env.WEICLAW_BUILD_UI;
+        } else {
+          process.env.WEICLAW_BUILD_UI = previous;
+        }
+      }
     });
   });
 
@@ -53,5 +74,12 @@ describe("canvas a2ui copy", () => {
       await expect(fs.stat(path.join(outDir, "index.html"))).resolves.toBeTruthy();
       await expect(fs.stat(path.join(outDir, "a2ui.bundle.js"))).resolves.toBeTruthy();
     });
+  });
+
+  it("reports default skip policy correctly", () => {
+    expect(shouldSkipMissingA2uiAssets({} as NodeJS.ProcessEnv)).toBe(true);
+    expect(shouldSkipMissingA2uiAssets({ WEICLAW_BUILD_UI: "1" } as NodeJS.ProcessEnv)).toBe(
+      false,
+    );
   });
 });

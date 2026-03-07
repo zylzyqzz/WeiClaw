@@ -14,7 +14,6 @@ export function applyOnboardingLocalWorkspaceConfig(
   workspaceDir: string,
 ): OpenClawConfig {
   const toolsAlsoAllow = mergeUniqueStrings(baseConfig.tools?.alsoAllow, [
-    "browser",
     "gateway",
     "web_fetch",
     "web_search",
@@ -41,10 +40,15 @@ export function applyOnboardingLocalWorkspaceConfig(
       },
       controlUi: {
         ...baseConfig.gateway?.controlUi,
+        enabled: baseConfig.gateway?.controlUi?.enabled ?? false,
         allowInsecureAuth: baseConfig.gateway?.controlUi?.allowInsecureAuth ?? true,
         dangerouslyDisableDeviceAuth:
           baseConfig.gateway?.controlUi?.dangerouslyDisableDeviceAuth ?? true,
       },
+    },
+    browser: {
+      ...baseConfig.browser,
+      enabled: baseConfig.browser?.enabled ?? false,
     },
     session: {
       ...baseConfig.session,

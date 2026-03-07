@@ -290,10 +290,10 @@ ui_success() {
     local msg="$*"
     if [[ -n "$GUM" ]]; then
         local mark
-        mark="$("$GUM" style --foreground "#00e5cc" --bold "‚úì")"
+        mark="$("$GUM" style --foreground "#00e5cc" --bold "‚ú?)"
         echo "${mark} ${msg}"
     else
-        echo -e "${SUCCESS}‚úì${NC} ${msg}"
+        echo -e "${SUCCESS}‚ú?{NC} ${msg}"
     fi
 }
 
@@ -302,7 +302,7 @@ ui_error() {
     if [[ -n "$GUM" ]]; then
         "$GUM" log --level error "$msg"
     else
-        echo -e "${ERROR}‚úó${NC} ${msg}"
+        echo -e "${ERROR}‚ú?{NC} ${msg}"
     fi
 }
 
@@ -458,7 +458,7 @@ run_quiet_step() {
         fi
     fi
 
-    ui_error "${title} failed ‚Äî re-run with --verbose for details"
+    ui_error "${title} failed ‚Ä?re-run with --verbose for details"
     if [[ -s "$log" ]]; then
         tail -n 80 "$log" >&2 || true
     fi
@@ -880,7 +880,7 @@ TAGLINES+=("I'll butter your workflow like a lobster roll: messy, delicious, eff
 TAGLINES+=("Shell yeah‚ÄîI'm here to pinch the toil and leave you the glory.")
 TAGLINES+=("If it's repetitive, I'll automate it; if it's hard, I'll bring jokes and a rollback plan.")
 TAGLINES+=("Because texting yourself reminders is so 2024.")
-TAGLINES+=("WhatsApp, but make it ‚ú®engineering‚ú®.")
+TAGLINES+=("WhatsApp, but make it ‚ú®engineering‚ú?")
 TAGLINES+=("Turning \"I'll reply later\" into \"my bot replied instantly\".")
 TAGLINES+=("The only crab in your contacts you actually want to hear from. ü¶û")
 TAGLINES+=("Chat automation for people who peaked at IRC.")
@@ -1146,7 +1146,7 @@ choose_install_method_interactive() {
 Choose install method"
         selection="$("$GUM" choose \
             --header "$header" \
-            --cursor-prefix "‚ùØ " \
+            --cursor-prefix "‚ù?" \
             "git  ¬∑ update this checkout and use it" \
             "npm  ¬∑ install globally via npm" < /dev/tty || true)"
 
@@ -1165,7 +1165,7 @@ Choose install method"
 
     local choice=""
     choice="$(prompt_choice "$(cat <<EOF
-${WARN}‚Üí${NC} Detected a OpenClaw source checkout in: ${INFO}${detected_checkout}${NC}
+${WARN}‚Ü?{NC} Detected a OpenClaw source checkout in: ${INFO}${detected_checkout}${NC}
 Choose install method:
   1) Update this checkout (git) and use it
   2) Install global via npm (migrate away from git)
@@ -1941,7 +1941,7 @@ exec node "${repo_dir}/dist/entry.js" "\$@"
 EOF
     chmod +x "$HOME/.local/bin/openclaw"
     ui_success "OpenClaw wrapper installed to \$HOME/.local/bin/openclaw"
-    ui_info "This checkout uses pnpm ‚Äî run pnpm install (or corepack pnpm install) for deps"
+    ui_info "This checkout uses pnpm ‚Ä?run pnpm install (or corepack pnpm install) for deps"
 }
 
 # Install OpenClaw
@@ -2022,7 +2022,7 @@ run_doctor() {
     ui_success "Doctor complete"
 }
 
-maybe_open_dashboard() {
+maybe_print_postinstall_hint() {
     local claw="${OPENCLAW_BIN:-}"
     if [[ -z "$claw" ]]; then
         claw="$(resolve_openclaw_bin || true)"
@@ -2030,10 +2030,7 @@ maybe_open_dashboard() {
     if [[ -z "$claw" ]]; then
         return 0
     fi
-    if ! "$claw" dashboard --help >/dev/null 2>&1; then
-        return 0
-    fi
-    "$claw" dashboard || true
+    ui_info "WeiClaw is installed. Start the terminal UI with: weiclaw tui"
 }
 
 resolve_workspace_dir() {
@@ -2064,7 +2061,7 @@ run_bootstrap_onboarding_if_needed() {
     fi
 
     if [[ ! -r /dev/tty || ! -w /dev/tty ]]; then
-        ui_info "BOOTSTRAP.md found but no TTY; run openclaw onboard to finish setup"
+        ui_info "BOOTSTRAP.md found but no TTY; run weiclaw onboard to finish setup"
         return
     fi
 
@@ -2080,7 +2077,7 @@ run_bootstrap_onboarding_if_needed() {
     fi
 
     "$claw" onboard || {
-        ui_error "Onboarding failed; run openclaw onboard to retry"
+        ui_error "Onboarding failed; run weiclaw onboard to retry"
         return
     }
 }
@@ -2217,7 +2214,7 @@ main() {
     if check_existing_openclaw; then
         is_upgrade=true
     fi
-    local should_open_dashboard=false
+    local should_print_postinstall_hint=false
     local skip_onboard=false
 
     ui_stage "Preparing environment"
@@ -2295,7 +2292,7 @@ main() {
     fi
     if [[ "$run_doctor_after" == "true" ]]; then
         run_doctor
-        should_open_dashboard=true
+        should_print_postinstall_hint=true
     fi
 
     # Step 7: If BOOTSTRAP.md is still present in the workspace, resume onboarding
@@ -2379,7 +2376,7 @@ main() {
                     doctor_args+=("--non-interactive")
                 fi
             fi
-            ui_info "Running openclaw doctor"
+            ui_info "Running weiclaw doctor"
             local doctor_ok=0
             if (( ${#doctor_args[@]} )); then
                 OPENCLAW_UPDATE_IN_PROGRESS=1 "$claw" doctor "${doctor_args[@]}" </dev/tty && doctor_ok=1
@@ -2393,17 +2390,17 @@ main() {
                 ui_warn "Doctor failed; skipping plugin updates"
             fi
         else
-            ui_info "No TTY; run openclaw doctor and openclaw plugins update --all manually"
+            ui_info "No TTY; run weiclaw doctor and weiclaw plugins update --all manually"
         fi
     else
         if [[ "$NO_ONBOARD" == "1" || "$skip_onboard" == "true" ]]; then
-            ui_info "Skipping onboard (requested); run openclaw onboard later"
+            ui_info "Skipping onboard (requested); run weiclaw onboard later"
         else
             local config_path="${OPENCLAW_CONFIG_PATH:-$HOME/.openclaw/openclaw.json}"
             if [[ -f "${config_path}" || -f "$HOME/.clawdbot/clawdbot.json" || -f "$HOME/.moltbot/moltbot.json" || -f "$HOME/.moldbot/moldbot.json" ]]; then
                 ui_info "Config already present; running doctor"
                 run_doctor
-                should_open_dashboard=true
+                should_print_postinstall_hint=true
                 ui_info "Config already present; skipping onboarding"
                 skip_onboard=true
             fi
@@ -2422,7 +2419,7 @@ main() {
                 exec </dev/tty
                 exec "$claw" onboard
             fi
-            ui_info "No TTY; run openclaw onboard to finish setup"
+            ui_info "No TTY; run weiclaw onboard to finish setup"
             return 0
         fi
     fi
@@ -2440,14 +2437,14 @@ main() {
                 if OPENCLAW_UPDATE_IN_PROGRESS=1 "$claw" daemon restart >/dev/null 2>&1; then
                     ui_success "Gateway restarted"
                 else
-                    ui_warn "Gateway restart failed; try: openclaw daemon restart"
+                    ui_warn "Gateway restart failed; try: weiclaw daemon restart"
                 fi
             fi
         fi
     fi
 
-    if [[ "$should_open_dashboard" == "true" ]]; then
-        maybe_open_dashboard
+    if [[ "$should_print_postinstall_hint" == "true" ]]; then
+        maybe_print_postinstall_hint
     fi
 
     show_footer_links
@@ -2458,3 +2455,4 @@ if [[ "${OPENCLAW_INSTALL_SH_NO_RUN:-0}" != "1" ]]; then
     configure_verbose
     main
 fi
+

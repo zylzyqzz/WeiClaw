@@ -17,7 +17,6 @@ The default product path is:
 - OpenAI-compatible provider flow
 - OpenClaw-native skills compatibility (`skills` loader + `SKILL.md` + skills scan)
 - Automation/scheduler retained
-- Control UI / Dashboard retained
 - Terminal onboarding/setup retained
 - Terminal TUI retained
 
@@ -36,18 +35,14 @@ Install and onboard:
 
 ```bash
 npm install -g openclaw@latest
-openclaw onboard --install-daemon
+weiclaw onboard --install-daemon
 ```
 
 Start gateway (default port `19789`):
 
 ```bash
-openclaw gateway --port 19789
+weiclaw gateway --port 19789
 ```
-
-Open dashboard:
-
-- `http://127.0.0.1:19789/`
 
 ## Default Runtime Profile
 
@@ -60,12 +55,11 @@ WeiClaw defaults are narrowed for private usage:
 ## Core Commands
 
 ```bash
-openclaw onboard
-openclaw status
-openclaw dashboard
-openclaw tui
-openclaw skills list
-openclaw cron list
+weiclaw onboard
+weiclaw status
+weiclaw tui
+weiclaw skills list
+weiclaw cron list
 ```
 
 ## Minimal Usable Loop (Local Verification)
@@ -82,9 +76,9 @@ Minimal Telegram fields:
 Verify quickly:
 
 ```bash
-openclaw config get channels.telegram.enabled
-openclaw config get channels.telegram.botToken
-openclaw channels status --probe
+weiclaw config get channels.telegram.enabled
+weiclaw config get channels.telegram.botToken
+weiclaw channels status --probe
 ```
 
 For real message execution, set a valid bot token in env and send a Telegram message to the bot.
@@ -99,9 +93,9 @@ Default supported route in WeiClaw:
 Minimal setup path:
 
 ```bash
-openclaw onboard --auth-choice openai-api-key
+weiclaw onboard --auth-choice openai-api-key
 # or
-openclaw onboard --auth-choice litellm-api-key
+weiclaw onboard --auth-choice litellm-api-key
 ```
 
 Config is stored under:
@@ -114,8 +108,8 @@ Config is stored under:
 Check and diagnose:
 
 ```bash
-openclaw status
-openclaw doctor
+weiclaw status
+weiclaw doctor
 ```
 
 ### 3) Core skills loop (4 core skills)
@@ -132,10 +126,10 @@ WeiClaw keeps these core execution skills in the default runtime:
 Minimal cron loop:
 
 ```bash
-openclaw cron add --help
-openclaw cron list
-openclaw cron enable <id>
-openclaw cron disable <id>
+weiclaw cron add --help
+weiclaw cron list
+weiclaw cron enable <id>
+weiclaw cron disable <id>
 ```
 
 The scheduler chain is retained as first-class default capability in WeiClaw.
@@ -143,5 +137,6 @@ The scheduler chain is retained as first-class default capability in WeiClaw.
 ## Notes
 
 - This project is not trying to preserve the full upstream channel/provider matrix in default user-facing flow.
-- Upstream compatibility foundations are retained where required (license, attribution, skills compatibility, scheduler, Dashboard/TUI/onboarding).
+- Upstream compatibility foundations are retained where required (license, attribution, skills compatibility, scheduler, TUI, onboarding).
+- `openclaw` is still accepted as a compatibility command alias; `weiclaw` is the intended user-facing command name.
 - If you need wider channel/provider exposure, enable the corresponding environment overrides explicitly.

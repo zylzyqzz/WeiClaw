@@ -25,6 +25,7 @@ describe("WeiClaw minimal usable closure", () => {
     });
     const names = new Set(tools.map((tool) => tool.name));
     expect([...names]).toEqual(expect.arrayContaining(["exec", "read", "write", "web_fetch"]));
+    expect(names.has("browser")).toBe(false);
   });
 
   it("keeps cron tool available in the core OpenClaw tool set", () => {

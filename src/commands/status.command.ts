@@ -1,6 +1,5 @@
 import { formatCliCommand } from "../cli/command-format.js";
 import { withProgress } from "../cli/progress.js";
-import { resolveGatewayPort } from "../config/config.js";
 import { buildGatewayConnectionDetails, callGateway } from "../gateway/call.js";
 import { info } from "../globals.js";
 import { formatTimeAgo } from "../infra/format-time/format-relative.ts";
@@ -19,7 +18,6 @@ import { runSecurityAudit } from "../security/audit.js";
 import { renderTable } from "../terminal/table.js";
 import { theme } from "../terminal/theme.js";
 import { formatHealthChannelLines, type HealthSummary } from "./health.js";
-import { resolveControlUiLinks } from "./onboard-helpers.js";
 import { statusAllCommand } from "./status-all.js";
 import { groupChannelIssuesByChannel } from "./status-all/channel-issues.js";
 import { formatGatewayAuthUsed } from "./status-all/format.js";
@@ -237,20 +235,6 @@ export async function statusCommand(
     runtime.log("");
   }
 
-  const dashboard = (() => {
-    const controlUiEnabled = cfg.gateway?.controlUi?.enabled ?? true;
-    if (!controlUiEnabled) {
-      return "disabled";
-    }
-    const links = resolveControlUiLinks({
-      port: resolveGatewayPort(cfg),
-      bind: cfg.gateway?.bind,
-      customBindHost: cfg.gateway?.customBindHost,
-      basePath: cfg.gateway?.controlUi?.basePath,
-    });
-    return links.httpUrl;
-  })();
-
   const gatewayValue = (() => {
     const target = remoteUrlMissing
       ? `fallback ${gatewayConnection.url}`
@@ -405,7 +389,6 @@ export async function statusCommand(
   const gitLabel = formatGitInstallLabel(update);
 
   const overviewRows = [
-    { Item: "Dashboard", Value: dashboard },
     { Item: "OS", Value: `${osSummary.label} · node ${process.versions.node}` },
     {
       Item: "Tailscale",
@@ -461,7 +444,7 @@ export async function statusCommand(
     runtime.log("");
     runtime.log(
       theme.muted(
-        "Private mode defaults active: relaxed gateway auth, relaxed Control UI trust checks, and Telegram-first inbound defaults.",
+        "Private mode defaults active: relaxed gateway auth and Telegram-first inbound defaults.",
       ),
     );
   }

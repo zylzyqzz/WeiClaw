@@ -1,4 +1,5 @@
 import { isTruthyEnvValue } from "../infra/env.js";
+import { loadConfig } from "../config/config.js";
 
 export type BrowserControlServer = {
   stop: () => Promise<void>;
@@ -6,6 +7,9 @@ export type BrowserControlServer = {
 
 export async function startBrowserControlServerIfEnabled(): Promise<BrowserControlServer | null> {
   if (isTruthyEnvValue(process.env.OPENCLAW_SKIP_BROWSER_CONTROL_SERVER)) {
+    return null;
+  }
+  if (loadConfig().browser?.enabled !== true) {
     return null;
   }
   // Lazy import: keeps startup fast, but still bundles for the embedded

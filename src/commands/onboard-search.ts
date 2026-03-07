@@ -233,7 +233,7 @@ export async function setupSearch(
       {
         value: "__skip__" as const,
         label: "Skip for now",
-        hint: "Configure later with openclaw configure --section web",
+        hint: "Configure later with weiclaw configure --section web",
       },
     ],
     initialValue: defaultProvider as PickerValue,
@@ -263,7 +263,7 @@ export async function setupSearch(
     const ref = buildSearchEnvRef(choice);
     await prompter.note(
       [
-        "Secret references enabled — OpenClaw will store a reference instead of the API key.",
+        "Secret references enabled �?OpenClaw will store a reference instead of the API key.",
         `Env var: ${ref.id}${envAvailable ? " (detected)" : ""}.`,
         ...(envAvailable ? [] : [`Set ${ref.id} in the Gateway environment.`]),
         "Docs: https://docs.openclaw.ai/tools/web",
@@ -298,7 +298,7 @@ export async function setupSearch(
 
   await prompter.note(
     [
-      "No API key stored — web_search won't work until a key is available.",
+      "No API key stored �?web_search won't work until a key is available.",
       `Get your key at: ${entry.signupUrl}`,
       "Docs: https://docs.openclaw.ai/tools/web",
     ].join("\n"),
@@ -319,3 +319,4 @@ export async function setupSearch(
     },
   };
 }
+

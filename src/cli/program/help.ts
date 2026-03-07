@@ -20,25 +20,25 @@ const ROOT_COMMANDS_HINT =
   "Hint: commands suffixed with * have subcommands. Run <command> --help for details.";
 
 const EXAMPLES = [
-  ["openclaw models --help", "Show detailed help for the models command."],
+  ["weiclaw models --help", "Show detailed help for the models command."],
   [
-    "openclaw channels login --verbose",
+    "weiclaw channels login --verbose",
     "Link a Telegram-first WeiClaw gateway and inspect connection logs.",
   ],
   [
-    'openclaw message send --target +15555550123 --message "Hi" --json',
+    'weiclaw message send --target +15555550123 --message "Hi" --json',
     "Send via your configured Telegram channel and print JSON result.",
   ],
-  ["openclaw gateway --port 19789", "Run the WebSocket Gateway locally."],
-  ["openclaw --dev gateway", "Run a dev Gateway (isolated state/config) on ws://127.0.0.1:19001."],
-  ["openclaw gateway --force", "Kill anything bound to the default gateway port, then start it."],
-  ["openclaw gateway ...", "Gateway control via WebSocket."],
+  ["weiclaw gateway --port 19789", "Run the WebSocket Gateway locally."],
+  ["weiclaw --dev gateway", "Run a dev Gateway (isolated state/config) on ws://127.0.0.1:19001."],
+  ["weiclaw gateway --force", "Kill anything bound to the default gateway port, then start it."],
+  ["weiclaw gateway ...", "Gateway control via WebSocket."],
   [
-    'openclaw agent --to +15555550123 --message "Run summary" --deliver',
+    'weiclaw agent --to +15555550123 --message "Run summary" --deliver',
     "Talk directly to the agent using the Gateway; optionally send the Telegram reply.",
   ],
   [
-    'openclaw message send --channel telegram --target @mychat --message "Hi"',
+    'weiclaw message send --channel telegram --target @mychat --message "Hi"',
     "Send via your Telegram bot.",
   ],
 ] as const;
