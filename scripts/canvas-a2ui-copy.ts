@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { shouldSkipMissingA2uiAssets } from "../src/scripts/build-a2ui-gating.ts";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -8,21 +9,6 @@ export function getA2uiPaths(env = process.env) {
   const srcDir = env.OPENCLAW_A2UI_SRC_DIR ?? path.join(repoRoot, "src", "canvas-host", "a2ui");
   const outDir = env.OPENCLAW_A2UI_OUT_DIR ?? path.join(repoRoot, "dist", "canvas-host", "a2ui");
   return { srcDir, outDir };
-}
-
-function isTruthyEnv(value: string | undefined) {
-  if (typeof value !== "string") {
-    return false;
-  }
-  const normalized = value.trim().toLowerCase();
-  return normalized === "1" || normalized === "true" || normalized === "yes";
-}
-
-export function shouldSkipMissingA2uiAssets(env = process.env) {
-  if (isTruthyEnv(env.OPENCLAW_A2UI_SKIP_MISSING)) {
-    return true;
-  }
-  return !isTruthyEnv(env.WEICLAW_BUILD_UI) && !isTruthyEnv(env.OPENCLAW_BUILD_UI);
 }
 
 export async function copyA2uiAssets({ srcDir, outDir }: { srcDir: string; outDir: string }) {

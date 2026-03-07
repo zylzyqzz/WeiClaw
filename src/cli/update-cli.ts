@@ -34,7 +34,7 @@ function inheritedUpdateTimeout(
 export function registerUpdateCli(program: Command) {
   const update = program
     .command("update")
-    .description("Update OpenClaw and inspect update channel status")
+    .description("Update WeiClaw and inspect update channel status")
     .option("--json", "Output result as JSON", false)
     .option("--no-restart", "Skip restarting the gateway service after a successful update")
     .option("--dry-run", "Preview update actions without making changes", false)
@@ -44,16 +44,16 @@ export function registerUpdateCli(program: Command) {
     .option("--yes", "Skip confirmation prompts (non-interactive)", false)
     .addHelpText("after", () => {
       const examples = [
-        ["openclaw update", "Update a source checkout (git)"],
-        ["openclaw update --channel beta", "Switch to beta channel (git + npm)"],
-        ["openclaw update --channel dev", "Switch to dev channel (git + npm)"],
-        ["openclaw update --tag beta", "One-off update to a dist-tag or version"],
-        ["openclaw update --dry-run", "Preview actions without changing anything"],
-        ["openclaw update --no-restart", "Update without restarting the service"],
-        ["openclaw update --json", "Output result as JSON"],
-        ["openclaw update --yes", "Non-interactive (accept downgrade prompts)"],
-        ["openclaw update wizard", "Interactive update wizard"],
-        ["openclaw --update", "Shorthand for openclaw update"],
+        ["weiclaw update", "Update a source checkout (git)"],
+        ["weiclaw update --channel beta", "Switch to beta channel (git + npm)"],
+        ["weiclaw update --channel dev", "Switch to dev channel (git + npm)"],
+        ["weiclaw update --tag beta", "One-off update to a dist-tag or version"],
+        ["weiclaw update --dry-run", "Preview actions without changing anything"],
+        ["weiclaw update --no-restart", "Update without restarting the service"],
+        ["weiclaw update --json", "Output result as JSON"],
+        ["weiclaw update --yes", "Non-interactive (accept downgrade prompts)"],
+        ["weiclaw update wizard", "Interactive update wizard"],
+        ["weiclaw --update", "Shorthand for weiclaw update"],
       ] as const;
       const fmtExamples = examples
         .map(([cmd, desc]) => `  ${theme.command(cmd)} ${theme.muted(`# ${desc}`)}`)
@@ -65,7 +65,7 @@ ${theme.heading("What this does:")}
 
 ${theme.heading("Switch channels:")}
   - Use --channel stable|beta|dev to persist the update channel in config
-  - Run openclaw update status to see the active channel and source
+  - Run weiclaw update status to see the active channel and source
   - Use --tag <dist-tag|version> for a one-off npm update without persisting
 
 ${theme.heading("Non-interactive:")}
@@ -127,11 +127,11 @@ ${theme.muted("Docs:")} ${formatDocsLink("/cli/update", "docs.openclaw.ai/cli/up
     .option("--timeout <seconds>", "Timeout for update checks in seconds (default: 3)")
     .addHelpText(
       "after",
-      () =>
-        `\n${theme.heading("Examples:")}\n${formatHelpExamples([
-          ["openclaw update status", "Show channel + version status."],
-          ["openclaw update status --json", "JSON output."],
-          ["openclaw update status --timeout 10", "Custom timeout."],
+        () =>
+          `\n${theme.heading("Examples:")}\n${formatHelpExamples([
+          ["weiclaw update status", "Show channel + version status."],
+          ["weiclaw update status --json", "JSON output."],
+          ["weiclaw update status --timeout 10", "Custom timeout."],
         ])}\n\n${theme.heading("Notes:")}\n${theme.muted(
           "- Shows current update channel (stable/beta/dev) and source",
         )}\n${theme.muted("- Includes git tag/branch/SHA for source checkouts")}\n\n${theme.muted(

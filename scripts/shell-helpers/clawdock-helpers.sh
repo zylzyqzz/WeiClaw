@@ -349,7 +349,7 @@ clawdock-approve() {
     node dist/index.js devices approve "$1" 2>&1 | _clawdock_filter_warnings
 
   echo ""
-  echo "✅ Device approved! Refresh your browser."
+  echo "✅ Device approved! Retry your terminal or Telegram session."
 }
 
 # Show all available clawdock helper commands
@@ -371,7 +371,7 @@ clawdock-help() {
   echo ""
 
   echo -e "${_CLR_BOLD}${_CLR_MAGENTA}🌐 Web UI & Devices${_CLR_RESET}"
-  echo -e "  $(_cmd clawdock-dashboard)   ${_CLR_DIM}Open web UI in browser ${_CLR_CYAN}(auto-guides you)${_CLR_RESET}"
+  echo -e "  $(_cmd clawdock-dashboard)   ${_CLR_DIM}Browser UI removed in WeiClaw ${_CLR_CYAN}(use clawdock-cli tui or Telegram)${_CLR_RESET}"
   echo -e "  $(_cmd clawdock-devices)     ${_CLR_DIM}List device pairings ${_CLR_CYAN}(auto-guides you)${_CLR_RESET}"
   echo -e "  $(_cmd clawdock-approve) ${_CLR_CYAN}<id>${_CLR_RESET} ${_CLR_DIM}Approve device pairing ${_CLR_CYAN}(with examples)${_CLR_RESET}"
   echo ""
@@ -397,7 +397,7 @@ clawdock-help() {
   echo -e "${_CLR_BOLD}${_CLR_GREEN}🚀 First Time Setup${_CLR_RESET}"
   echo -e "${_CLR_CYAN}  1.${_CLR_RESET} $(_cmd clawdock-start)          ${_CLR_DIM}# Start the gateway${_CLR_RESET}"
   echo -e "${_CLR_CYAN}  2.${_CLR_RESET} $(_cmd clawdock-fix-token)      ${_CLR_DIM}# Configure token${_CLR_RESET}"
-  echo -e "${_CLR_CYAN}  3.${_CLR_RESET} $(_cmd clawdock-dashboard)      ${_CLR_DIM}# Open web UI${_CLR_RESET}"
+  echo -e "${_CLR_CYAN}  3.${_CLR_RESET} $(_cmd "clawdock-cli tui")        ${_CLR_DIM}# Open terminal UI${_CLR_RESET}"
   echo -e "${_CLR_CYAN}  4.${_CLR_RESET} $(_cmd clawdock-devices)        ${_CLR_DIM}# If pairing needed${_CLR_RESET}"
   echo -e "${_CLR_CYAN}  5.${_CLR_RESET} $(_cmd clawdock-approve) ${_CLR_CYAN}<id>${_CLR_RESET}   ${_CLR_DIM}# Approve pairing${_CLR_RESET}"
   echo ""

@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 set -euo pipefail
 
 # OpenClaw Installer for macOS and Linux
@@ -235,7 +235,7 @@ print_gum_status() {
 print_installer_banner() {
     if [[ -n "$GUM" ]]; then
         local title tagline hint card
-        title="$("$GUM" style --foreground "#ff4d4d" --bold "🦞 OpenClaw Installer")"
+        title="$("$GUM" style --foreground "#ff4d4d" --bold "馃 OpenClaw Installer")"
         tagline="$("$GUM" style --foreground "#8892b0" "$TAGLINE")"
         hint="$("$GUM" style --foreground "#5a6480" "modern installer mode")"
         card="$(printf '%s\n%s\n%s' "$title" "$tagline" "$hint")"
@@ -245,7 +245,7 @@ print_installer_banner() {
     fi
 
     echo -e "${ACCENT}${BOLD}"
-    echo "  🦞 OpenClaw Installer"
+    echo "  馃 OpenClaw Installer"
     echo -e "${NC}${INFO}  ${TAGLINE}${NC}"
     echo ""
 }
@@ -273,7 +273,7 @@ ui_info() {
     if [[ -n "$GUM" ]]; then
         "$GUM" log --level info "$msg"
     else
-        echo -e "${MUTED}·${NC} ${msg}"
+        echo -e "${MUTED}路${NC} ${msg}"
     fi
 }
 
@@ -290,10 +290,10 @@ ui_success() {
     local msg="$*"
     if [[ -n "$GUM" ]]; then
         local mark
-        mark="$("$GUM" style --foreground "#00e5cc" --bold "�?)"
+        mark="$("$GUM" style --foreground "#00e5cc" --bold "鉁?)"
         echo "${mark} ${msg}"
     else
-        echo -e "${SUCCESS}�?{NC} ${msg}"
+        echo -e "${SUCCESS}鉁?{NC} ${msg}"
     fi
 }
 
@@ -302,7 +302,7 @@ ui_error() {
     if [[ -n "$GUM" ]]; then
         "$GUM" log --level error "$msg"
     else
-        echo -e "${ERROR}�?{NC} ${msg}"
+        echo -e "${ERROR}鉁?{NC} ${msg}"
     fi
 }
 
@@ -458,7 +458,7 @@ run_quiet_step() {
         fi
     fi
 
-    ui_error "${title} failed �?re-run with --verbose for details"
+    ui_error "${title} failed 鈥?re-run with --verbose for details"
     if [[ -s "$log" ]]; then
         tail -n 80 "$log" >&2 || true
     fi
@@ -839,20 +839,20 @@ install_openclaw_npm() {
 }
 
 TAGLINES=()
-TAGLINES+=("Your terminal just grew claws—type something and let the bot pinch the busywork.")
+TAGLINES+=("Your terminal just grew claws鈥攖ype something and let the bot pinch the busywork.")
 TAGLINES+=("Welcome to the command line: where dreams compile and confidence segfaults.")
 TAGLINES+=("I run on caffeine, JSON5, and the audacity of \"it worked on my machine.\"")
-TAGLINES+=("Gateway online—please keep hands, feet, and appendages inside the shell at all times.")
+TAGLINES+=("Gateway online鈥攑lease keep hands, feet, and appendages inside the shell at all times.")
 TAGLINES+=("I speak fluent bash, mild sarcasm, and aggressive tab-completion energy.")
 TAGLINES+=("One CLI to rule them all, and one more restart because you changed the port.")
 TAGLINES+=("If it works, it's automation; if it breaks, it's a \"learning opportunity.\"")
-TAGLINES+=("Pairing codes exist because even bots believe in consent—and good security hygiene.")
+TAGLINES+=("Pairing codes exist because even bots believe in consent鈥攁nd good security hygiene.")
 TAGLINES+=("Your .env is showing; don't worry, I'll pretend I didn't see it.")
 TAGLINES+=("I'll do the boring stuff while you dramatically stare at the logs like it's cinema.")
 TAGLINES+=("I'm not saying your workflow is chaotic... I'm just bringing a linter and a helmet.")
-TAGLINES+=("Type the command with confidence—nature will provide the stack trace if needed.")
+TAGLINES+=("Type the command with confidence鈥攏ature will provide the stack trace if needed.")
 TAGLINES+=("I don't judge, but your missing API keys are absolutely judging you.")
-TAGLINES+=("I can grep it, git blame it, and gently roast it—pick your coping mechanism.")
+TAGLINES+=("I can grep it, git blame it, and gently roast it鈥攑ick your coping mechanism.")
 TAGLINES+=("Hot reload for config, cold sweat for deploys.")
 TAGLINES+=("I'm the assistant your terminal demanded, not the one your sleep schedule requested.")
 TAGLINES+=("I keep secrets like a vault... unless you print them in debug logs again.")
@@ -861,28 +861,28 @@ TAGLINES+=("I'm basically a Swiss Army knife, but with more opinions and fewer s
 TAGLINES+=("If you're lost, run doctor; if you're brave, run prod; if you're wise, run tests.")
 TAGLINES+=("Your task has been queued; your dignity has been deprecated.")
 TAGLINES+=("I can't fix your code taste, but I can fix your build and your backlog.")
-TAGLINES+=("I'm not magic—I'm just extremely persistent with retries and coping strategies.")
+TAGLINES+=("I'm not magic鈥擨'm just extremely persistent with retries and coping strategies.")
 TAGLINES+=("It's not \"failing,\" it's \"discovering new ways to configure the same thing wrong.\"")
 TAGLINES+=("Give me a workspace and I'll give you fewer tabs, fewer toggles, and more oxygen.")
 TAGLINES+=("I read logs so you can keep pretending you don't have to.")
-TAGLINES+=("If something's on fire, I can't extinguish it—but I can write a beautiful postmortem.")
+TAGLINES+=("If something's on fire, I can't extinguish it鈥攂ut I can write a beautiful postmortem.")
 TAGLINES+=("I'll refactor your busywork like it owes me money.")
-TAGLINES+=("Say \"stop\" and I'll stop—say \"ship\" and we'll both learn a lesson.")
+TAGLINES+=("Say \"stop\" and I'll stop鈥攕ay \"ship\" and we'll both learn a lesson.")
 TAGLINES+=("I'm the reason your shell history looks like a hacker-movie montage.")
 TAGLINES+=("I'm like tmux: confusing at first, then suddenly you can't live without me.")
-TAGLINES+=("I can run local, remote, or purely on vibes—results may vary with DNS.")
-TAGLINES+=("If you can describe it, I can probably automate it—or at least make it funnier.")
+TAGLINES+=("I can run local, remote, or purely on vibes鈥攔esults may vary with DNS.")
+TAGLINES+=("If you can describe it, I can probably automate it鈥攐r at least make it funnier.")
 TAGLINES+=("Your config is valid, your assumptions are not.")
-TAGLINES+=("I don't just autocomplete—I auto-commit (emotionally), then ask you to review (logically).")
+TAGLINES+=("I don't just autocomplete鈥擨 auto-commit (emotionally), then ask you to review (logically).")
 TAGLINES+=("Less clicking, more shipping, fewer \"where did that file go\" moments.")
-TAGLINES+=("Claws out, commit in—let's ship something mildly responsible.")
+TAGLINES+=("Claws out, commit in鈥攍et's ship something mildly responsible.")
 TAGLINES+=("I'll butter your workflow like a lobster roll: messy, delicious, effective.")
-TAGLINES+=("Shell yeah—I'm here to pinch the toil and leave you the glory.")
+TAGLINES+=("Shell yeah鈥擨'm here to pinch the toil and leave you the glory.")
 TAGLINES+=("If it's repetitive, I'll automate it; if it's hard, I'll bring jokes and a rollback plan.")
 TAGLINES+=("Because texting yourself reminders is so 2024.")
-TAGLINES+=("WhatsApp, but make it ✨engineering�?")
+TAGLINES+=("WhatsApp, but make it 鉁╡ngineering鉁?")
 TAGLINES+=("Turning \"I'll reply later\" into \"my bot replied instantly\".")
-TAGLINES+=("The only crab in your contacts you actually want to hear from. 🦞")
+TAGLINES+=("The only crab in your contacts you actually want to hear from. 馃")
 TAGLINES+=("Chat automation for people who peaked at IRC.")
 TAGLINES+=("Because Siri wasn't answering at 3AM.")
 TAGLINES+=("IPC, but it's your phone.")
@@ -903,18 +903,18 @@ TAGLINES+=("No \$999 stand required.")
 TAGLINES+=("We ship features faster than Apple ships calculator updates.")
 TAGLINES+=("Your AI assistant, now without the \$3,499 headset.")
 TAGLINES+=("Think different. Actually think.")
-TAGLINES+=("Ah, the fruit tree company! 🍎")
+TAGLINES+=("Ah, the fruit tree company! 馃崕")
 
-HOLIDAY_NEW_YEAR="New Year's Day: New year, new config—same old EADDRINUSE, but this time we resolve it like grown-ups."
+HOLIDAY_NEW_YEAR="New Year's Day: New year, new config鈥攕ame old EADDRINUSE, but this time we resolve it like grown-ups."
 HOLIDAY_LUNAR_NEW_YEAR="Lunar New Year: May your builds be lucky, your branches prosperous, and your merge conflicts chased away with fireworks."
-HOLIDAY_CHRISTMAS="Christmas: Ho ho ho—Santa's little claw-sistant is here to ship joy, roll back chaos, and stash the keys safely."
+HOLIDAY_CHRISTMAS="Christmas: Ho ho ho鈥擲anta's little claw-sistant is here to ship joy, roll back chaos, and stash the keys safely."
 HOLIDAY_EID="Eid al-Fitr: Celebration mode: queues cleared, tasks completed, and good vibes committed to main with clean history."
-HOLIDAY_DIWALI="Diwali: Let the logs sparkle and the bugs flee—today we light up the terminal and ship with pride."
-HOLIDAY_EASTER="Easter: I found your missing environment variable—consider it a tiny CLI egg hunt with fewer jellybeans."
-HOLIDAY_HANUKKAH="Hanukkah: Eight nights, eight retries, zero shame—may your gateway stay lit and your deployments stay peaceful."
+HOLIDAY_DIWALI="Diwali: Let the logs sparkle and the bugs flee鈥攖oday we light up the terminal and ship with pride."
+HOLIDAY_EASTER="Easter: I found your missing environment variable鈥攃onsider it a tiny CLI egg hunt with fewer jellybeans."
+HOLIDAY_HANUKKAH="Hanukkah: Eight nights, eight retries, zero shame鈥攎ay your gateway stay lit and your deployments stay peaceful."
 HOLIDAY_HALLOWEEN="Halloween: Spooky season: beware haunted dependencies, cursed caches, and the ghost of node_modules past."
 HOLIDAY_THANKSGIVING="Thanksgiving: Grateful for stable ports, working DNS, and a bot that reads the logs so nobody has to."
-HOLIDAY_VALENTINES="Valentine's Day: Roses are typed, violets are piped—I'll automate the chores so you can spend time with humans."
+HOLIDAY_VALENTINES="Valentine's Day: Roses are typed, violets are piped鈥擨'll automate the chores so you can spend time with humans."
 
 append_holiday_taglines() {
     local today
@@ -1146,9 +1146,9 @@ choose_install_method_interactive() {
 Choose install method"
         selection="$("$GUM" choose \
             --header "$header" \
-            --cursor-prefix "�?" \
-            "git  · update this checkout and use it" \
-            "npm  · install globally via npm" < /dev/tty || true)"
+            --cursor-prefix "鉂?" \
+            "git  路 update this checkout and use it" \
+            "npm  路 install globally via npm" < /dev/tty || true)"
 
         case "$selection" in
             git*)
@@ -1165,7 +1165,7 @@ Choose install method"
 
     local choice=""
     choice="$(prompt_choice "$(cat <<EOF
-${WARN}�?{NC} Detected a OpenClaw source checkout in: ${INFO}${detected_checkout}${NC}
+${WARN}鈫?{NC} Detected a OpenClaw source checkout in: ${INFO}${detected_checkout}${NC}
 Choose install method:
   1) Update this checkout (git) and use it
   2) Install global via npm (migrate away from git)
@@ -1941,7 +1941,7 @@ exec node "${repo_dir}/dist/entry.js" "\$@"
 EOF
     chmod +x "$HOME/.local/bin/openclaw"
     ui_success "OpenClaw wrapper installed to \$HOME/.local/bin/openclaw"
-    ui_info "This checkout uses pnpm �?run pnpm install (or corepack pnpm install) for deps"
+    ui_info "This checkout uses pnpm 鈥?run pnpm install (or corepack pnpm install) for deps"
 }
 
 # Install OpenClaw
@@ -2303,9 +2303,9 @@ main() {
 
     echo ""
     if [[ -n "$installed_version" ]]; then
-        ui_celebrate "🦞 OpenClaw installed successfully (${installed_version})!"
+        ui_celebrate "馃 OpenClaw installed successfully (${installed_version})!"
     else
-        ui_celebrate "🦞 OpenClaw installed successfully!"
+        ui_celebrate "馃 OpenClaw installed successfully!"
     fi
     if [[ "$is_upgrade" == "true" ]]; then
         local update_messages=(
@@ -2314,7 +2314,7 @@ main() {
             "Back and better. Did you even notice I was gone?"
             "Update complete. I learned some new tricks while I was out."
             "Upgraded! Now with 23% more sass."
-            "I've evolved. Try to keep up. 🦞"
+            "I've evolved. Try to keep up. 馃"
             "New version, who dis? Oh right, still me but shinier."
             "Patched, polished, and ready to pinch. Let's go."
             "The lobster has molted. Harder shell, sharper claws."
@@ -2356,7 +2356,7 @@ main() {
         ui_section "Source install details"
         ui_kv "Checkout" "$final_git_dir"
         ui_kv "Wrapper" "$HOME/.local/bin/openclaw"
-        ui_kv "Update command" "openclaw update --restart"
+        ui_kv "Update command" "weiclaw update --restart"
         ui_kv "Switch to npm" "curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install.sh | bash -s -- --install-method npm"
     elif [[ "$is_upgrade" == "true" ]]; then
         ui_info "Upgrade complete"
@@ -2455,4 +2455,5 @@ if [[ "${OPENCLAW_INSTALL_SH_NO_RUN:-0}" != "1" ]]; then
     configure_verbose
     main
 fi
+
 

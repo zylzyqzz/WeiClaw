@@ -1,4 +1,4 @@
-import { formatCliCommand } from "../cli/command-format.js";
+﻿import { formatCliCommand } from "../cli/command-format.js";
 import { isTruthyEnvValue } from "../infra/env.js";
 import { runGatewayUpdate } from "../infra/update-runner.js";
 import { runCommandWithTimeout } from "../process/exec.js";
@@ -45,13 +45,13 @@ export async function maybeOfferUpdateBeforeDoctor(params: {
   const git = await detectOpenClawGitCheckout(params.root);
   if (git === "git") {
     const shouldUpdate = await params.confirm({
-      message: "Update OpenClaw from git before running doctor?",
+      message: "Update WeiClaw from git before running doctor?",
       initialValue: true,
     });
     if (!shouldUpdate) {
       return { updated: false };
     }
-    note("Running update (fetch/rebase/build/ui:build/doctor)…", "Update");
+    note("Running update (fetch/rebase/build/optional-ui/doctor)...", "Update");
     const result = await runGatewayUpdate({
       cwd: params.root,
       argv1: process.argv[1],
@@ -78,7 +78,7 @@ export async function maybeOfferUpdateBeforeDoctor(params: {
     note(
       [
         "This install is not a git checkout.",
-        `Run \`${formatCliCommand("openclaw update")}\` to update via your package manager (npm/pnpm), then rerun doctor.`,
+        `Run \`${formatCliCommand("weiclaw update")}\` to update via your package manager (npm/pnpm), then rerun doctor.`,
       ].join("\n"),
       "Update",
     );
@@ -86,3 +86,4 @@ export async function maybeOfferUpdateBeforeDoctor(params: {
 
   return { updated: false };
 }
+

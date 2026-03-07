@@ -1,4 +1,4 @@
-import fs from "node:fs";
+﻿import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { runCommandWithTimeout } from "../process/exec.js";
@@ -219,7 +219,7 @@ function summarizeCommandOutput(text: string): string | undefined {
   if (!last) {
     return undefined;
   }
-  return last.length > 240 ? `${last.slice(0, 239)}…` : last;
+  return last.length > 240 ? `${last.slice(0, 239)}...` : last;
 }
 
 export async function ensureControlUiAssetsBuilt(
@@ -235,12 +235,12 @@ export async function ensureControlUiAssetsBuilt(
   const repoRoot = resolveControlUiRepoRoot(process.argv[1]);
   if (!repoRoot) {
     const hint = indexFromDist
-      ? `Missing Control UI assets at ${indexFromDist}`
-      : "Missing Control UI assets";
+      ? `Missing optional browser UI assets at ${indexFromDist}`
+      : "Missing optional browser UI assets";
     return {
       ok: false,
       built: false,
-      message: `${hint}. Build them with \`pnpm ui:build\` (auto-installs UI deps).`,
+      message: `${hint}. Build them with \`pnpm ui:build\` if you explicitly need the browser UI.`,
     };
   }
 
@@ -254,11 +254,11 @@ export async function ensureControlUiAssetsBuilt(
     return {
       ok: false,
       built: false,
-      message: `Control UI assets missing but ${uiScript} is unavailable.`,
+      message: `Optional browser UI assets are missing and ${uiScript} is unavailable.`,
     };
   }
 
-  runtime.log("Control UI assets missing; building (ui:build, auto-installs UI deps)…");
+  runtime.log("Optional browser UI assets missing; building (ui:build, auto-installs UI deps)...");
 
   const build = await runCommandWithTimeout([process.execPath, uiScript, "build"], {
     cwd: repoRoot,
@@ -268,7 +268,7 @@ export async function ensureControlUiAssetsBuilt(
     return {
       ok: false,
       built: false,
-      message: `Control UI build failed: ${summarizeCommandOutput(build.stderr) ?? `exit ${build.code}`}`,
+      message: `Optional browser UI build failed: ${summarizeCommandOutput(build.stderr) ?? `exit ${build.code}`}`,
     };
   }
 
@@ -276,9 +276,10 @@ export async function ensureControlUiAssetsBuilt(
     return {
       ok: false,
       built: true,
-      message: `Control UI build completed but ${indexPath} is still missing.`,
+      message: `Optional browser UI build completed but ${indexPath} is still missing.`,
     };
   }
 
   return { ok: true, built: true };
 }
+

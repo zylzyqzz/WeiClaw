@@ -1,4 +1,4 @@
-import type { IncomingMessage } from "node:http";
+﻿import type { IncomingMessage } from "node:http";
 import os from "node:os";
 import type { WebSocket } from "ws";
 import { loadConfig } from "../../../config/config.js";
@@ -508,7 +508,7 @@ export function attachGatewayWsMessageHandler(params: {
           });
           if (!originCheck.ok) {
             const errorMessage =
-              "origin not allowed (open the Control UI from the gateway host or allow it in gateway.controlUi.allowedOrigins)";
+              "origin not allowed (connect from the gateway host or allow it in gateway.controlUi.allowedOrigins)";
             markHandshakeFailure("origin-mismatch", {
               origin: requestOrigin ?? "n/a",
               host: requestHost ?? "n/a",
@@ -1213,3 +1213,4 @@ export function attachGatewayWsMessageHandler(params: {
     }
   });
 }
+

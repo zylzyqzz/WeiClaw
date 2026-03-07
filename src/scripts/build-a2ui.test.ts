@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { shouldBuildA2ui } from "../../scripts/build-a2ui-if-enabled.mjs";
-import { shouldSkipMissingA2uiAssets } from "../../scripts/canvas-a2ui-copy.js";
+import { shouldBuildA2ui, shouldSkipMissingA2uiAssets } from "./build-a2ui-gating.ts";
 
 describe("WeiClaw build gating", () => {
   it("skips optional A2UI bundling by default", () => {

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 import type { UpdateCheckResult } from "../infra/update-check.js";
 import { VERSION } from "../version.js";
 import {
@@ -90,7 +90,7 @@ describe("formatUpdateOneLiner", () => {
     });
 
     expect(formatUpdateOneLiner(update)).toBe(
-      `Update: git main · ↔ origin/main · dirty · behind 2 · npm latest ${VERSION} · deps ok`,
+      `Update: git main 路 鈫?origin/main 路 dirty 路 behind 2 路 npm latest ${VERSION} 路 deps ok`,
     );
   });
 
@@ -107,7 +107,7 @@ describe("formatUpdateOneLiner", () => {
       },
     });
 
-    expect(formatUpdateOneLiner(update)).toBe("Update: npm · npm latest unknown · deps missing");
+    expect(formatUpdateOneLiner(update)).toBe("Update: npm 路 npm latest unknown 路 deps missing");
   });
 });
 
@@ -141,7 +141,8 @@ describe("formatUpdateAvailableHint", () => {
     });
 
     expect(formatUpdateAvailableHint(update)).toBe(
-      `Update available (git behind 2 · npm ${latestVersion}). Run: openclaw update`,
+      `Update available (git behind 2 路 npm ${latestVersion}). Run: weiclaw update`,
     );
   });
 });
+

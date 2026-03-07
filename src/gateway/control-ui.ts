@@ -1,4 +1,4 @@
-import fs from "node:fs";
+﻿import fs from "node:fs";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import path from "node:path";
 import type { OpenClawConfig } from "../config/config.js";
@@ -29,7 +29,7 @@ import {
 
 const ROOT_PREFIX = "/";
 const CONTROL_UI_ASSETS_MISSING_MESSAGE =
-  "Control UI assets not found. Build them with `pnpm ui:build` (auto-installs UI deps), or run `pnpm ui:dev` during development.";
+  "Optional browser UI assets not found. Build them with `pnpm ui:build` if you explicitly need the browser UI, or run `pnpm ui:dev` during development.";
 
 export type ControlUiRequestOptions = {
   basePath?: string;
@@ -77,7 +77,7 @@ function contentTypeForExt(ext: string): string {
 /**
  * Extensions recognised as static assets.  Missing files with these extensions
  * return 404 instead of the SPA index.html fallback.  `.html` is intentionally
- * excluded — actual HTML files on disk are served earlier, and missing `.html`
+ * excluded 鈥?actual HTML files on disk are served earlier, and missing `.html`
  * paths should fall through to the SPA router (client-side routers may use
  * `.html`-suffixed routes).
  */
@@ -128,7 +128,7 @@ function respondControlUiAssetsUnavailable(
     respondPlainText(
       res,
       503,
-      `Control UI assets not found at ${options.configuredRootPath}. Build them with \`pnpm ui:build\` (auto-installs UI deps), or update gateway.controlUi.root.`,
+      `Optional browser UI assets not found at ${options.configuredRootPath}. Build them with \`pnpm ui:build\` if you explicitly need the browser UI, or update gateway.controlUi.root.`,
     );
     return;
   }
@@ -464,3 +464,4 @@ export function handleControlUiHttpRequest(
   respondControlUiNotFound(res);
   return true;
 }
+

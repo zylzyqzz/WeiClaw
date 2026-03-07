@@ -8,7 +8,7 @@ Inspired by Simon Willison's [Running OpenClaw in Docker](https://til.simonwilli
 - [Available Commands](#available-commands)
   - [Basic Operations](#basic-operations)
   - [Container Access](#container-access)
-  - [Web UI \& Devices](#web-ui--devices)
+  - [Terminal \& Devices](#terminal--devices)
   - [Setup \& Configuration](#setup--configuration)
   - [Maintenance](#maintenance)
   - [Utilities](#utilities)
@@ -55,7 +55,7 @@ clawdock-fix-token
 ```
 
 ```bash
-clawdock-dashboard
+clawdock-cli tui
 ```
 
 If you see "pairing required":
@@ -90,11 +90,11 @@ clawdock-approve <request-id>
 | `clawdock-cli <command>`  | Run OpenClaw CLI commands                      |
 | `clawdock-exec <command>` | Execute arbitrary commands in the container    |
 
-### Web UI & Devices
+### Terminal & Devices
 
 | Command                 | Description                                |
 | ----------------------- | ------------------------------------------ |
-| `clawdock-dashboard`    | Open web UI in browser with authentication |
+| `clawdock-dashboard`    | Deprecated compatibility helper; use `clawdock-cli tui` or Telegram |
 | `clawdock-devices`      | List device pairing requests               |
 | `clawdock-approve <id>` | Approve a device pairing request           |
 
@@ -180,7 +180,7 @@ clawdock-devices
 clawdock-approve <request-id>
 ```
 
-Then refresh your browser.
+Then retry your terminal or Telegram session.
 
 ### Fix Token Mismatch Issues
 

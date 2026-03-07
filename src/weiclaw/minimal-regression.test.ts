@@ -98,15 +98,21 @@ describe("WeiClaw minimal regression guardrails", () => {
       fs.readFileSync(path.resolve(process.cwd(), "package.json"), "utf8"),
     ) as {
       scripts?: Record<string, string>;
+      bin?: Record<string, string>;
     };
     const build = packageJson.scripts?.build ?? "";
     const strictSmoke = packageJson.scripts?.["build:strict-smoke"] ?? "";
     const bundle = packageJson.scripts?.["canvas:a2ui:bundle"] ?? "";
+    const openclawScript = packageJson.scripts?.openclaw ?? "";
+    const weiclawScript = packageJson.scripts?.weiclaw ?? "";
+    const weiclawBin = packageJson.bin?.weiclaw ?? "";
 
     expect(build).not.toContain("bash scripts/bundle-a2ui.sh");
-    expect(build).toContain("node scripts/build-a2ui-if-enabled.mjs");
+    expect(build).toContain("node --import tsx scripts/build-a2ui-if-enabled.ts");
     expect(strictSmoke).not.toContain("canvas:a2ui:bundle");
     expect(bundle).toBe("node scripts/build-a2ui.mjs");
+    expect(weiclawScript).toBe(openclawScript);
+    expect(weiclawBin).toBe("openclaw.mjs");
   });
 
   it("disables nodes media/canvas commands by default and allows opt-in", async () => {

@@ -2,10 +2,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import {
-  copyA2uiAssets,
-  shouldSkipMissingA2uiAssets,
-} from "../../scripts/canvas-a2ui-copy.js";
+import { shouldSkipMissingA2uiAssets } from "./build-a2ui-gating.ts";
+import { copyA2uiAssets } from "../../scripts/canvas-a2ui-copy.js";
 
 describe("canvas a2ui copy", () => {
   async function withA2uiFixture(run: (dir: string) => Promise<void>) {
