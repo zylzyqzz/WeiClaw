@@ -76,7 +76,7 @@ export function normalizeGatewayTokenInput(value: unknown): string {
     return "";
   }
   const trimmed = value.trim();
-  // Reject the literal string "undefined" — a common bug when JS undefined
+  // Reject the literal string "undefined" - a common bug when JS undefined
   // gets coerced to a string via template literals or String(undefined).
   if (trimmed === "undefined" || trimmed === "null") {
     return "";
@@ -100,12 +100,13 @@ export function validateGatewayPasswordInput(value: unknown): string | undefined
 
 export function printWizardHeader(runtime: RuntimeEnv) {
   const header = [
-    "▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄",
-    "██░▄▄▄░██░▄▄░██░▄▄▄██░▀██░██░▄▄▀██░████░▄▄▀██░███░██",
-    "██░███░██░▀▀░██░▄▄▄██░█░█░██░█████░████░▀▀░██░█░█░██",
-    "██░▀▀▀░██░█████░▀▀▀██░██▄░██░▀▀▄██░▀▀░█░██░██▄▀▄▀▄██",
-    "▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀",
-    "                  🦞 OPENCLAW 🦞                    ",
+    " __        __   _ _ _            _                 ",
+    " \\ \\      / /__(_) | | ___ _   _| | __ ___      __",
+    "  \\ \\ /\\ / / _ \\ | | |/ __| | | | |/ _` \\ \\ /\\ / /",
+    "   \\ V  V /  __/ | | | (__| |_| | | (_| |\\ V  V / ",
+    "    \\_/\\_/ \\___|_|_|_|\\___|\\__,_|_|\\__,_| \\_/\\_/  ",
+    " ",
+    "                WeiClaw Setup  [W]                ",
     " ",
   ].join("\n");
   runtime.log(header);
@@ -451,7 +452,7 @@ function summarizeError(err: unknown): string {
       .split("\n")
       .map((s) => s.trim())
       .find(Boolean) ?? raw;
-  return line.length > 120 ? `${line.slice(0, 119)}…` : line;
+  return line.length > 120 ? `${line.slice(0, 119)}...` : line;
 }
 
 export const DEFAULT_WORKSPACE = DEFAULT_AGENT_WORKSPACE_DIR;

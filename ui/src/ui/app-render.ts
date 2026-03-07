@@ -241,8 +241,8 @@ export function renderApp(state: AppViewState) {
               <img src=${basePath ? `${basePath}/favicon.svg` : "/favicon.svg"} alt="WeiClaw" />
             </div>
             <div class="brand-text">
-              <div class="brand-title">OPENCLAW</div>
-              <div class="brand-sub">Gateway Dashboard</div>
+              <div class="brand-title">WEICLAW</div>
+              <div class="brand-sub">WeiClaw Control</div>
             </div>
           </div>
         </div>

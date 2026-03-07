@@ -688,7 +688,7 @@ export async function statusCommand(
   runtime.log(`  Need to share?      ${formatCliCommand("openclaw status --all")}`);
   runtime.log(`  Need to debug live? ${formatCliCommand("openclaw logs --follow")}`);
   if (gatewayReachable) {
-    runtime.log(`  Need to test channels? ${formatCliCommand("openclaw status --deep")}`);
+    runtime.log(`  Need to test Telegram? ${formatCliCommand("openclaw status --deep")}`);
   } else {
     runtime.log(`  Fix reachability first: ${formatCliCommand("openclaw gateway probe")}`);
   }

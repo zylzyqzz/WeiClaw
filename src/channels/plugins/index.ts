@@ -2,6 +2,7 @@ import {
   getActivePluginRegistryVersion,
   requireActivePluginRegistry,
 } from "../../plugins/runtime.js";
+import { isTruthyEnvValue } from "../../infra/env.js";
 import { CHAT_CHANNEL_ORDER, type ChatChannelId, normalizeAnyChannelId } from "../registry.js";
 import type { ChannelId, ChannelPlugin } from "./types.js";
 
@@ -39,6 +40,23 @@ const EMPTY_CHANNEL_PLUGIN_CACHE: CachedChannelPlugins = {
 
 let cachedChannelPlugins = EMPTY_CHANNEL_PLUGIN_CACHE;
 
+function resolveDefaultChannelAllowlist(): Set<string> {
+  const allowAll =
+    isTruthyEnvValue(process.env.WEICLAW_ENABLE_ALL_CHANNELS) ||
+    isTruthyEnvValue(process.env.OPENCLAW_ENABLE_ALL_CHANNELS);
+  if (allowAll) {
+    return new Set<string>();
+  }
+  const raw = process.env.WEICLAW_CHANNELS?.trim() || process.env.OPENCLAW_DEFAULT_CHANNELS?.trim();
+  const defaults = raw && raw.length > 0 ? raw : "telegram";
+  return new Set(
+    defaults
+      .split(",")
+      .map((value) => normalizeAnyChannelId(value))
+      .filter((value): value is string => Boolean(value)),
+  );
+}
+
 function resolveCachedChannelPlugins(): CachedChannelPlugins {
   const registry = requireActivePluginRegistry();
   const registryVersion = getActivePluginRegistryVersion();
@@ -47,16 +65,19 @@ function resolveCachedChannelPlugins(): CachedChannelPlugins {
     return cached;
   }
 
-  const sorted = dedupeChannels(registry.channels.map((entry) => entry.plugin)).toSorted((a, b) => {
-    const indexA = CHAT_CHANNEL_ORDER.indexOf(a.id as ChatChannelId);
-    const indexB = CHAT_CHANNEL_ORDER.indexOf(b.id as ChatChannelId);
-    const orderA = a.meta.order ?? (indexA === -1 ? 999 : indexA);
-    const orderB = b.meta.order ?? (indexB === -1 ? 999 : indexB);
-    if (orderA !== orderB) {
-      return orderA - orderB;
-    }
-    return a.id.localeCompare(b.id);
-  });
+  const allowed = resolveDefaultChannelAllowlist();
+  const sorted = dedupeChannels(registry.channels.map((entry) => entry.plugin))
+    .filter((plugin) => allowed.size === 0 || allowed.has(plugin.id))
+    .toSorted((a, b) => {
+      const indexA = CHAT_CHANNEL_ORDER.indexOf(a.id as ChatChannelId);
+      const indexB = CHAT_CHANNEL_ORDER.indexOf(b.id as ChatChannelId);
+      const orderA = a.meta.order ?? (indexA === -1 ? 999 : indexA);
+      const orderB = b.meta.order ?? (indexB === -1 ? 999 : indexB);
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      return a.id.localeCompare(b.id);
+    });
   const byId = new Map<string, ChannelPlugin>();
   for (const plugin of sorted) {
     byId.set(plugin.id, plugin);

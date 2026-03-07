@@ -5,6 +5,7 @@ import { signalOnboardingAdapter } from "../../channels/plugins/onboarding/signa
 import { slackOnboardingAdapter } from "../../channels/plugins/onboarding/slack.js";
 import { telegramOnboardingAdapter } from "../../channels/plugins/onboarding/telegram.js";
 import { whatsappOnboardingAdapter } from "../../channels/plugins/onboarding/whatsapp.js";
+import { isTruthyEnvValue } from "../../infra/env.js";
 import type { ChannelChoice } from "../onboard-types.js";
 import type { ChannelOnboardingAdapter } from "./types.js";
 
@@ -17,16 +18,27 @@ const BUILTIN_ONBOARDING_ADAPTERS: ChannelOnboardingAdapter[] = [
   imessageOnboardingAdapter,
 ];
 
+function shouldExposeOnboardingChannel(channel: ChannelChoice): boolean {
+  if (
+    isTruthyEnvValue(process.env.WEICLAW_ENABLE_ALL_CHANNELS) ||
+    isTruthyEnvValue(process.env.OPENCLAW_ENABLE_ALL_CHANNELS)
+  ) {
+    return true;
+  }
+  return channel === "telegram";
+}
+
 const CHANNEL_ONBOARDING_ADAPTERS = () => {
   const fromRegistry = listChannelPlugins()
     .map((plugin) => (plugin.onboarding ? ([plugin.id, plugin.onboarding] as const) : null))
+    .filter((entry) => (entry ? shouldExposeOnboardingChannel(entry[0]) : false))
     .filter((entry): entry is readonly [ChannelChoice, ChannelOnboardingAdapter] => Boolean(entry));
 
   // Fall back to built-in adapters to keep onboarding working even when the plugin registry
   // fails to populate (see #25545).
   const fromBuiltins = BUILTIN_ONBOARDING_ADAPTERS.map(
     (adapter) => [adapter.channel, adapter] as const,
-  );
+  ).filter((entry) => shouldExposeOnboardingChannel(entry[0]));
 
   return new Map<ChannelChoice, ChannelOnboardingAdapter>([...fromBuiltins, ...fromRegistry]);
 };

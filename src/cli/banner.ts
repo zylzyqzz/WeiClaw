@@ -61,11 +61,11 @@ export function formatCliBannerLine(version: string, options: BannerOptions = {}
   const commitLabel = commit ?? "unknown";
   const tagline = pickTagline({ ...options, mode: resolveTaglineMode(options) });
   const rich = options.richTty ?? isRich();
-  const title = "🦞 WeiClaw Private";
-  const prefix = "🦞 ";
+  const title = "[W] WeiClaw Private";
+  const prefix = "[W] ";
   const columns = options.columns ?? process.stdout.columns ?? 120;
   const plainBaseLine = `${title} ${version} (${commitLabel})`;
-  const plainFullLine = tagline ? `${plainBaseLine} — ${tagline}` : plainBaseLine;
+  const plainFullLine = tagline ? `${plainBaseLine} - ${tagline}` : plainBaseLine;
   const fitsOnOneLine = visibleWidth(plainFullLine) <= columns;
   if (rich) {
     if (fitsOnOneLine) {
@@ -74,7 +74,7 @@ export function formatCliBannerLine(version: string, options: BannerOptions = {}
       }
       return `${theme.heading(title)} ${theme.info(version)} ${theme.muted(
         `(${commitLabel})`,
-      )} ${theme.muted("—")} ${theme.accentDim(tagline)}`;
+      )} ${theme.muted("-")} ${theme.accentDim(tagline)}`;
     }
     const line1 = `${theme.heading(title)} ${theme.info(version)} ${theme.muted(
       `(${commitLabel})`,
@@ -96,48 +96,25 @@ export function formatCliBannerLine(version: string, options: BannerOptions = {}
   return `${line1}\n${line2}`;
 }
 
-const LOBSTER_ASCII = [
-  "▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄",
-  "██░▄▄▄░██░▄▄░██░▄▄▄██░▀██░██░▄▄▀██░████░▄▄▀██░███░██",
-  "██░███░██░▀▀░██░▄▄▄██░█░█░██░█████░████░▀▀░██░█░█░██",
-  "██░▀▀▀░██░█████░▀▀▀██░██▄░██░▀▀▄██░▀▀░█░██░██▄▀▄▀▄██",
-  "▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀",
-  "               🦞 WEICLAW PRIVATE 🦞                ",
+const W_ASCII = [
+  " __        __   _ _ _            _                 ",
+  " \\ \\      / /__(_) | | ___ _   _| | __ ___      __",
+  "  \\ \\ /\\ / / _ \\ | | |/ __| | | | |/ _` \\ \\ /\\ / /",
+  "   \\ V  V /  __/ | | | (__| |_| | | (_| |\\ V  V / ",
+  "    \\_/\\_/ \\___|_|_|_|\\___|\\__,_|_|\\__,_| \\_/\\_/  ",
+  "                 [W] WEICLAW PRIVATE              ",
   " ",
 ];
 
 export function formatCliBannerArt(options: BannerOptions = {}): string {
   const rich = options.richTty ?? isRich();
   if (!rich) {
-    return LOBSTER_ASCII.join("\n");
+    return W_ASCII.join("\n");
   }
 
-  const colorChar = (ch: string) => {
-    if (ch === "█") {
-      return theme.accentBright(ch);
-    }
-    if (ch === "░") {
-      return theme.accentDim(ch);
-    }
-    if (ch === "▀") {
-      return theme.accent(ch);
-    }
-    return theme.muted(ch);
-  };
-
-  const colored = LOBSTER_ASCII.map((line) => {
-    if (line.includes("WEICLAW PRIVATE")) {
-      return (
-        theme.muted("              ") +
-        theme.accent("🦞") +
-        theme.info(" WEICLAW PRIVATE ") +
-        theme.accent("🦞")
-      );
-    }
-    return splitGraphemes(line).map(colorChar).join("");
-  });
-
-  return colored.join("\n");
+  return W_ASCII.map((line) => splitGraphemes(line).map((ch) => theme.accent(ch)).join("")).join(
+    "\n",
+  );
 }
 
 export function emitCliBanner(version: string, options: BannerOptions = {}) {

@@ -165,7 +165,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "docs",
-    description: "Search the live OpenClaw docs",
+    description: "Search docs (WeiClaw private flow + upstream references)",
     hasSubcommands: false,
     register: async (program) => {
       const mod = await import("../docs-cli.js");
@@ -224,7 +224,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "plugins",
-    description: "Manage OpenClaw plugins and extensions",
+    description: "Manage plugins and extensions",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../plugins-cli.js");
@@ -235,7 +235,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "channels",
-    description: "Manage connected chat channels (Telegram, Discord, etc.)",
+    description: "Manage connected chat channels (Telegram-first)",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../channels-cli.js");
@@ -244,7 +244,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "directory",
-    description: "Lookup contact and group IDs (self, peers, groups) for supported chat channels",
+    description: "Lookup contact/group IDs for configured channels",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../directory-cli.js");
@@ -280,7 +280,7 @@ const entries: SubCliEntry[] = [
   },
   {
     name: "update",
-    description: "Update OpenClaw and inspect update channel status",
+    description: "Update WeiClaw and inspect update channel status",
     hasSubcommands: true,
     register: async (program) => {
       const mod = await import("../update-cli.js");

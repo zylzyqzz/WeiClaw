@@ -65,7 +65,7 @@ ${formatHelpExamples([
   ],
   ['openclaw agent --to +15555550123 --message "Summon reply" --deliver', "Deliver reply."],
   [
-    'openclaw agent --agent ops --message "Generate report" --deliver --reply-channel slack --reply-to "#reports"',
+    'openclaw agent --agent ops --message "Generate report" --deliver --reply-channel telegram --reply-to "@ops_reports"',
     "Send reply to a different channel/target.",
   ],
 ])}
@@ -219,8 +219,8 @@ ${theme.muted("Docs:")} ${formatDocsLink("/cli/agent", "docs.openclaw.ai/cli/age
         `
 ${theme.heading("Examples:")}
 ${formatHelpExamples([
-  ['openclaw agents set-identity --agent main --name "OpenClaw" --emoji "🦞"', "Set name + emoji."],
-  ["openclaw agents set-identity --agent main --avatar avatars/openclaw.png", "Set avatar path."],
+  ['openclaw agents set-identity --agent main --name "WeiClaw" --emoji "🟥W"', "Set name + emoji."],
+  ["openclaw agents set-identity --agent main --avatar avatars/weiclaw.png", "Set avatar path."],
   [
     "openclaw agents set-identity --workspace ~/.openclaw/workspace --from-identity",
     "Load from IDENTITY.md.",

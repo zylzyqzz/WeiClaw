@@ -1,4 +1,4 @@
-const DEFAULT_TAGLINE = "All your chats, one OpenClaw.";
+const DEFAULT_TAGLINE = "Telegram-first automation on WeiClaw.";
 export type TaglineMode = "random" | "default" | "off";
 
 const HOLIDAY_TAGLINES = {
@@ -61,10 +61,10 @@ const TAGLINES: string[] = [
   "I don't just autocomplete—I auto-commit (emotionally), then ask you to review (logically).",
   'Less clicking, more shipping, fewer "where did that file go" moments.',
   "Claws out, commit in—let's ship something mildly responsible.",
-  "I'll butter your workflow like a lobster roll: messy, delicious, effective.",
+  "I will keep your workflow tight, predictable, and fast.",
   "Shell yeah—I'm here to pinch the toil and leave you the glory.",
   "If it's repetitive, I'll automate it; if it's hard, I'll bring jokes and a rollback plan.",
-  "The only crab in your contacts you actually want to hear from. 🦞",
+  "The assistant in your terminal that actually ships work.",
   'WhatsApp automation without the "please accept our new privacy policy".',
   "iMessage green bubble energy, but for everyone.",
   "No $999 stand required.",
@@ -74,7 +74,7 @@ const TAGLINES: string[] = [
   "Greetings, Professor Falken",
   "I don't sleep, I just enter low-power mode and dream of clean diffs.",
   "Your personal assistant, minus the passive-aggressive calendar reminders.",
-  "Built by lobsters, for humans. Don't question the hierarchy.",
+  "Built for private self-use workflows. Keep it simple.",
   "I've seen your commit messages. We'll work on that together.",
   "More integrations than your therapist's intake form.",
   "Running on your hardware, reading your logs, judging nothing (mostly).",
@@ -90,12 +90,12 @@ const TAGLINES: string[] = [
   "Like having a senior engineer on call, except I don't bill hourly or sigh audibly.",
   "Making 'I'll automate that later' happen now.",
   "Your second brain, except this one actually remembers where you left things.",
-  "Half butler, half debugger, full crustacean.",
+  "Half butler, half debugger, full-time operator.",
   "I don't have opinions about tabs vs spaces. I have opinions about everything else.",
   "Open source means you can see exactly how I judge your config.",
   "I've survived more breaking changes than your last three relationships.",
   "Runs on a Raspberry Pi. Dreams of a rack in Iceland.",
-  "The lobster in your shell. 🦞",
+  "WeiClaw in your shell.",
   "Alexa, but with taste.",
   "I'm not AI-powered, I'm AI-possessed. Big difference.",
   "Deployed locally, trusted globally, debugged eternally.",

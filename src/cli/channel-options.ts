@@ -1,9 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { listChannelPluginCatalogEntries } from "../channels/plugins/catalog.js";
 import { listChannelPlugins } from "../channels/plugins/index.js";
-import { CHAT_CHANNEL_ORDER } from "../channels/registry.js";
 import { isTruthyEnvValue } from "../infra/env.js";
 import { ensurePluginRegistryLoaded } from "./plugin-registry.js";
 
@@ -48,19 +46,16 @@ function loadPrecomputedChannelOptions(): string[] | null {
 }
 
 export function resolveCliChannelOptions(): string[] {
-  if (isTruthyEnvValue(process.env.OPENCLAW_EAGER_CHANNEL_OPTIONS)) {
-    const catalog = listChannelPluginCatalogEntries().map((entry) => entry.id);
-    const base = dedupe([...CHAT_CHANNEL_ORDER, ...catalog]);
+  const pluginIds = (() => {
     ensurePluginRegistryLoaded();
-    const pluginIds = listChannelPlugins().map((plugin) => plugin.id);
-    return dedupe([...base, ...pluginIds]);
+    return listChannelPlugins().map((plugin) => plugin.id);
+  })();
+  if (isTruthyEnvValue(process.env.OPENCLAW_EAGER_CHANNEL_OPTIONS)) {
+    return dedupe(pluginIds);
   }
-  const precomputed = loadPrecomputedChannelOptions();
-  const catalog = listChannelPluginCatalogEntries().map((entry) => entry.id);
-  const base = precomputed
-    ? dedupe([...precomputed, ...catalog])
-    : dedupe([...CHAT_CHANNEL_ORDER, ...catalog]);
-  return base;
+  const precomputed = loadPrecomputedChannelOptions() ?? [];
+  const base = dedupe([...precomputed, ...pluginIds]);
+  return base.length > 0 ? base : dedupe(pluginIds);
 }
 
 export function formatCliChannelOptions(extra: string[] = []): string {

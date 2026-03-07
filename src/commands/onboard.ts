@@ -20,7 +20,7 @@ export async function onboardCommand(opts: OnboardOptions, runtime: RuntimeEnv =
     runtime.error(
       [
         `Auth choice "${String(originalAuthChoice)}" is deprecated.`,
-        'Use "--auth-choice token" (Anthropic setup-token) or "--auth-choice openai-codex".',
+        'Use "--auth-choice openai-api-key", "--auth-choice custom-api-key", "--auth-choice litellm-api-key", or "--auth-choice vllm".',
       ].join("\n"),
     );
     runtime.exit(1);
