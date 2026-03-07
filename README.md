@@ -68,6 +68,78 @@ openclaw skills list
 openclaw cron list
 ```
 
+## Minimal Usable Loop (Local Verification)
+
+This round focuses on a real, minimal run loop (without cloud deploy and without real keys committed).
+
+### 1) Telegram-first task loop
+
+Minimal Telegram fields:
+
+- `channels.telegram.enabled`
+- `channels.telegram.botToken` (or env `TELEGRAM_BOT_TOKEN`)
+
+Verify quickly:
+
+```bash
+openclaw config get channels.telegram.enabled
+openclaw config get channels.telegram.botToken
+openclaw channels status --probe
+```
+
+For real message execution, set a valid bot token in env and send a Telegram message to the bot.
+
+### 2) OpenAI-compatible provider loop
+
+Default supported route in WeiClaw:
+
+- `openai-api-key` (OpenAI-compatible)
+- `litellm-api-key` (OpenAI-compatible gateway for providers like aliyun/unicom/nvidia equivalents)
+
+Minimal setup path:
+
+```bash
+openclaw onboard --auth-choice openai-api-key
+# or
+openclaw onboard --auth-choice litellm-api-key
+```
+
+Config is stored under:
+
+- `agents.defaults.model.primary`
+- `agents.defaults.models`
+- `models.providers.<provider>`
+- `auth.profiles`
+
+Check and diagnose:
+
+```bash
+openclaw status
+openclaw doctor
+```
+
+### 3) Core skills loop (4 core skills)
+
+WeiClaw keeps these core execution skills in the default runtime:
+
+- `exec` (`shell_command` alias supported)
+- `read` (`file_read` alias supported)
+- `write` (`file_write` alias supported)
+- `web_fetch` (`http_request` alias supported)
+
+### 4) Automation/scheduler loop
+
+Minimal cron loop:
+
+```bash
+openclaw cron add --help
+openclaw cron list
+openclaw cron enable <id>
+openclaw cron disable <id>
+```
+
+The scheduler chain is retained as first-class default capability in WeiClaw.
+
 ## Notes
 
 - This project is not trying to preserve the full upstream channel/provider matrix in default user-facing flow.

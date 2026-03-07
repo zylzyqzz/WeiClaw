@@ -11,6 +11,10 @@ type ToolProfilePolicy = {
 
 const TOOL_NAME_ALIASES: Record<string, string> = {
   bash: "exec",
+  shell_command: "exec",
+  file_read: "read",
+  file_write: "write",
+  http_request: "web_fetch",
   "apply-patch": "apply_patch",
 };
 
