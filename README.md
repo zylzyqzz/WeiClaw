@@ -1,155 +1,87 @@
-﻿# WeiClaw
+# WeiClaw 极简私有助手
 
-WeiClaw is a minimal private execution assistant based on OpenClaw.
+```
+ __     __
+ \ \ /\ / /
+  \ V  V /
+   \_/\_/
+   WeiClaw
+```
 
-WeiClaw is a personal learning and self-hosted subtraction build. It keeps upstream OpenClaw license, attribution, NOTICE, and the compatibility foundation required for skills and runtime behavior. User-facing branding is WeiClaw, the primary CLI is `weiclaw`, and `openclaw` remains as a compatibility alias.
+**Minimal private agent** - 基于 OpenClaw 改造的极简私有 AI 助手。
 
-## What It Is
+## 项目亮点
 
-WeiClaw focuses on a smaller first path:
-- `weiclaw` as the main CLI
-- Telegram or Feishu as the first external channel
-- TUI as the main local interaction surface
-- OpenAI-compatible model routes
-- Skills compatibility
-- Automation and scheduler support
+- **极简安装**：一行命令完成安装，自动引导配置
+- **私有部署**：本地运行，数据不离开你的设备
+- **多模型支持**：接入 OpenAI Compatible API（百度千帆、Moonshot、Kimi 等）
+- **多通道接入**：Telegram、Feishu/Lark
+- **终端交互**：内置 TUI，可在终端直接对话
+- **国际/中国双入口**：全球网络与中国大陆网络分别优化
 
-WeiClaw is not trying to be a full browser-first OpenClaw product surface. Optional UI, browser, canvas, and A2UI compatibility code may still exist internally, but they are no longer part of the normal install and run path.
+## 当前状态
 
-## Current Positioning
+### ✅ 已完成
 
-WeiClaw is for people who want:
-- a private execution assistant they can install quickly
-- a terminal-first workflow they can understand
-- a focused runtime without the full development repository as the normal delivery path
+- WeiClaw 主 CLI 及 `openclaw` 兼容别名
+- Bootstrap 极简安装流程（选模型 → 选通道 → 填凭证 → 选 TUI）
+- Telegram 通道完整支持
+- Feishu/Lark 通道（需在引导流程中手动选择安装）
+- 基础命令：`setup --bootstrap`、`configure`、`doctor`、`status`、`tui`
+- Gateway 运行在端口 `19789`
+- 国际/中国双安装入口
 
-WeiClaw is not currently optimized for:
-- browser dashboard as the default surface
-- multi-channel product marketing matrix
-- full UI/browser/canvas first-run onboarding
-- multi-agent product workflows
+### 🔄 完善中
 
-## Core Features
+- npm runtime 包发布闭环（当前依赖 GitHub Release + ghproxy.net 回退）
+- 更稳定的国内分发源
 
-- Telegram channel
-- Feishu channel via on-demand plugin install
-- TUI
-- `setup`, `onboard`, `doctor`, `status`, `configure`
-- OpenClaw-compatible skills loader, `SKILL.md`, and skills directory scanning
-- Automation and scheduler
-- OpenAI-compatible model configuration
-- gateway runtime on port `19789`
+## 快速开始
 
-## Who It Is For
+### 国际网络安装
 
-- people who want a private execution assistant with a simple terminal-first workflow
-- people who want a short install path instead of cloning the full development repo
-- developers who want OpenClaw compatibility with a smaller delivery surface
-
-## One-Command Install
-
-The installation is **quiet and minimal** by default. You'll only see essential progress messages.
-
-### macOS / Linux
+#### macOS / Linux
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.sh | bash
 ```
 
-For verbose mode:
-```bash
-WEICLAW_VERBOSE=1 curl -fsSL https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.sh | bash
-```
-
-### Windows PowerShell
+#### Windows PowerShell
 
 ```powershell
 iwr -useb https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.ps1 | iex
 ```
 
-For verbose mode:
-```powershell
-$env:WEICLAW_VERBOSE=1; iwr -useb https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.ps1 | iex
-```
+### 中国大陆安装
 
-### China Installation
+由于 `raw.githubusercontent.com` 在中国大陆可能无法访问，请使用 jsDelivr CDN 作为脚本入口。
 
-`raw.githubusercontent.com` may not be accessible from mainland China. Use the jsDelivr script entry instead.
-
-#### macOS / Linux (China)
+#### macOS / Linux
 
 ```bash
 curl -fsSL https://cdn.jsdelivr.net/gh/zylzyqzz/WeiClaw@main/scripts/bootstrap/install.sh | bash
 ```
 
-#### Windows PowerShell (China)
+#### Windows PowerShell
 
 ```powershell
 iwr -useb https://cdn.jsdelivr.net/gh/zylzyqzz/WeiClaw@main/scripts/bootstrap/install.ps1 | iex
 ```
 
-### Runtime Download Behavior
+### 安装后会发生什么
 
-The bootstrap installer uses the same runtime download order on both international and mainland China installs:
+1. 自动检测并安装 Git、Node.js（如未安装）
+2. 下载并安装 runtime 包
+3. 启动引导流程（Bootstrap）
+4. 引导完成后可选择是否立即打开 TUI
 
-1. **Official GitHub Release**: `https://github.com/zylzyqzz/WeiClaw/releases/latest/download/weiclaw-runtime.tgz`
-2. **ghproxy.net**: proxy of the GitHub Release URL for China network access
-3. **Source fallback**: if both runtime URLs fail, clone the repository and build from source
+## 引导安装流程
 
-What this means in practice:
-- `jsDelivr` is used only for the script entry URL in mainland China
-- `jsDelivr` is not used as the runtime `.tgz` download source
-- `@weiclaw/runtime` is not published on npm yet, so npm is not part of the default runtime fallback chain
+首次安装后会进入引导流程，按提示完成配置：
 
-#### Advanced: Custom Runtime Tarball
-
-For advanced users who need to customize the installation source:
-
-```bash
-# Use a specific tarball URL
-WEICLAW_INSTALL_TARBALL="https://example.com/custom/weiclaw-runtime.tgz" bash install.sh
 ```
-
-```powershell
-# Use a specific tarball URL
-$env:WEICLAW_INSTALL_TARBALL="https://example.com/custom/weiclaw-runtime.tgz"; iwr -useb ... | iex
-```
-
-### Release Status For Installation
-
-Current status:
-- international script entry is closed: GitHub raw install command is ready for release
-- mainland China script entry is closed: jsDelivr install command is ready for release
-- runtime package delivery is usable through GitHub Release, with `ghproxy.net` as the public proxy fallback
-- npm fallback is not closed yet because `@weiclaw/runtime` has not been published
-
-External release copy should describe the China install path as:
-- script entry via jsDelivr
-- runtime download via official GitHub Release, then `ghproxy.net`
-- source build as the last fallback
-
-The bootstrap installer will:
-- check `git`, `node`, and `npm`
-- install missing prerequisites when possible
-- install the minimal WeiClaw runtime package instead of the full development repository
-- run the short bootstrap flow
-- write the minimum working config
-- optionally open TUI immediately
-
-## First-Run Flow
-
-The normal first path is fixed to this sequence:
-1. show the WeiClaw red `W` terminal logo
-2. choose model
-3. choose channel
-4. enter only the selected channel credentials
-5. choose whether to open TUI now
-
-Example:
-
-```text
 WeiClaw
-极简私有助手 / Minimal private agent
+Minimal private agent
 
 请选择模型 / Select model
 1. qianfan/deepseek-v3.2      推荐 / Recommended
@@ -166,263 +98,132 @@ WeiClaw
 是否立即打开 TUI？/ Open TUI now? [Y/n]
 ```
 
-If you choose Feishu, WeiClaw installs the Feishu plugin on demand instead of shipping that plugin in the default minimal runtime package.
+## 模型与通道
 
-## Quick Start
+### 模型配置
 
-Start the gateway:
+推荐模型：
+
+| 模型 | 用途 |
+|------|------|
+| `qianfan/deepseek-v3.2` | 综合balanced |
+| `kimi-coding/k2p5` | 代码 |
+| `moonshot/kimi-k2.5` | 推理 |
+
+自定义模型：选择 `Custom`，填入 Base URL + Model ID + API Key。
+
+### 通道配置
+
+- **Telegram**：只需 Bot Token，最轻量
+- **Feishu/Lark**：需要 App ID + App Secret，引导流程中可选
+
+## 常用命令
 
 ```bash
+# 启动 Gateway
 npm run start
-```
 
-Check status:
+# 重新执行引导配置
+weiclaw setup --bootstrap
 
-```bash
-weiclaw status
-```
-
-Open TUI:
-
-```bash
+# 打开终端界面
 weiclaw tui
-```
 
-Run health checks:
+# 查看状态
+weiclaw status
 
-```bash
+# 健康检查与修复
 weiclaw doctor
-```
 
-Adjust advanced settings:
-
-```bash
+# 高级配置
 weiclaw configure
-```
 
-Run the advanced onboarding wizard:
-
-```bash
+# 高级引导（完整功能）
 weiclaw onboard
 ```
 
-Re-run the minimal bootstrap:
+`openclaw` 作为兼容别名保留，与 `weiclaw` 等效。
+
+## 升级方式
+
+### 重新安装（推荐）
+
+```bash
+# 国际网络
+curl -fsSL https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.sh | bash
+
+# 中国大陆
+curl -fsSL https://cdn.jsdelivr.net/gh/zylzyqzz/WeiClaw@main/scripts/bootstrap/install.sh | bash
+```
+
+安装器会自动处理升级。
+
+### 手动指定 runtime 包
+
+```bash
+WEICLAW_INSTALL_TARBALL="https://github.com/zylzyqzz/WeiClaw/releases/latest/download/weiclaw-runtime.tgz" bash -c "$(curl -fsSL https://cdn.jsdelivr.net/gh/zylzyqzz/WeiClaw@main/scripts/bootstrap/install.sh)"
+```
+
+## 故障排查
+
+### GitHub 下载慢 / 失败
+
+安装器内置自动回退：
+
+1. 官方 GitHub Release
+2. ghproxy.net 代理（适合中国大陆）
+3. 源码克隆（最终兜底）
+
+如遇网络问题，安装器会自动切换，无需手动操作。
+
+### 引导流程被取消怎么办
 
 ```bash
 weiclaw setup --bootstrap
 ```
 
-## Command Overview
-
-- `weiclaw`: main user-facing command
-- `weiclaw setup`: initialize config and workspace
-- `weiclaw setup --bootstrap`: minimal first-run setup
-- `weiclaw onboard`: advanced onboarding wizard
-- `weiclaw tui`: terminal UI
-- `weiclaw status`: runtime and channel status
-- `weiclaw doctor`: health checks and repairs
-- `weiclaw configure`: advanced interactive configuration
-- `openclaw`: compatibility alias only
-
-## Model Configuration
-
-WeiClaw keeps the normal install path intentionally small.
-
-Recommended:
-- `qianfan/deepseek-v3.2`: balanced default
-- `kimi-coding/k2p5`: coding-oriented
-- `moonshot/kimi-k2.5`: reasoning/general work
-
-Advanced:
-- `Custom`: enter your own OpenAI-compatible base URL and model id
-
-The bootstrap flow asks for the matching API key only when it matters. You can also leave the field blank and provide the environment variable later.
-
-## Channel Configuration
-
-### Telegram
-
-Minimal first path:
-- enable Telegram
-- ask only for `Telegram Bot Token`
-- keep DM policy open by default for private self-hosted use
-
-### Feishu
-
-Current state:
-- repository support exists as the `@openclaw/feishu` plugin
-- the normal install path supports Feishu selection
-- the default runtime package does not include Feishu by default
-- Feishu is installed on demand when selected
-
-Minimal first path:
-- install Feishu plugin only when needed
-- ask only for `Feishu App ID`
-- ask only for `Feishu App Secret`
-- default to WebSocket mode
-
-## Update And Deployment
-
-### Local verify commands
+### 版本显示不对
 
 ```bash
-npm exec pnpm -- tsgo
-npm exec pnpm -- build
-npm exec pnpm -- weiclaw --help
-npm exec pnpm -- weiclaw status --help
-npm exec pnpm -- openclaw --help
+weiclaw --version
 ```
 
-### Local workspace push
+如版本不对，可能是旧版残留，重新执行安装即可。
 
-```powershell
-cd E:\WeiClaw
-git remote remove origin 2>$null
-git remote add origin git@github.com:zylzyqzz/WeiClaw.git
-git add .
-git commit -m "feat(installer): add minimal bootstrap runtime delivery"
-git branch -M main
-git push -u origin main
-```
+### npm run start 报 package.json not found
 
-### Server update and restart
+WeiClaw 默认通过全局安装的 runtime 包运行，不需要在项目目录下执行。
+
+如果需要在开发目录下运行：
 
 ```bash
-cd /opt/WeiClaw
-git fetch --all --prune
-git reset --hard origin/main
-npm exec pnpm -- install --frozen-lockfile
-npm exec pnpm -- build
-pkill -f "scripts/run-node.mjs gateway" || true
-pkill -f "dist/src/cli/run.js gateway" || true
-if [ -f .env.local ]; then
-  set -a
-  . ./.env.local
-  set +a
-fi
-nohup npm run start >/tmp/weiclaw-start.log 2>&1 &
-sleep 3
-ss -ltnp | grep 19789 || true
-tail -n 120 /tmp/weiclaw-start.log
+npm run start
 ```
 
-## Runtime Package And Delivery Shape
-
-WeiClaw now distinguishes between:
-- development repository
-- minimal runtime package
-
-The default install path is intended to use the runtime package, not a full Git checkout.
-
-The runtime package focuses on:
-- `dist/`
-- `openclaw.mjs`
-- `skills/`
-- bundled Telegram path
-- `README.md`, `LICENSE`, `NOTICE.md`, `CHANGELOG.md`
-
-The default runtime package excludes the normal development bulk where possible:
-- `src/`
-- tests
-- docs
-- fixtures
-- snapshots
-- examples
-- source maps
-- non-default UI/browser assets in the first path
-- Feishu plugin payload unless selected
-
-Generate the runtime package locally:
+### 如何重新执行引导
 
 ```bash
-npm exec pnpm -- runtime:pack
+weiclaw setup --bootstrap
 ```
 
-## Architecture And Trimming Notes
+## 当前限制
 
-Main chain kept in WeiClaw:
-- `weiclaw` main CLI
-- `openclaw` compatibility alias
-- TUI
-- Telegram
-- setup / onboard / doctor / status / configure
-- skills loader and `SKILL.md` compatibility
-- automation / scheduler
-- OpenAI-compatible provider routes
+- **jsDelivr**：仅作为脚本入口的备用源，不可直接镜像 runtime .tgz 包
+- **npm fallback**：尚未发布 `@weiclaw/runtime` 到 npm，暂不作为默认回退链
+- **国内分发**：依赖 GitHub Release + ghproxy.net 第三方公共服务
 
-Optional or downgraded paths:
-- browser / dashboard / control UI compatibility chain
-- canvas host
-- vendor A2UI assets
-- optional Feishu plugin delivery
+## Roadmap
 
-The product direction is simple: keep the execution chain stable, keep the install path short, and isolate optional capability behind explicit choice instead of default weight.
+- [ ] 发布 @weiclaw/runtime 到 npm（更稳定的回退源）
+- [ ] 更稳定的国内分发源
+- [ ] Feishu/Lark 通道完善
+- [ ] 更多模型接入
 
-## FAQ
+## License / Attribution
 
-### Installation feels slow. What should I check?
+WeiClaw 基于 [OpenClaw](https://github.com/stealth/Claude-Code) 改造，保留上游开源协议与归属声明。
 
-Check your network path to GitHub releases and npm registry. The normal path should install the runtime package, not clone the full repo.
-
-### Why is UI no longer exposed by default?
-
-WeiClaw is being cut down into a terminal-first private product surface. UI/browser/canvas code still exists internally in places, but it is no longer part of the normal path.
-
-### How do I choose between Telegram and Feishu?
-
-Choose Telegram for the lightest path. Choose Feishu if your workflow is already on Feishu or Lark and you are fine with plugin-on-demand installation.
-
-### What is TUI?
-
-TUI is the terminal UI. It is the main local interaction surface in WeiClaw.
-
-### How do I reconfigure later?
-
-Use:
-- `weiclaw setup --bootstrap`
-- `weiclaw configure`
-- `weiclaw doctor`
-- `weiclaw status`
-
-### Why does `openclaw` still exist?
-
-It stays as a compatibility alias so existing scripts and habits do not break immediately. WeiClaw is the main user-facing name.
-
-### Why are model names in `provider/model` form?
-
-WeiClaw keeps an OpenAI-compatible routing model. `provider/model` is the clearest way to show the provider boundary and the actual remote model id.
-
-## Project Status
-
-Already done:
-- main CLI surface rebranded to WeiClaw
-- default port unified to `19789`
-- default UI/browser path removed from normal flow
-- default security posture loosened for private self-use
-- start/build/tsgo/help main path stabilized
-- bootstrap runtime packaging started
-
-Not fully finished yet:
-- deeper UI/browser/canvas compatibility chain still needs more optionalization and deletion
-- runtime package and GitHub release flow still need polish
-- Feishu path is usable, but still depends on plugin-on-demand delivery
-
-Most stable path today:
-- install via bootstrap script
-- choose a recommended model
-- choose Telegram
-- open TUI
-- use `weiclaw status`, `weiclaw doctor`, and `weiclaw configure` for advanced control
-
-## Next Development Path
-
-Detailed next-step plan lives in `ROADMAP.md`.
-
-## License / Attribution / Upstream
-
-WeiClaw is based on OpenClaw and keeps the upstream license and attribution.
-
-Do not remove:
+保留文件：
 - `LICENSE`
 - `NOTICE.md`
-- upstream attribution and source statements required by the project history
+- 上游归属声明
