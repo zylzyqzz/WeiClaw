@@ -72,6 +72,62 @@ For verbose mode:
 $env:WEICLAW_VERBOSE=1; iwr -useb https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.ps1 | iex
 ```
 
+### China Installation
+
+`raw.githubusercontent.com` may not be accessible from mainland China. Use the jsDelivr script entry instead.
+
+#### macOS / Linux (China)
+
+```bash
+curl -fsSL https://cdn.jsdelivr.net/gh/zylzyqzz/WeiClaw@main/scripts/bootstrap/install.sh | bash
+```
+
+#### Windows PowerShell (China)
+
+```powershell
+iwr -useb https://cdn.jsdelivr.net/gh/zylzyqzz/WeiClaw@main/scripts/bootstrap/install.ps1 | iex
+```
+
+### Runtime Download Behavior
+
+The bootstrap installer uses the same runtime download order on both international and mainland China installs:
+
+1. **Official GitHub Release**: `https://github.com/zylzyqzz/WeiClaw/releases/latest/download/weiclaw-runtime.tgz`
+2. **ghproxy.net**: proxy of the GitHub Release URL for China network access
+3. **Source fallback**: if both runtime URLs fail, clone the repository and build from source
+
+What this means in practice:
+- `jsDelivr` is used only for the script entry URL in mainland China
+- `jsDelivr` is not used as the runtime `.tgz` download source
+- `@weiclaw/runtime` is not published on npm yet, so npm is not part of the default runtime fallback chain
+
+#### Advanced: Custom Runtime Tarball
+
+For advanced users who need to customize the installation source:
+
+```bash
+# Use a specific tarball URL
+WEICLAW_INSTALL_TARBALL="https://example.com/custom/weiclaw-runtime.tgz" bash install.sh
+```
+
+```powershell
+# Use a specific tarball URL
+$env:WEICLAW_INSTALL_TARBALL="https://example.com/custom/weiclaw-runtime.tgz"; iwr -useb ... | iex
+```
+
+### Release Status For Installation
+
+Current status:
+- international script entry is closed: GitHub raw install command is ready for release
+- mainland China script entry is closed: jsDelivr install command is ready for release
+- runtime package delivery is usable through GitHub Release, with `ghproxy.net` as the public proxy fallback
+- npm fallback is not closed yet because `@weiclaw/runtime` has not been published
+
+External release copy should describe the China install path as:
+- script entry via jsDelivr
+- runtime download via official GitHub Release, then `ghproxy.net`
+- source build as the last fallback
+
 The bootstrap installer will:
 - check `git`, `node`, and `npm`
 - install missing prerequisites when possible

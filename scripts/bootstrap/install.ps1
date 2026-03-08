@@ -1,17 +1,38 @@
-﻿param(
-  [string]$Tarball = $(if ($env:WEICLAW_INSTALL_TARBALL) { $env:WEICLAW_INSTALL_TARBALL } else { "https://github.com/zylzyqzz/WeiClaw/releases/latest/download/weiclaw-runtime.tgz" }),
+param(
+  [string]$Tarball = $(if ($env:WEICLAW_INSTALL_TARBALL) { $env:WEICLAW_INSTALL_TARBALL } else { "" }),
   [switch]$DryRun,
-  [switch]$SkipBootstrap
+  [switch]$SkipBootstrap,
+  [switch]$Verbose = $(if ($env:WEICLAW_VERBOSE -eq "1") { $true } else { $false })
 )
+
+# =============================================================================
+# WeiClaw Bootstrap Installer (Windows PowerShell)
+# =============================================================================
+# Runtime download order:
+#   1. Official GitHub Release
+#   2. ghproxy.net mirror of the GitHub Release
+#   3. Source install fallback
+# =============================================================================
 
 $ErrorActionPreference = "Stop"
 [Console]::InputEncoding = [System.Text.Encoding]::UTF8
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
+$GITHUB_RELEASE_URL = "https://github.com/zylzyqzz/WeiClaw/releases/latest/download/weiclaw-runtime.tgz"
+$GHPROXY_URL = "https://ghproxy.net/https://github.com/zylzyqzz/WeiClaw/releases/download/v1.0.1/weiclaw-runtime.tgz"
+
 function Write-Step {
   param([string]$Message)
+  if ($Verbose) {
+    Write-Host "[VERBOSE] $Message" -ForegroundColor DarkGray
+  }
   Write-Host $Message -ForegroundColor Red
+}
+
+function Write-Info {
+  param([string]$Message)
+  Write-Host $Message -ForegroundColor DarkGray
 }
 
 function Invoke-Step {
@@ -29,16 +50,16 @@ function Show-Logo {
   Write-Host "  \ V  V /" -ForegroundColor Red
   Write-Host "   \_/\_/" -ForegroundColor Red
   Write-Host "   WeiClaw" -ForegroundColor Red
-  Write-Host "鏋佺畝绉佹湁鍔╂墜 / Minimal private agent" -ForegroundColor DarkGray
+  Write-Host "Minimal private agent" -ForegroundColor DarkGray
   Write-Host ""
 }
 
 function Ensure-Git {
   if (Get-Command git -ErrorAction SilentlyContinue) {
-    Write-Step "Git 灏辩华 / Git ready"
+    Write-Step "Git ready"
     return
   }
-  Write-Step "缂哄皯 Git锛屾鍦ㄥ畨瑁?/ Installing Git"
+  Write-Step "Installing Git"
   if (Get-Command winget -ErrorAction SilentlyContinue) {
     Invoke-Step { winget install --id Git.Git --accept-package-agreements --accept-source-agreements } "winget install Git.Git"
     return
@@ -51,15 +72,15 @@ function Ensure-Git {
     Invoke-Step { scoop install git } "scoop install git"
     return
   }
-  throw "缂哄皯 Git / Git not found, and no supported installer is available."
+  throw "Missing git, and no supported installer is available."
 }
 
 function Ensure-Node {
   if ((Get-Command node -ErrorAction SilentlyContinue) -and (Get-Command npm -ErrorAction SilentlyContinue)) {
-    Write-Step "Node 宸插氨缁?/ Node ready"
+    Write-Step "Node ready"
     return
   }
-  Write-Step "缂哄皯 Node.js锛屾鍦ㄥ畨瑁?/ Installing Node.js"
+  Write-Step "Installing Node.js"
   if (Get-Command winget -ErrorAction SilentlyContinue) {
     Invoke-Step { winget install --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements } "winget install OpenJS.NodeJS.LTS"
     return
@@ -72,28 +93,117 @@ function Ensure-Node {
     Invoke-Step { scoop install nodejs-lts } "scoop install nodejs-lts"
     return
   }
-  throw "缂哄皯 Node.js / Node.js not found, and no supported installer is available."
+  throw "Missing node/npm, and no supported installer is available."
+}
+
+function Test-Url {
+  param([string]$Url, [int]$Timeout = 15)
+  try {
+    $response = Invoke-WebRequest -Uri $Url -Method Head -MaximumRedirection 5 -TimeoutSec $Timeout -UseBasicParsing
+    return ($response.StatusCode -ge 200 -and $response.StatusCode -lt 400)
+  } catch {
+    return $false
+  }
+}
+
+function Install-FromSource {
+  Write-Step "Falling back to source installation"
+  Write-Info "Cloning WeiClaw repository..."
+
+  $tempDir = Join-Path ([System.IO.Path]::GetTempPath()) ("weiclaw-" + [System.Guid]::NewGuid().ToString("N"))
+  New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
+  $pushed = $false
+
+  try {
+    try {
+      Invoke-Step { git clone --depth 1 https://github.com/zylzyqzz/WeiClaw.git $tempDir } "git clone https://github.com/zylzyqzz/WeiClaw.git"
+    } catch {
+      if (-not $DryRun) {
+        Write-Info "GitHub unavailable, trying Gitee mirror..."
+        Invoke-Step { git clone --depth 1 https://gitee.com/zylzyqzz/weiclaw.git $tempDir } "git clone https://gitee.com/zylzyqzz/weiclaw.git"
+      }
+    }
+
+    Push-Location $tempDir
+    $pushed = $true
+
+    Write-Info "Installing dependencies..."
+    Invoke-Step { npm install --omit=dev } "npm install --omit=dev"
+
+    Write-Info "Building..."
+    Invoke-Step { npm run build } "npm run build"
+
+    Write-Info "Installing globally..."
+    Invoke-Step { npm link } "npm link"
+
+    return $true
+  } catch {
+    Write-Step "Source installation failed: $_"
+    return $false
+  } finally {
+    if ($pushed) {
+      Pop-Location
+    }
+    if (Test-Path $tempDir) {
+      Remove-Item -Recurse -Force $tempDir -ErrorAction SilentlyContinue
+    }
+  }
 }
 
 function Install-Runtime {
-  Write-Step "瀹夎杩愯鍖?/ Installing runtime package"
-  Invoke-Step { npm install -g $Tarball --omit=dev --no-fund --no-audit } "npm install -g $Tarball --omit=dev --no-fund --no-audit"
+  Write-Step "Preparing runtime package"
+
+  if ($Tarball) {
+    Write-Info "Using custom tarball: $Tarball"
+    Invoke-Step { npm install -g $Tarball --omit=dev --no-fund --no-audit } "npm install -g $Tarball --omit=dev --no-fund --no-audit"
+    return
+  }
+
+  $sources = @(
+    @{ Name = "github"; Url = $GITHUB_RELEASE_URL; Label = "Trying runtime source 1/3: official GitHub Release" },
+    @{ Name = "ghproxy"; Url = $GHPROXY_URL; Label = "Trying runtime source 2/3: ghproxy.net mirror" }
+  )
+
+  foreach ($source in $sources) {
+    Write-Info $source.Label
+    if ($Verbose) {
+      Write-Info "Source URL: $($source.Url)"
+    }
+
+    if (Test-Url -Url $source.Url -Timeout 15) {
+      Write-Info "Runtime source available, installing..."
+      Invoke-Step { npm install -g $source.Url --omit=dev --no-fund --no-audit } "npm install -g $($source.Url) --omit=dev --no-fund --no-audit"
+      return
+    }
+
+    Write-Info "Runtime source unavailable, switching..."
+  }
+
+  Write-Step "Runtime sources failed, switching to source install fallback"
+
+  if (Install-FromSource) {
+    Write-Step "Source installation succeeded"
+    return
+  }
+
+  Write-Step "Installation failed"
+  throw "All installation sources failed"
 }
 
 function Start-Bootstrap {
   if ($SkipBootstrap) {
-    Write-Step "璺宠繃棣栬疆閰嶇疆 / Skipping bootstrap"
+    Write-Step "Skipping bootstrap"
     return
   }
-  Write-Step "鍚姩鏋佺畝瀹夎 / Starting minimal setup"
+  Write-Step "Starting minimal setup"
   Invoke-Step { weiclaw setup --bootstrap } "weiclaw setup --bootstrap"
 }
 
 Show-Logo
-Write-Step "鐜妫€娴?/ Checking environment"
+Write-Step "Checking environment"
 Ensure-Git
 Ensure-Node
 Install-Runtime
 Invoke-Step { weiclaw --help | Out-Null } "weiclaw --help"
 Start-Bootstrap
-Write-Step "瀹夎瀹屾垚 / Done"
+Write-Step "Done"

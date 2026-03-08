@@ -1,9 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-WEICLAW_INSTALL_TARBALL="${WEICLAW_INSTALL_TARBALL:-https://github.com/zylzyqzz/WeiClaw/releases/latest/download/weiclaw-runtime.tgz}"
+# =============================================================================
+# WeiClaw Bootstrap Installer
+# =============================================================================
+# Runtime download order:
+#   1. Official GitHub Release
+#   2. ghproxy.net mirror of the GitHub Release
+#   3. Source install fallback
+# =============================================================================
+
+WEICLAW_INSTALL_TARBALL="${WEICLAW_INSTALL_TARBALL:-}"
 WEICLAW_DRY_RUN="${WEICLAW_DRY_RUN:-0}"
 WEICLAW_SKIP_BOOTSTRAP="${WEICLAW_SKIP_BOOTSTRAP:-0}"
+WEICLAW_VERBOSE="${WEICLAW_VERBOSE:-0}"
+
+GITHUB_RELEASE_URL="https://github.com/zylzyqzz/WeiClaw/releases/latest/download/weiclaw-runtime.tgz"
+GHPROXY_URL="https://ghproxy.net/https://github.com/zylzyqzz/WeiClaw/releases/download/v1.0.1/weiclaw-runtime.tgz"
 
 RED='\033[38;5;196m'
 DIM='\033[2m'
@@ -17,11 +30,19 @@ print_logo() {
    \_/\_/
    WeiClaw
 EOF
-  printf "%b%s%b\n\n" "$DIM" "极简私有助手 / Minimal private agent" "$NC"
+  printf "%b%s%b\n\n" "$DIM" "Minimal private agent" "$NC"
 }
 
 log() {
-  printf "%b%s%b\n" "$RED" "$1" "$NC"
+  if [[ "$WEICLAW_VERBOSE" == "1" ]]; then
+    printf "[VERBOSE] %b%s%b\n" "$DIM" "$1" "$NC"
+  else
+    printf "%b%s%b\n" "$RED" "$1" "$NC"
+  fi
+}
+
+log_info() {
+  printf "%b%s%b\n" "$DIM" "$1" "$NC"
 }
 
 run_cmd() {
@@ -58,7 +79,7 @@ install_git() {
     pacman) run_cmd sudo pacman -Sy --noconfirm git curl ca-certificates ;;
     zypper) run_cmd sudo zypper install -y git curl ca-certificates ;;
     apk) run_cmd sudo apk add git curl ca-certificates ;;
-    *) printf "缺少 Git / Missing git, and no supported package manager was found.\n" >&2; exit 1 ;;
+    *) printf "Missing git, and no supported package manager was found.\n" >&2; exit 1 ;;
   esac
 }
 
@@ -91,7 +112,7 @@ install_node() {
       run_cmd sudo apk add nodejs npm
       ;;
     *)
-      printf "缺少 Node.js / Missing node/npm, and no supported package manager was found.\n" >&2
+      printf "Missing node/npm, and no supported package manager was found.\n" >&2
       exit 1
       ;;
   esac
@@ -99,45 +120,122 @@ install_node() {
 
 ensure_git() {
   if have git; then
-    log "Git 就绪 / Git ready"
+    log "Git ready"
     return
   fi
-  log "缺少 Git，正在安装 / Installing Git"
+  log "Installing Git"
   install_git
 }
 
 ensure_node() {
   if have node && have npm; then
-    log "Node 已就绪 / Node ready"
+    log "Node ready"
     return
   fi
-  log "缺少 Node.js，正在安装 / Installing Node.js"
+  log "Installing Node.js"
   install_node
 }
 
+test_url() {
+  local url="$1"
+  local timeout="${2:-10}"
+
+  if curl --location --silent --head --fail --max-time "$timeout" "$url" >/dev/null 2>&1; then
+    return 0
+  fi
+  return 1
+}
+
+install_from_source() {
+  log "Falling back to source installation"
+  log_info "Cloning WeiClaw repository..."
+
+  local temp_dir
+  temp_dir="$(mktemp -d)"
+  trap 'rm -rf "$temp_dir"' EXIT
+
+  run_cmd git clone --depth 1 https://github.com/zylzyqzz/WeiClaw.git "$temp_dir" || {
+    log_info "GitHub unavailable, trying Gitee mirror..."
+    run_cmd git clone --depth 1 https://gitee.com/zylzyqzz/weiclaw.git "$temp_dir" || {
+      log "Source clone failed"
+      return 1
+    }
+  }
+
+  cd "$temp_dir"
+
+  log_info "Installing dependencies..."
+  run_cmd npm install --omit=dev || run_cmd pnpm install --omit=dev || run_cmd yarn install --production
+
+  log_info "Building..."
+  run_cmd npm run build || run_cmd pnpm build || run_cmd yarn build
+
+  log_info "Installing globally..."
+  run_cmd npm link || run_cmd pnpm link || run_cmd yarn link
+}
+
 install_runtime() {
-  log "安装运行包 / Installing runtime package"
-  run_cmd npm install -g "$WEICLAW_INSTALL_TARBALL" --omit=dev --no-fund --no-audit
+  log "Preparing runtime package"
+
+  if [[ -n "$WEICLAW_INSTALL_TARBALL" ]]; then
+    log_info "Using custom tarball: $WEICLAW_INSTALL_TARBALL"
+    run_cmd npm install -g "$WEICLAW_INSTALL_TARBALL" --omit=dev --no-fund --no-audit
+    return
+  fi
+
+  local sources=()
+  sources+=("github|$GITHUB_RELEASE_URL")
+  sources+=("ghproxy|$GHPROXY_URL")
+
+  for source in "${sources[@]}"; do
+    local name="${source%%|*}"
+    local url="${source#*|}"
+
+    case "$name" in
+      github) log_info "Trying runtime source 1/3: official GitHub Release" ;;
+      ghproxy) log_info "Trying runtime source 2/3: ghproxy.net mirror" ;;
+    esac
+
+    [[ "$WEICLAW_VERBOSE" == "1" ]] && log_info "Source URL: $url"
+
+    if test_url "$url" 15; then
+      log_info "Runtime source available, installing..."
+      run_cmd npm install -g "$url" --omit=dev --no-fund --no-audit
+      return
+    fi
+
+    log_info "Runtime source unavailable, switching..."
+  done
+
+  log "Runtime sources failed, switching to source install fallback"
+
+  if install_from_source; then
+    log "Source installation succeeded"
+    return
+  fi
+
+  log "Installation failed"
+  return 1
 }
 
 run_bootstrap() {
   if [[ "$WEICLAW_SKIP_BOOTSTRAP" == "1" ]]; then
-    log "跳过首轮配置 / Skipping bootstrap"
+    log "Skipping bootstrap"
     return
   fi
-  log "启动极简安装 / Starting minimal setup"
+  log "Starting minimal setup"
   run_cmd weiclaw setup --bootstrap
 }
 
 main() {
   print_logo
-  log "环境检测 / Checking environment"
+  log "Checking environment"
   ensure_git
   ensure_node
   install_runtime
   run_cmd weiclaw --help >/dev/null
   run_bootstrap
-  log "安装完成 / Done"
+  log "Done"
 }
 
 main "$@"
