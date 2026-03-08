@@ -46,6 +46,20 @@ describe("registerSetupCommand", () => {
     expect(setupCommandMock).toHaveBeenCalledWith(
       expect.objectContaining({
         workspace: "/tmp/ws",
+        bootstrap: false,
+      }),
+      runtime,
+    );
+    expect(onboardCommandMock).not.toHaveBeenCalled();
+  });
+
+  it("runs bootstrap setup when --bootstrap is set", async () => {
+    await runCli(["setup", "--bootstrap", "--skip-tui"]);
+
+    expect(setupCommandMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        bootstrap: true,
+        skipTui: true,
       }),
       runtime,
     );

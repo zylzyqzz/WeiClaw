@@ -1,165 +1,360 @@
-# WeiClaw Private
+﻿# WeiClaw
 
-WeiClaw is a private, learning-focused subtractive edition based on OpenClaw.
-This repo keeps upstream license, attribution, and notice obligations intact.
-This is the author's first project for hands-on learning and private self-hosted use.
+WeiClaw is a minimal private execution assistant based on OpenClaw.
 
-- Upstream: https://github.com/openclaw/openclaw
-- License: [LICENSE](LICENSE)
-- Attribution/notice: [NOTICE.md](NOTICE.md)
+WeiClaw is a personal learning and self-hosted subtraction build. It keeps upstream OpenClaw license, attribution, NOTICE, and the compatibility foundation required for skills and runtime behavior. User-facing branding is WeiClaw, the primary CLI is `weiclaw`, and `openclaw` remains as a compatibility alias.
 
-## Positioning
+## What It Is
 
-WeiClaw is intentionally reduced for private self-use.
-The default product path is:
+WeiClaw focuses on a smaller first path:
+- `weiclaw` as the main CLI
+- Telegram or Feishu as the first external channel
+- TUI as the main local interaction surface
+- OpenAI-compatible model routes
+- Skills compatibility
+- Automation and scheduler support
 
-- Telegram-first channel flow
-- OpenAI-compatible provider flow
-- OpenClaw-native skills compatibility (`skills` loader + `SKILL.md` + skills scan)
-- Automation/scheduler retained
-- Terminal onboarding/setup retained
-- Terminal TUI retained
+WeiClaw is not trying to be a full browser-first OpenClaw product surface. Optional UI, browser, canvas, and A2UI compatibility code may still exist internally, but they are no longer part of the normal install and run path.
 
-What this repo is not:
+## Current Positioning
 
-- not a full OpenClaw channel/provider matrix distribution
-- not a claim of full originality independent of OpenClaw
+WeiClaw is for people who want:
+- a private execution assistant they can install quickly
+- a terminal-first workflow they can understand
+- a focused runtime without the full development repository as the normal delivery path
 
-## Quick Start (Telegram-first)
+WeiClaw is not currently optimized for:
+- browser dashboard as the default surface
+- multi-channel product marketing matrix
+- full UI/browser/canvas first-run onboarding
+- multi-agent product workflows
 
-Requirements:
+## Core Features
 
-- Node 22+
+- Telegram channel
+- Feishu channel via on-demand plugin install
+- TUI
+- `setup`, `onboard`, `doctor`, `status`, `configure`
+- OpenClaw-compatible skills loader, `SKILL.md`, and skills directory scanning
+- Automation and scheduler
+- OpenAI-compatible model configuration
+- gateway runtime on port `19789`
 
-Install and onboard:
+## Who It Is For
+
+- people who want a private execution assistant with a simple terminal-first workflow
+- people who want a short install path instead of cloning the full development repo
+- developers who want OpenClaw compatibility with a smaller delivery surface
+
+## One-Command Install
+
+### macOS / Linux
 
 ```bash
-npm install -g openclaw@latest
-weiclaw onboard --install-daemon
+curl -fsSL https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.sh | bash
 ```
 
-Start gateway (default port `19789`):
+### Windows PowerShell
+
+```powershell
+iwr -useb https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.ps1 | iex
+```
+
+The bootstrap installer will:
+- check `git`, `node`, and `npm`
+- install missing prerequisites when possible
+- install the minimal WeiClaw runtime package instead of the full development repository
+- run the short bootstrap flow
+- write the minimum working config
+- optionally open TUI immediately
+
+## First-Run Flow
+
+The normal first path is fixed to this sequence:
+1. show the WeiClaw red `W` terminal logo
+2. choose model
+3. choose channel
+4. enter only the selected channel credentials
+5. choose whether to open TUI now
+
+Example:
+
+```text
+WeiClaw
+极简私有助手 / Minimal private agent
+
+请选择模型 / Select model
+1. qianfan/deepseek-v3.2      推荐 / Recommended
+2. kimi-coding/k2p5          代码 / Coding
+3. moonshot/kimi-k2.5        推理 / Reasoning
+4. Custom                    自定义 / Advanced
+
+请选择通道 / Select channel
+1. Telegram
+2. Feishu
+
+请输入 Telegram Bot Token / Enter Telegram Bot Token
+
+是否立即打开 TUI？/ Open TUI now? [Y/n]
+```
+
+If you choose Feishu, WeiClaw installs the Feishu plugin on demand instead of shipping that plugin in the default minimal runtime package.
+
+## Quick Start
+
+Start the gateway:
 
 ```bash
 npm run start
 ```
 
-Equivalent explicit command:
+Check status:
 
 ```bash
-weiclaw gateway --bind loopback --port 19789
+weiclaw status
 ```
 
-## Default Runtime Profile
-
-WeiClaw defaults are narrowed for private usage:
-
-- main channel: Telegram
-- primary provider route: OpenAI-compatible
-- private mode defaults: relaxed confirmation/security defaults (can still be tightened by config)
-
-## Core Commands
+Open TUI:
 
 ```bash
-weiclaw onboard
-weiclaw status
 weiclaw tui
-weiclaw skills list
-weiclaw cron list
 ```
 
-Command entrypoint notes:
-
-- User-facing command: `weiclaw`
-- Compatibility alias: `openclaw`
-- Local workspace smoke checks can use: `npm exec pnpm -- weiclaw --help`
-
-## Minimal Usable Loop (Local Verification)
-
-This round focuses on a real, minimal run loop (without cloud deploy and without real keys committed).
-
-### 1) Telegram-first task loop
-
-Minimal Telegram fields:
-
-- `channels.telegram.enabled`
-- `channels.telegram.botToken` (or env `TELEGRAM_BOT_TOKEN`)
-
-Verify quickly:
+Run health checks:
 
 ```bash
-weiclaw config get channels.telegram.enabled
-weiclaw config get channels.telegram.botToken
-weiclaw channels status --probe
-```
-
-For real message execution, set a valid bot token in env and send a Telegram message to the bot.
-
-### 2) OpenAI-compatible provider loop
-
-Default supported route in WeiClaw:
-
-- `openai-api-key` (OpenAI-compatible)
-- `litellm-api-key` (OpenAI-compatible gateway for providers like aliyun/unicom/nvidia equivalents)
-
-Minimal setup path:
-
-```bash
-weiclaw onboard --auth-choice openai-api-key
-# or
-weiclaw onboard --auth-choice litellm-api-key
-```
-
-Config is stored under:
-
-- `agents.defaults.model.primary`
-- `agents.defaults.models`
-- `models.providers.<provider>`
-- `auth.profiles`
-
-Check and diagnose:
-
-```bash
-weiclaw status
 weiclaw doctor
 ```
 
-### 3) Core skills loop (4 core skills)
-
-WeiClaw keeps these core execution skills in the default runtime:
-
-- `exec` (`shell_command` alias supported)
-- `read` (`file_read` alias supported)
-- `write` (`file_write` alias supported)
-- `web_fetch` (`http_request` alias supported)
-
-### 4) Automation/scheduler loop
-
-Minimal cron loop:
+Adjust advanced settings:
 
 ```bash
-weiclaw cron add --help
-weiclaw cron list
-weiclaw cron enable <id>
-weiclaw cron disable <id>
+weiclaw configure
 ```
 
-The scheduler chain is retained as first-class default capability in WeiClaw.
+Run the advanced onboarding wizard:
 
-## Notes
+```bash
+weiclaw onboard
+```
 
-- This project is not trying to preserve the full upstream channel/provider matrix in default user-facing flow.
-- Upstream compatibility foundations are retained where required (license, attribution, skills compatibility, scheduler, TUI, onboarding).
-- `openclaw` is still accepted as a compatibility command alias; `weiclaw` is the intended user-facing command name.
-- If you need wider channel/provider exposure, enable the corresponding environment overrides explicitly.
+Re-run the minimal bootstrap:
 
-## Server Update (Existing `/opt/WeiClaw`)
+```bash
+weiclaw setup --bootstrap
+```
+
+## Command Overview
+
+- `weiclaw`: main user-facing command
+- `weiclaw setup`: initialize config and workspace
+- `weiclaw setup --bootstrap`: minimal first-run setup
+- `weiclaw onboard`: advanced onboarding wizard
+- `weiclaw tui`: terminal UI
+- `weiclaw status`: runtime and channel status
+- `weiclaw doctor`: health checks and repairs
+- `weiclaw configure`: advanced interactive configuration
+- `openclaw`: compatibility alias only
+
+## Model Configuration
+
+WeiClaw keeps the normal install path intentionally small.
+
+Recommended:
+- `qianfan/deepseek-v3.2`: balanced default
+- `kimi-coding/k2p5`: coding-oriented
+- `moonshot/kimi-k2.5`: reasoning/general work
+
+Advanced:
+- `Custom`: enter your own OpenAI-compatible base URL and model id
+
+The bootstrap flow asks for the matching API key only when it matters. You can also leave the field blank and provide the environment variable later.
+
+## Channel Configuration
+
+### Telegram
+
+Minimal first path:
+- enable Telegram
+- ask only for `Telegram Bot Token`
+- keep DM policy open by default for private self-hosted use
+
+### Feishu
+
+Current state:
+- repository support exists as the `@openclaw/feishu` plugin
+- the normal install path supports Feishu selection
+- the default runtime package does not include Feishu by default
+- Feishu is installed on demand when selected
+
+Minimal first path:
+- install Feishu plugin only when needed
+- ask only for `Feishu App ID`
+- ask only for `Feishu App Secret`
+- default to WebSocket mode
+
+## Update And Deployment
+
+### Local verify commands
+
+```bash
+npm exec pnpm -- tsgo
+npm exec pnpm -- build
+npm exec pnpm -- weiclaw --help
+npm exec pnpm -- weiclaw status --help
+npm exec pnpm -- openclaw --help
+```
+
+### Local workspace push
+
+```powershell
+cd E:\WeiClaw
+git remote remove origin 2>$null
+git remote add origin git@github.com:zylzyqzz/WeiClaw.git
+git add .
+git commit -m "feat(installer): add minimal bootstrap runtime delivery"
+git branch -M main
+git push -u origin main
+```
+
+### Server update and restart
 
 ```bash
 cd /opt/WeiClaw
-git pull --rebase origin main
+git fetch --all --prune
+git reset --hard origin/main
 npm exec pnpm -- install --frozen-lockfile
 npm exec pnpm -- build
-pkill -f "node scripts/run-node.mjs gateway --bind loopback --port 19789" || true
-nohup npm run start > /tmp/weiclaw-gateway.log 2>&1 &
+pkill -f "scripts/run-node.mjs gateway" || true
+pkill -f "dist/src/cli/run.js gateway" || true
+if [ -f .env.local ]; then
+  set -a
+  . ./.env.local
+  set +a
+fi
+nohup npm run start >/tmp/weiclaw-start.log 2>&1 &
+sleep 3
+ss -ltnp | grep 19789 || true
+tail -n 120 /tmp/weiclaw-start.log
 ```
+
+## Runtime Package And Delivery Shape
+
+WeiClaw now distinguishes between:
+- development repository
+- minimal runtime package
+
+The default install path is intended to use the runtime package, not a full Git checkout.
+
+The runtime package focuses on:
+- `dist/`
+- `openclaw.mjs`
+- `skills/`
+- bundled Telegram path
+- `README.md`, `LICENSE`, `NOTICE.md`, `CHANGELOG.md`
+
+The default runtime package excludes the normal development bulk where possible:
+- `src/`
+- tests
+- docs
+- fixtures
+- snapshots
+- examples
+- source maps
+- non-default UI/browser assets in the first path
+- Feishu plugin payload unless selected
+
+Generate the runtime package locally:
+
+```bash
+npm exec pnpm -- runtime:pack
+```
+
+## Architecture And Trimming Notes
+
+Main chain kept in WeiClaw:
+- `weiclaw` main CLI
+- `openclaw` compatibility alias
+- TUI
+- Telegram
+- setup / onboard / doctor / status / configure
+- skills loader and `SKILL.md` compatibility
+- automation / scheduler
+- OpenAI-compatible provider routes
+
+Optional or downgraded paths:
+- browser / dashboard / control UI compatibility chain
+- canvas host
+- vendor A2UI assets
+- optional Feishu plugin delivery
+
+The product direction is simple: keep the execution chain stable, keep the install path short, and isolate optional capability behind explicit choice instead of default weight.
+
+## FAQ
+
+### Installation feels slow. What should I check?
+
+Check your network path to GitHub releases and npm registry. The normal path should install the runtime package, not clone the full repo.
+
+### Why is UI no longer exposed by default?
+
+WeiClaw is being cut down into a terminal-first private product surface. UI/browser/canvas code still exists internally in places, but it is no longer part of the normal path.
+
+### How do I choose between Telegram and Feishu?
+
+Choose Telegram for the lightest path. Choose Feishu if your workflow is already on Feishu or Lark and you are fine with plugin-on-demand installation.
+
+### What is TUI?
+
+TUI is the terminal UI. It is the main local interaction surface in WeiClaw.
+
+### How do I reconfigure later?
+
+Use:
+- `weiclaw setup --bootstrap`
+- `weiclaw configure`
+- `weiclaw doctor`
+- `weiclaw status`
+
+### Why does `openclaw` still exist?
+
+It stays as a compatibility alias so existing scripts and habits do not break immediately. WeiClaw is the main user-facing name.
+
+### Why are model names in `provider/model` form?
+
+WeiClaw keeps an OpenAI-compatible routing model. `provider/model` is the clearest way to show the provider boundary and the actual remote model id.
+
+## Project Status
+
+Already done:
+- main CLI surface rebranded to WeiClaw
+- default port unified to `19789`
+- default UI/browser path removed from normal flow
+- default security posture loosened for private self-use
+- start/build/tsgo/help main path stabilized
+- bootstrap runtime packaging started
+
+Not fully finished yet:
+- deeper UI/browser/canvas compatibility chain still needs more optionalization and deletion
+- runtime package and GitHub release flow still need polish
+- Feishu path is usable, but still depends on plugin-on-demand delivery
+
+Most stable path today:
+- install via bootstrap script
+- choose a recommended model
+- choose Telegram
+- open TUI
+- use `weiclaw status`, `weiclaw doctor`, and `weiclaw configure` for advanced control
+
+## Next Development Path
+
+Detailed next-step plan lives in `ROADMAP.md`.
+
+## License / Attribution / Upstream
+
+WeiClaw is based on OpenClaw and keeps the upstream license and attribution.
+
+Do not remove:
+- `LICENSE`
+- `NOTICE.md`
+- upstream attribution and source statements required by the project history

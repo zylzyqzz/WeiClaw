@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+﻿import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const loadConfigMock = vi.fn();
 
@@ -7,9 +7,10 @@ vi.mock("../config/config.js", () => ({
 }));
 
 let formatCliBannerLine: typeof import("./banner.js").formatCliBannerLine;
+let formatWeiClawInstallerLogo: typeof import("./banner.js").formatWeiClawInstallerLogo;
 
 beforeAll(async () => {
-  ({ formatCliBannerLine } = await import("./banner.js"));
+  ({ formatCliBannerLine, formatWeiClawInstallerLogo } = await import("./banner.js"));
 });
 
 beforeEach(() => {
@@ -28,7 +29,7 @@ describe("formatCliBannerLine", () => {
       richTty: false,
     });
 
-    expect(line).toBe("🦞 OpenClaw 2026.3.3 (abc1234)");
+    expect(line).toBe("[W] WeiClaw Private 2026.3.3 (abc1234)");
   });
 
   it("uses default tagline when cli.banner.taglineMode is default", () => {
@@ -41,7 +42,7 @@ describe("formatCliBannerLine", () => {
       richTty: false,
     });
 
-    expect(line).toBe("🦞 OpenClaw 2026.3.3 (abc1234) — All your chats, one OpenClaw.");
+    expect(line).toBe("[W] WeiClaw Private 2026.3.3 (abc1234) - Telegram-first execution on WeiClaw.");
   });
 
   it("prefers explicit tagline mode over config", () => {
@@ -55,6 +56,15 @@ describe("formatCliBannerLine", () => {
       mode: "default",
     });
 
-    expect(line).toBe("🦞 OpenClaw 2026.3.3 (abc1234) — All your chats, one OpenClaw.");
+    expect(line).toBe("[W] WeiClaw Private 2026.3.3 (abc1234) - Telegram-first execution on WeiClaw.");
   });
 });
+
+describe("formatWeiClawInstallerLogo", () => {
+  it("renders a short plain installer logo", () => {
+    const logo = formatWeiClawInstallerLogo({ richTty: false });
+    expect(logo).toContain("WeiClaw");
+    expect(logo).toContain("极简私有助手 / Minimal private agent");
+  });
+});
+

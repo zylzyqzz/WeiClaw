@@ -99,19 +99,23 @@ describe("WeiClaw minimal regression guardrails", () => {
     ) as {
       scripts?: Record<string, string>;
       bin?: Record<string, string>;
+      files?: string[];
     };
     const build = packageJson.scripts?.build ?? "";
     const strictSmoke = packageJson.scripts?.["build:strict-smoke"] ?? "";
     const bundle = packageJson.scripts?.["canvas:a2ui:bundle"] ?? "";
+    const runtimePack = packageJson.scripts?.["runtime:pack"] ?? "";
     const start = packageJson.scripts?.start ?? "";
     const openclawScript = packageJson.scripts?.openclaw ?? "";
     const weiclawScript = packageJson.scripts?.weiclaw ?? "";
     const weiclawBin = packageJson.bin?.weiclaw ?? "";
+    const files = packageJson.files ?? [];
 
     expect(build).not.toContain("bash scripts/bundle-a2ui.sh");
     expect(build).toContain("node --import tsx scripts/build-a2ui-if-enabled.ts");
     expect(strictSmoke).not.toContain("canvas:a2ui:bundle");
     expect(bundle).toBe("node scripts/build-a2ui.mjs");
+    expect(runtimePack).toBe("node scripts/pack-runtime.mjs");
     expect(start).toContain("gateway");
     expect(start).toContain("--bind loopback");
     expect(start).toContain("--port 19789");
@@ -119,6 +123,24 @@ describe("WeiClaw minimal regression guardrails", () => {
     expect(start).not.toContain("--host");
     expect(weiclawScript).toBe(openclawScript);
     expect(weiclawBin).toBe("openclaw.mjs");
+    expect(files).toEqual(expect.arrayContaining(["dist/", "extensions/telegram/", "skills/"]));
+    expect(files).not.toEqual(expect.arrayContaining(["docs/", "assets/", "extensions/feishu/"]));
+  });
+
+  it("keeps runtime delivery and bootstrap installer entrypoints aligned", () => {
+    const readme = fs.readFileSync(path.resolve(process.cwd(), "README.md"), "utf8");
+    const installSh = path.resolve(process.cwd(), "scripts/bootstrap/install.sh");
+    const installPs1 = path.resolve(process.cwd(), "scripts/bootstrap/install.ps1");
+    const roadmap = path.resolve(process.cwd(), "ROADMAP.md");
+
+    expect(fs.existsSync(installSh)).toBe(true);
+    expect(fs.existsSync(installPs1)).toBe(true);
+    expect(fs.existsSync(roadmap)).toBe(true);
+    expect(readme).toContain("scripts/bootstrap/install.sh");
+    expect(readme).toContain("scripts/bootstrap/install.ps1");
+    expect(readme).toContain("weiclaw setup --bootstrap");
+    expect(readme).toContain("Telegram");
+    expect(readme).toContain("Feishu");
   });
 
   it("disables nodes media/canvas commands by default and allows opt-in", async () => {

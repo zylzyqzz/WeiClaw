@@ -10,7 +10,7 @@ import { hasExplicitOptions } from "../command-options.js";
 export function registerSetupCommand(program: Command) {
   program
     .command("setup")
-    .description("Initialize ~/.openclaw/openclaw.json and the agent workspace")
+    .description("Initialize local config, workspace, or run the minimal WeiClaw bootstrap")
     .addHelpText(
       "after",
       () =>
@@ -20,6 +20,8 @@ export function registerSetupCommand(program: Command) {
       "--workspace <dir>",
       "Agent workspace directory (default: ~/.openclaw/workspace; stored as agents.defaults.workspace)",
     )
+    .option("--bootstrap", "Run the minimal bootstrap flow", false)
+    .option("--skip-tui", "Skip the final TUI prompt in bootstrap mode", false)
     .option("--wizard", "Run the interactive onboarding wizard", false)
     .option("--non-interactive", "Run the wizard without prompts", false)
     .option("--mode <mode>", "Wizard mode: local|remote")
@@ -34,6 +36,17 @@ export function registerSetupCommand(program: Command) {
           "remoteUrl",
           "remoteToken",
         ]);
+        if (opts.bootstrap) {
+          await setupCommand(
+            {
+              workspace: opts.workspace as string | undefined,
+              bootstrap: true,
+              skipTui: Boolean(opts.skipTui),
+            },
+            defaultRuntime,
+          );
+          return;
+        }
         if (opts.wizard || hasWizardFlags) {
           await onboardCommand(
             {
@@ -47,7 +60,13 @@ export function registerSetupCommand(program: Command) {
           );
           return;
         }
-        await setupCommand({ workspace: opts.workspace as string | undefined }, defaultRuntime);
+        await setupCommand(
+          {
+            workspace: opts.workspace as string | undefined,
+            bootstrap: false,
+          },
+          defaultRuntime,
+        );
       });
     });
 }

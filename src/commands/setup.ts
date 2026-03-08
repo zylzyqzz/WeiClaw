@@ -7,6 +7,7 @@ import { resolveSessionTranscriptsDir } from "../config/sessions.js";
 import type { RuntimeEnv } from "../runtime.js";
 import { defaultRuntime } from "../runtime.js";
 import { shortenHomePath } from "../utils.js";
+import { runSetupBootstrap } from "./setup-bootstrap.js";
 
 async function readConfigFileRaw(configPath: string): Promise<{
   exists: boolean;
@@ -25,9 +26,17 @@ async function readConfigFileRaw(configPath: string): Promise<{
 }
 
 export async function setupCommand(
-  opts?: { workspace?: string },
+  opts?: { workspace?: string; bootstrap?: boolean; skipTui?: boolean },
   runtime: RuntimeEnv = defaultRuntime,
 ) {
+  if (opts?.bootstrap) {
+    await runSetupBootstrap(
+      { workspace: opts.workspace, skipTui: Boolean(opts.skipTui) },
+      runtime,
+    );
+    return;
+  }
+
   const desiredWorkspace =
     typeof opts?.workspace === "string" && opts.workspace.trim()
       ? opts.workspace.trim()

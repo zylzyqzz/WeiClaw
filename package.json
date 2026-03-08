@@ -24,13 +24,11 @@
   "files": [
     "CHANGELOG.md",
     "LICENSE",
+    "NOTICE.md",
     "openclaw.mjs",
-    "README-header.png",
     "README.md",
-    "assets/",
     "dist/",
-    "docs/",
-    "extensions/",
+    "extensions/telegram/",
     "skills/"
   ],
   "type": "module",
@@ -258,6 +256,7 @@
     "format:swift": "swiftformat --lint --config .swiftformat apps/macos/Sources apps/ios/Sources apps/shared/OpenClawKit/Sources",
     "gateway:dev": "OPENCLAW_SKIP_CHANNELS=1 CLAWDBOT_SKIP_CHANNELS=1 node scripts/run-node.mjs --dev gateway",
     "gateway:dev:reset": "OPENCLAW_SKIP_CHANNELS=1 CLAWDBOT_SKIP_CHANNELS=1 node scripts/run-node.mjs --dev gateway --reset",
+    "runtime:pack": "node scripts/pack-runtime.mjs",
     "gateway:watch": "node scripts/watch-node.mjs gateway --force",
     "gen:host-env-policy:swift": "node scripts/generate-host-env-security-policy-swift.mjs --write",
     "ghsa:patch": "node scripts/ghsa-patch.mjs",

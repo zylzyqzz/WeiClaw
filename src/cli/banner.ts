@@ -1,4 +1,4 @@
-import { loadConfig } from "../config/config.js";
+﻿import { loadConfig } from "../config/config.js";
 import { resolveCommitHash } from "../infra/git-commit.js";
 import { visibleWidth } from "../terminal/ansi.js";
 import { isRich, theme } from "../terminal/theme.js";
@@ -97,14 +97,14 @@ export function formatCliBannerLine(version: string, options: BannerOptions = {}
 }
 
 const W_ASCII = [
-  " __        __   _ _ _            _                 ",
-  " \\ \\      / /__(_) | | ___ _   _| | __ ___      __",
-  "  \\ \\ /\\ / / _ \\ | | |/ __| | | | |/ _` \\ \\ /\\ / /",
-  "   \\ V  V /  __/ | | | (__| |_| | | (_| |\\ V  V / ",
-  "    \\_/\\_/ \\___|_|_|_|\\___|\\__,_|_|\\__,_| \\_/\\_/  ",
-  "                 [W] WEICLAW PRIVATE              ",
-  " ",
+  " __      __",
+  " \\ \\ /\\ / /",
+  "  \\ V  V /",
+  "   \\_/\\_/",
+  "   WeiClaw",
 ];
+
+const INSTALLER_SUBTITLE = "极简私有助手 / Minimal private agent";
 
 export function formatCliBannerArt(options: BannerOptions = {}): string {
   const rich = options.richTty ?? isRich();
@@ -115,6 +115,15 @@ export function formatCliBannerArt(options: BannerOptions = {}): string {
   return W_ASCII.map((line) => splitGraphemes(line).map((ch) => theme.accent(ch)).join("")).join(
     "\n",
   );
+}
+
+export function formatWeiClawInstallerLogo(options: { richTty?: boolean } = {}): string {
+  const rich = options.richTty ?? isRich();
+  const art = formatCliBannerArt({ richTty: rich });
+  if (!rich) {
+    return `${art}\n${INSTALLER_SUBTITLE}`;
+  }
+  return `${art}\n${theme.muted(INSTALLER_SUBTITLE)}`;
 }
 
 export function emitCliBanner(version: string, options: BannerOptions = {}) {
@@ -139,3 +148,4 @@ export function emitCliBanner(version: string, options: BannerOptions = {}) {
 export function hasEmittedCliBanner(): boolean {
   return bannerEmitted;
 }
+
