@@ -41,7 +41,13 @@ weiclaw onboard --install-daemon
 Start gateway (default port `19789`):
 
 ```bash
-weiclaw gateway --port 19789
+npm run start
+```
+
+Equivalent explicit command:
+
+```bash
+weiclaw gateway --bind loopback --port 19789
 ```
 
 ## Default Runtime Profile
@@ -61,6 +67,12 @@ weiclaw tui
 weiclaw skills list
 weiclaw cron list
 ```
+
+Command entrypoint notes:
+
+- User-facing command: `weiclaw`
+- Compatibility alias: `openclaw`
+- Local workspace smoke checks can use: `npm exec pnpm -- weiclaw --help`
 
 ## Minimal Usable Loop (Local Verification)
 
@@ -140,3 +152,14 @@ The scheduler chain is retained as first-class default capability in WeiClaw.
 - Upstream compatibility foundations are retained where required (license, attribution, skills compatibility, scheduler, TUI, onboarding).
 - `openclaw` is still accepted as a compatibility command alias; `weiclaw` is the intended user-facing command name.
 - If you need wider channel/provider exposure, enable the corresponding environment overrides explicitly.
+
+## Server Update (Existing `/opt/WeiClaw`)
+
+```bash
+cd /opt/WeiClaw
+git pull --rebase origin main
+npm exec pnpm -- install --frozen-lockfile
+npm exec pnpm -- build
+pkill -f "node scripts/run-node.mjs gateway --bind loopback --port 19789" || true
+nohup npm run start > /tmp/weiclaw-gateway.log 2>&1 &
+```

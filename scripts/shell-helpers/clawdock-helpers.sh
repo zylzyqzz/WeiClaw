@@ -109,7 +109,7 @@ _clawdock_ensure_dir() {
     CLAWDOCK_DIR="$found_path"
   else
     echo ""
-    echo "❌ OpenClaw not found in common locations."
+    echo "�?OpenClaw not found in common locations."
     echo ""
     echo "Clone it first:"
     echo ""
@@ -128,7 +128,7 @@ _clawdock_ensure_dir() {
     /bin/mkdir -p "${HOME}/.clawdock"
   fi
   echo "CLAWDOCK_DIR=\"$CLAWDOCK_DIR\"" > "$CLAWDOCK_CONFIG"
-  echo "✅ Saved to $CLAWDOCK_CONFIG"
+  echo "�?Saved to $CLAWDOCK_CONFIG"
   echo ""
   return 0
 }
@@ -220,7 +220,7 @@ clawdock-health() {
   local token
   token=$(_clawdock_read_env_token)
   if [[ -z "$token" ]]; then
-    echo "❌ Error: Could not find gateway token"
+    echo "�?Error: Could not find gateway token"
     echo "   Check: ${CLAWDOCK_DIR}/.env"
     return 1
   fi
@@ -241,7 +241,7 @@ clawdock-fix-token() {
   local token
   token=$(clawdock-token)
   if [[ -z "$token" ]]; then
-    echo "❌ Error: Could not find gateway token"
+    echo "�?Error: Could not find gateway token"
     echo "   Check: ${CLAWDOCK_DIR}/.env"
     return 1
   fi
@@ -257,7 +257,7 @@ clawdock-fix-token() {
     bash -c "./openclaw.mjs config get gateway.remote.token 2>/dev/null" 2>&1 | _clawdock_filter_warnings | tr -d '\r\n' | head -c 64)
 
   if [[ "$saved_token" == "$token" ]]; then
-    echo "✅ Token saved correctly!"
+    echo "�?Token saved correctly!"
   else
     echo "⚠️  Token mismatch detected"
     echo "   Expected: ${token:0:20}..."
@@ -267,40 +267,21 @@ clawdock-fix-token() {
   echo "🔄 Restarting gateway..."
   _clawdock_compose restart openclaw-gateway 2>&1 | _clawdock_filter_warnings
 
-  echo "⏳ Waiting for gateway to start..."
+  echo "�?Waiting for gateway to start..."
   sleep 5
 
-  echo "✅ Configuration complete!"
+  echo "�?Configuration complete!"
   echo -e "   Try: $(_cmd clawdock-devices)"
 }
 
-# Open dashboard in browser
+# Deprecated browser helper (kept for compatibility)
 clawdock-dashboard() {
   _clawdock_ensure_dir || return 1
 
-  echo "🦞 Getting dashboard URL..."
-  local output exit_status url
-  output=$(_clawdock_compose run --rm openclaw-cli dashboard --no-open 2>&1)
-  exit_status=$?
-  url=$(printf "%s\n" "$output" | _clawdock_filter_warnings | grep -o 'http[s]\?://[^[:space:]]*' | head -n 1)
-  if [[ $exit_status -ne 0 ]]; then
-    echo "❌ Failed to get dashboard URL"
-    echo -e "   Try restarting: $(_cmd clawdock-restart)"
-    return 1
-  fi
-
-  if [[ -n "$url" ]]; then
-    echo "✅ Opening: $url"
-    open "$url" 2>/dev/null || xdg-open "$url" 2>/dev/null || echo "   Please open manually: $url"
-    echo ""
-    echo -e "${_CLR_CYAN}💡 If you see 'pairing required' error:${_CLR_RESET}"
-    echo -e "   1. Run: $(_cmd clawdock-devices)"
-    echo "   2. Copy the Request ID from the Pending table"
-    echo -e "   3. Run: $(_cmd 'clawdock-approve <request-id>')"
-  else
-    echo "❌ Failed to get dashboard URL"
-    echo -e "   Try restarting: $(_cmd clawdock-restart)"
-  fi
+  echo "Browser dashboard is removed in WeiClaw."
+  echo -e "Use: $(_cmd 'clawdock-cli tui')"
+  echo -e "Or use Telegram as the primary channel."
+  return 0
 }
 
 # List device pairings
@@ -332,7 +313,7 @@ clawdock-approve() {
   _clawdock_ensure_dir || return 1
 
   if [[ -z "$1" ]]; then
-    echo -e "❌ Usage: $(_cmd 'clawdock-approve <request-id>')"
+    echo -e "�?Usage: $(_cmd 'clawdock-approve <request-id>')"
     echo ""
     echo -e "${_CLR_CYAN}💡 How to approve a device:${_CLR_RESET}"
     echo -e "   1. Run: $(_cmd clawdock-devices)"
@@ -344,19 +325,19 @@ clawdock-approve() {
     return 1
   fi
 
-  echo "✅ Approving device: $1"
+  echo "�?Approving device: $1"
   _clawdock_compose exec openclaw-gateway \
     node dist/index.js devices approve "$1" 2>&1 | _clawdock_filter_warnings
 
   echo ""
-  echo "✅ Device approved! Retry your terminal or Telegram session."
+  echo "�?Device approved! Retry your terminal or Telegram session."
 }
 
 # Show all available clawdock helper commands
 clawdock-help() {
   echo -e "\n${_CLR_BOLD}${_CLR_CYAN}🦞 ClawDock - Docker Helpers for OpenClaw${_CLR_RESET}\n"
 
-  echo -e "${_CLR_BOLD}${_CLR_MAGENTA}⚡ Basic Operations${_CLR_RESET}"
+  echo -e "${_CLR_BOLD}${_CLR_MAGENTA}�?Basic Operations${_CLR_RESET}"
   echo -e "  $(_cmd clawdock-start)       ${_CLR_DIM}Start the gateway${_CLR_RESET}"
   echo -e "  $(_cmd clawdock-stop)        ${_CLR_DIM}Stop the gateway${_CLR_RESET}"
   echo -e "  $(_cmd clawdock-restart)     ${_CLR_DIM}Restart the gateway${_CLR_RESET}"
@@ -385,7 +366,7 @@ clawdock-help() {
   echo -e "  $(_cmd clawdock-clean)       ${_CLR_RED}⚠️  Remove containers & volumes (nuclear)${_CLR_RESET}"
   echo ""
 
-  echo -e "${_CLR_BOLD}${_CLR_MAGENTA}🛠️  Utilities${_CLR_RESET}"
+  echo -e "${_CLR_BOLD}${_CLR_MAGENTA}🛠�? Utilities${_CLR_RESET}"
   echo -e "  $(_cmd clawdock-health)      ${_CLR_DIM}Run health check${_CLR_RESET}"
   echo -e "  $(_cmd clawdock-token)       ${_CLR_DIM}Show gateway auth token${_CLR_RESET}"
   echo -e "  $(_cmd clawdock-cd)          ${_CLR_DIM}Jump to openclaw project directory${_CLR_RESET}"

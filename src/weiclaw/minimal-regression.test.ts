@@ -103,6 +103,7 @@ describe("WeiClaw minimal regression guardrails", () => {
     const build = packageJson.scripts?.build ?? "";
     const strictSmoke = packageJson.scripts?.["build:strict-smoke"] ?? "";
     const bundle = packageJson.scripts?.["canvas:a2ui:bundle"] ?? "";
+    const start = packageJson.scripts?.start ?? "";
     const openclawScript = packageJson.scripts?.openclaw ?? "";
     const weiclawScript = packageJson.scripts?.weiclaw ?? "";
     const weiclawBin = packageJson.bin?.weiclaw ?? "";
@@ -111,6 +112,11 @@ describe("WeiClaw minimal regression guardrails", () => {
     expect(build).toContain("node --import tsx scripts/build-a2ui-if-enabled.ts");
     expect(strictSmoke).not.toContain("canvas:a2ui:bundle");
     expect(bundle).toBe("node scripts/build-a2ui.mjs");
+    expect(start).toContain("gateway");
+    expect(start).toContain("--bind loopback");
+    expect(start).toContain("--port 19789");
+    expect(start).toContain("--allow-unconfigured");
+    expect(start).not.toContain("--host");
     expect(weiclawScript).toBe(openclawScript);
     expect(weiclawBin).toBe("openclaw.mjs");
   });

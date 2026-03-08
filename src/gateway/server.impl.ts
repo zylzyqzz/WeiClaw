@@ -216,7 +216,7 @@ export type GatewayServerOptions = {
   host?: string;
   /**
    * If false, do not serve the browser Control UI.
-   * Default: config `gateway.controlUi.enabled` (or true when absent).
+   * Default: config `gateway.controlUi.enabled` (or false when absent).
    */
   controlUiEnabled?: boolean;
   /**
@@ -300,7 +300,7 @@ export async function startGatewayServer(
         ? formatConfigIssueLines(configSnapshot.issues, "", { normalizeRoot: true }).join("\n")
         : "Unknown validation issue.";
     throw new Error(
-      `Invalid config at ${configSnapshot.path}.\n${issues}\nRun "${formatCliCommand("openclaw doctor")}" to repair, then retry.`,
+      `Invalid config at ${configSnapshot.path}.\n${issues}\nRun "${formatCliCommand("weiclaw doctor")}" to repair, then retry.`,
     );
   }
 
@@ -424,7 +424,7 @@ export async function startGatewayServer(
       );
     } else {
       log.warn(
-        "Gateway auth token was missing. Generated a runtime token for this startup without changing config; restart will generate a different token. Persist one with `openclaw config set gateway.auth.mode token` and `openclaw config set gateway.auth.token <token>`.",
+        "Gateway auth token was missing. Generated a runtime token for this startup without changing config; restart will generate a different token. Persist one with `weiclaw config set gateway.auth.mode token` and `weiclaw config set gateway.auth.token <token>`.",
       );
     }
   }

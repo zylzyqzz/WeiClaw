@@ -83,13 +83,13 @@ export type TalkConfig = {
 };
 
 export type GatewayControlUiConfig = {
-  /** If false, the Gateway will not serve the Control UI (default /). */
+  /** If false, the Gateway will not serve the optional browser UI (default /). */
   enabled?: boolean;
-  /** Optional base path prefix for the Control UI (e.g. "/openclaw"). */
+  /** Optional base path prefix for the browser UI (e.g. "/weiclaw"). */
   basePath?: string;
-  /** Optional filesystem root for Control UI assets (defaults to dist/control-ui). */
+  /** Optional filesystem root for browser UI assets (defaults to dist/control-ui). */
   root?: string;
-  /** Allowed browser origins for Control UI/WebChat websocket connections. */
+  /** Allowed browser origins for browser UI/WebChat websocket connections. */
   allowedOrigins?: string[];
   /**
    * DANGEROUS: Keep Host-header origin fallback behavior.
@@ -98,11 +98,11 @@ export type GatewayControlUiConfig = {
   dangerouslyAllowHostHeaderOriginFallback?: boolean;
   /**
    * Insecure-auth toggle.
-   * Control UI still requires secure context + device identity unless
+   * Browser UI still requires secure context + device identity unless
    * dangerouslyDisableDeviceAuth is enabled.
    */
   allowInsecureAuth?: boolean;
-  /** DANGEROUS: Disable device identity checks for the Control UI (default: false). */
+  /** DANGEROUS: Disable device identity checks for the browser UI (default: false). */
   dangerouslyDisableDeviceAuth?: boolean;
 };
 
@@ -361,7 +361,7 @@ export type GatewayConfig = {
    */
   mode?: "local" | "remote";
   /**
-   * Bind address policy for the Gateway WebSocket + Control UI HTTP server.
+   * Bind address policy for the Gateway WebSocket + optional browser UI HTTP server.
    * - auto: Loopback (127.0.0.1) if available, else 0.0.0.0 (fallback to all interfaces)
    * - lan: 0.0.0.0 (all interfaces, no fallback)
    * - loopback: 127.0.0.1 (local-only)

@@ -76,9 +76,9 @@ export const FIELD_HELP: Record<string, string> = {
   "gateway.customBindHost":
     "Explicit bind host/IP used when gateway.bind is set to custom for manual interface targeting. Use a precise address and avoid wildcard binds unless external exposure is required.",
   "gateway.controlUi":
-    "Control UI hosting settings including enablement, pathing, and browser-origin/auth hardening behavior. Keep UI exposure minimal and pair with strong auth controls before internet-facing deployments.",
+    "Optional browser UI hosting settings including enablement, pathing, and browser-origin/auth hardening behavior. WeiClaw defaults to UI-free runtime.",
   "gateway.controlUi.enabled":
-    "Enables serving the gateway Control UI from the gateway HTTP process when true. Keep enabled for local administration, and disable when an external control surface replaces it.",
+    "Enables serving the optional browser UI from the gateway HTTP process when true. WeiClaw keeps this disabled by default.",
   "gateway.auth":
     "Authentication policy for gateway HTTP/WebSocket access including mode, credentials, trusted-proxy behavior, and rate limiting. Keep auth enabled for every non-loopback deployment.",
   "gateway.auth.mode":
@@ -371,17 +371,17 @@ export const FIELD_HELP: Record<string, string> = {
   "agents.list[].sandbox.browser.cdpSourceRange":
     "Per-agent override for CDP source CIDR allowlist.",
   "gateway.controlUi.basePath":
-    "Optional URL prefix where the Control UI is served (e.g. /weiclaw).",
+    "Optional URL prefix where the browser UI is served (e.g. /weiclaw).",
   "gateway.controlUi.root":
-    "Optional filesystem root for Control UI assets (defaults to dist/control-ui).",
+    "Optional filesystem root for browser UI assets (defaults to dist/control-ui).",
   "gateway.controlUi.allowedOrigins":
-    "Allowed browser origins for Control UI/WebChat websocket connections (full origins only, e.g. https://control.example.com). Required for non-loopback Control UI deployments unless dangerous Host-header fallback is explicitly enabled.",
+    "Allowed browser origins for browser UI/WebChat websocket connections (full origins only, e.g. https://control.example.com). Required for non-loopback browser UI deployments unless dangerous Host-header fallback is explicitly enabled.",
   "gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback":
-    "DANGEROUS toggle that enables Host-header based origin fallback for Control UI/WebChat websocket checks. This mode is supported when your deployment intentionally relies on Host-header origin policy; explicit gateway.controlUi.allowedOrigins remains the recommended hardened default.",
+    "DANGEROUS toggle that enables Host-header based origin fallback for browser UI/WebChat websocket checks. This mode is supported when your deployment intentionally relies on Host-header origin policy; explicit gateway.controlUi.allowedOrigins remains the recommended hardened default.",
   "gateway.controlUi.allowInsecureAuth":
-    "Loosens strict browser auth checks for Control UI. WeiClaw Private enables this in local private-mode defaults; disable it again when you need stricter browser auth.",
+    "Loosens strict browser auth checks for the optional browser UI. WeiClaw Private may enable this in local private-mode defaults; disable it when you need stricter auth.",
   "gateway.controlUi.dangerouslyDisableDeviceAuth":
-    "Disables Control UI device identity checks and relies on gateway auth only. WeiClaw Private may enable this for local self-use; turn it off when you want pairing and device trust gates back.",
+    "Disables browser UI device identity checks and relies on gateway auth only. WeiClaw Private may enable this for local self-use; turn it off when you want pairing and device trust gates back.",
   "gateway.http.endpoints.chatCompletions.enabled":
     "Enable the OpenAI-compatible `POST /v1/chat/completions` endpoint (default: false).",
   "gateway.http.endpoints.chatCompletions.maxBodyBytes":
