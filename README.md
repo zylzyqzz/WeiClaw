@@ -48,16 +48,28 @@ WeiClaw is not currently optimized for:
 
 ## One-Command Install
 
+The installation is **quiet and minimal** by default. You'll only see essential progress messages.
+
 ### macOS / Linux
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.sh | bash
 ```
 
+For verbose mode:
+```bash
+WEICLAW_VERBOSE=1 curl -fsSL https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.sh | bash
+```
+
 ### Windows PowerShell
 
 ```powershell
 iwr -useb https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.ps1 | iex
+```
+
+For verbose mode:
+```powershell
+$env:WEICLAW_VERBOSE=1; iwr -useb https://raw.githubusercontent.com/zylzyqzz/WeiClaw/main/scripts/bootstrap/install.ps1 | iex
 ```
 
 The bootstrap installer will:
