@@ -1,4 +1,19 @@
 ﻿
+## [1.0.1] - 2026-03-08
+
+### Added
+- Automated release system
+- Silent installation support
+- Bootstrap verification
+
+### Changed
+- Runtime packaging process
+
+### Fixed
+- Installation flow improvements
+
+
+
 ## [1.0.0] - 2026-03-08
 
 ### Added
@@ -11,6 +26,13 @@
 
 ### Fixed
 - Installation flow improvements
+
+
+## [1.0.1] - 2026-03-08
+
+### Fixed
+- Fixed missing workspace templates (AGENTS.md, etc.) in runtime package
+- Fixed bootstrap failure on clean Ubuntu system due to missing docs/reference/templates
 
 
 # Changelog
@@ -3795,4 +3817,5 @@ Thanks @AlexMikhalev, @CoreyH, @John-Rood, @KrauseFx, @MaudeBot, @Nachx639, @Nic
 - Discord: avoid duplicate replies when OpenAI emits repeated `message_end` events.
 - Commands: unify /status (inline) and command auth across providers; group bypass for authorized control commands; remove Discord /clawd slash handler.
 - CLI: run `openclaw agent` via the Gateway by default; use `--local` to force embedded mode.
+
 

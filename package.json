@@ -1,6 +1,6 @@
 {
     "name":  "openclaw",
-    "version":  "1.0.0",
+    "version":  "1.0.1",
     "description":  "WeiClaw Private: minimal Telegram-first OpenAI-compatible AI gateway based on OpenClaw",
     "keywords":  [
 
@@ -30,6 +30,7 @@
                   "openclaw.mjs",
                   "README.md",
                   "dist/",
+                  "docs/reference/templates/",
                   "extensions/telegram/",
                   "skills/"
               ],

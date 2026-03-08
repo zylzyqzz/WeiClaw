@@ -210,6 +210,19 @@ async function verifyRuntimePackage() {
   try {
     await stat(pkgPath);
     c.pass(`Runtime package exists at ${pkgPath}`);
+
+    // Verify templates are included
+    const c2 = check("runtime templates included");
+    try {
+      const result = await runCommand("tar", ["-tzf", pkgPath]);
+      if (result.stdout.includes("docs/reference/templates/AGENTS.md")) {
+        c2.pass("Workspace templates (AGENTS.md) are included in runtime package");
+      } else {
+        c2.fail("Workspace templates missing from runtime package");
+      }
+    } catch (error) {
+      c2.fail(`Could not verify templates: ${error.message}`);
+    }
   } catch {
     // Try to build the package
     try {
