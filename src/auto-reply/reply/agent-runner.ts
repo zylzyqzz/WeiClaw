@@ -353,6 +353,24 @@ export async function runReplyAgent(params: {
         }
       : undefined;
 
+    // Core Bridge 物理拦截: 如果设备未认领或需要认主，直接中断 agent 流程
+    if (
+      bridgeResult?.context?.resolutionState === "unclaimed_device" ||
+      bridgeResult?.context?.resolutionState === "claim_required"
+    ) {
+      // 使用 notes 中的消息，如果没有则使用默认消息
+      const provisioningMessage =
+        bridgeResult.context.notes.length > 0
+          ? bridgeResult.context.notes.join("; ")
+          : "此设备尚未认领，请先完成设备认主流程后再与我对话。";
+      typing.cleanup();
+      return finalizeWithFollowup(
+        { text: provisioningMessage },
+        queueKey,
+        runFollowupTurn,
+      );
+    }
+
     const runtimeMemoryIntegration = await applyRuntimeMemoryBeforeTurn({
       commandBody,
       bridgeContext: bridgeContextInfo,
