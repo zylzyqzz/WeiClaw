@@ -320,3 +320,13 @@ Docs:
 - `/channels/china-channel-foundation`
 - `/channels/wecom`
 - `/channels/feishu`
+
+## v2.0.2 memory-core public mainline
+
+WeiClaw `v2.0.2` promotes long-term memory into the public mainline as a built-in capability.
+The public repository now provides persistent memory namespaces and records with local SQLite storage,
+including add/list/query/delete workflows through CLI.
+
+WeiClaw-Core no longer decides whether long-term memory exists at all. It remains responsible for
+higher-layer enhancements such as ownership-bound identity mapping, cross-device sync, and private
+memory control-plane extensions.

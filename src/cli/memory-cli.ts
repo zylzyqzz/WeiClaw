@@ -10,6 +10,7 @@ import { resolveSessionTranscriptsDirForAgent } from "../config/sessions/paths.j
 import { setVerbose } from "../globals.js";
 import { getMemorySearchManager, type MemorySearchManagerResult } from "../memory/index.js";
 import { listMemoryFiles, normalizeExtraMemoryPaths } from "../memory/internal.js";
+import { registerMemoryCoreCli } from "../memory/cli/core-cli.js";
 import { defaultRuntime } from "../runtime.js";
 import { formatDocsLink } from "../terminal/links.js";
 import { colorize, isRich, theme } from "../terminal/theme.js";
@@ -576,7 +577,7 @@ export async function runMemoryStatus(opts: MemoryCommandOptions) {
 export function registerMemoryCli(program: Command) {
   const memory = program
     .command("memory")
-    .description("Search, inspect, and reindex memory files")
+    .description("Manage memory index and persistent memory-core records")
     .addHelpText(
       "after",
       () =>
@@ -584,9 +585,17 @@ export function registerMemoryCli(program: Command) {
           ["openclaw memory status", "Show index and provider status."],
           ["openclaw memory index --force", "Force a full reindex."],
           ['openclaw memory search --query "deployment notes"', "Search indexed memory entries."],
+          [
+            'openclaw memory add --namespace default --kind preference --content "user prefers concise Chinese responses"',
+            "Write a persistent memory record.",
+          ],
+          ['openclaw memory query --namespace default --text "concise"', "Query persistent memory."],
+          ["openclaw memory doctor", "Check persistent memory-core health."],
           ["openclaw memory status --json", "Output machine-readable JSON."],
         ])}\n\n${theme.muted("Docs:")} ${formatDocsLink("/cli/memory", "docs.openclaw.ai/cli/memory")}\n`,
     );
+
+  registerMemoryCoreCli(memory);
 
   memory
     .command("status")
