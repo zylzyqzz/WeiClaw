@@ -1,0 +1,24 @@
+<svg width="640" height="180" viewBox="0 0 640 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cli-bg" x1="34" y1="18" x2="594" y2="194" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#12161C" />
+      <stop offset="1" stop-color="#06080B" />
+    </linearGradient>
+    <linearGradient id="cli-accent" x1="78" y1="46" x2="178" y2="138" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF6B5D" />
+      <stop offset="1" stop-color="#B4141B" />
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="620" height="160" rx="28" fill="url(#cli-bg)" />
+  <rect x="10.5" y="10.5" width="619" height="159" rx="27.5" stroke="#232A33" />
+  <path
+    d="M74 54L92 126L118 86Q126 76 134 86L160 126L178 54"
+    stroke="url(#cli-accent)"
+    stroke-width="18"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <text x="222" y="84" fill="#FFF3F1" font-family="Segoe UI, Arial, sans-serif" font-size="42" font-weight="700" letter-spacing="6">WEICLAW</text>
+  <text x="222" y="118" fill="#F26B5F" font-family="Consolas, 'SFMono-Regular', monospace" font-size="18" letter-spacing="1.6">MINIMAL PRIVATE AGENT</text>
+  <text x="222" y="144" fill="#8996A3" font-family="Consolas, 'SFMono-Regular', monospace" font-size="14">smile W / terminal-native / small-size safe</text>
+</svg>

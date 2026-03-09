@@ -1,0 +1,16 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="weiclaw-red-main" x1="22" y1="20" x2="104" y2="104" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF6556" />
+      <stop offset="0.55" stop-color="#EE3B2E" />
+      <stop offset="1" stop-color="#B5141B" />
+    </linearGradient>
+  </defs>
+  <path
+    d="M18 26L34 98L56 58Q64 48 72 58L94 98L110 26"
+    stroke="url(#weiclaw-red-main)"
+    stroke-width="16"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

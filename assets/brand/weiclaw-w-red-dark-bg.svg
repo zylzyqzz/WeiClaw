@@ -1,0 +1,28 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="weiclaw-red-dark" x1="22" y1="20" x2="104" y2="104" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF7E72" />
+      <stop offset="0.5" stop-color="#FF493B" />
+      <stop offset="1" stop-color="#C81921" />
+    </linearGradient>
+    <filter id="dark-glow" x="0" y="0" width="128" height="128" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="6" />
+    </filter>
+  </defs>
+  <path
+    d="M18 26L34 98L56 58Q64 48 72 58L94 98L110 26"
+    stroke="#FFE6E2"
+    stroke-opacity="0.28"
+    stroke-width="24"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    filter="url(#dark-glow)"
+  />
+  <path
+    d="M18 26L34 98L56 58Q64 48 72 58L94 98L110 26"
+    stroke="url(#weiclaw-red-dark)"
+    stroke-width="16"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

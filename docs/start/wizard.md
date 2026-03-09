@@ -9,13 +9,14 @@ sidebarTitle: "Onboarding: CLI"
 
 # Onboarding Wizard (CLI)
 
-The onboarding wizard is the **recommended** way to set up OpenClaw on macOS,
+The onboarding wizard is the **recommended** way to set up WeiClaw on macOS,
 Linux, or Windows (via WSL2; strongly recommended).
 It configures a local Gateway or a remote Gateway connection, plus channels, skills,
 and workspace defaults in one guided flow.
 
 <Note>
 The install and onboarding entry stays unified through WeiClaw. Users set up WeiClaw here; they do not install WeiClaw-Core directly.
+The public onboarding flow can remain standalone even if a future Core enhancement layer is added through the install chain. See [Runtime Extension Plan](/runtime-extension-plan).
 </Note>
 
 ```bash

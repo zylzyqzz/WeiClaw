@@ -58,7 +58,12 @@ export interface CodingPlanProviderMeta {
 // 第一次选择：方案
 type BootstrapPlanChoice = "coding-plan" | "custom";
 
-// 第二次选择（Coding Plan 子选项）
+// 第三次选择（模型）
+type BootstrapModelChoice =
+  | "qianfan"       // 百度千帆
+  | "kimi-coding"   // Moonshot/Kimi
+  | "moonshot"      // Moonshot
+  | "custom";      // 自定义
 type BootstrapProviderChoice =
   | "aliyun-bailian"    // 阿里云百炼
   | "volcengine"        // 火山引擎
@@ -339,7 +344,7 @@ async function applyModelPreset(params: {
   model: BootstrapProviderChoice;
   prompter: WizardPrompter;
 }): Promise<OpenClawConfig> {
-  const { cfg, provider, prompter } = params;
+  const { cfg, model: provider, prompter } = params;
   const meta = CODING_PLAN_PROVIDERS[provider];
 
   // 自定义 Provider（完全手填）
@@ -465,9 +470,9 @@ async function applyModelPreset(params: {
       providers: {
         ...cfg.models?.providers,
         [providerId]: {
-          api: meta.api,
           baseUrl: meta.baseUrl,
           apiKey,
+          // api is optional for custom providers
           models: [
             {
               id: modelId,

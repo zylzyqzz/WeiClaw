@@ -1,6 +1,8 @@
 import { formatTerminalLink } from "../utils.js";
 
-export const DOCS_ROOT = "https://docs.openclaw.ai";
+// WeiClaw docs root - can be customized for private deployments
+export const WEICLAW_DOCS_ROOT = process.env.WEICLAW_DOCS_ROOT || "https://docs.weiclaw.ai";
+export const DOCS_ROOT = WEICLAW_DOCS_ROOT;
 
 export function formatDocsLink(
   path: string,

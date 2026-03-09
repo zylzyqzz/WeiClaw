@@ -7,7 +7,7 @@
 ╚══════════════════╝
 ```
 
-**Minimal private agent** - 基于 OpenClaw 改造的极简私有 AI 助手。
+**Minimal private agent** - 面向个人与小团队的极简私有 AI 助手。
 
 ## 项目分层说明
 
@@ -22,6 +22,9 @@ WeiClaw 是公开主仓，也是当前对外安装和使用的主入口。
 - `docs/repo-boundary.md`
 - `docs/development-guardrails.md`
 - `docs/repo-routing-checklist.md`
+- `docs/runtime-extension-plan.md`
+
+WeiClaw 继续作为统一安装入口。后续某些增强能力可以通过安装链中的扩展位按需接入，但当前公开版本已经可以独立安装、启动和使用；公开仓不包含任何私有 Core 实现细节。
 
 ## 项目亮点
 
@@ -87,6 +90,8 @@ iwr -useb https://cdn.jsdelivr.net/gh/zylzyqzz/WeiClaw@main/scripts/bootstrap/in
 2. 下载并安装 runtime 包
 3. 启动引导流程（Bootstrap）
 4. 根据终端环境自动决定是否打开 TUI
+
+安装器内部已经预留了未来 Core 扩展位。默认情况下不会启用，也不会依赖任何私有运行包；只有显式提供占位扩展开关时，安装器才会记录扩展计划并继续走当前公开安装路径。
 
 ## 引导安装流程
 
@@ -292,7 +297,7 @@ weiclaw setup --bootstrap
 
 ## License / Attribution
 
-WeiClaw 基于 [OpenClaw](https://github.com/stealth/Claude-Code) 改造，保留上游开源协议与归属声明。
+WeiClaw 基于上游开源项目持续演进，保留相关开源协议与归属声明。
 
 保留文件：
 - `LICENSE`

@@ -25,8 +25,8 @@ const AUTH_CHOICE_GROUP_DEFS: Array<{
   {
     value: "openai",
     label: "OpenAI",
-    hint: "Official OpenAI API",
-    choices: ["openai-api-key"],
+    hint: "OpenAI API and Codex OAuth",
+    choices: ["openai-api-key", "openai-codex"],
   },
   {
     value: "litellm",
@@ -40,6 +40,11 @@ const BASE_AUTH_CHOICE_OPTIONS: ReadonlyArray<AuthChoiceOption> = [
   {
     value: "openai-api-key",
     label: "OpenAI API key",
+  },
+  {
+    value: "openai-codex",
+    label: "OpenAI Codex (OAuth)",
+    hint: "ChatGPT subscription via OAuth",
   },
   {
     value: "litellm-api-key",
@@ -61,6 +66,11 @@ export function formatAuthChoiceChoicesForCli(params?: {
   }
   if (includeLegacyAliases) {
     values.push(...AUTH_CHOICE_LEGACY_ALIASES_FOR_CLI);
+  }
+
+  // Ensure openai-codex is included (it may come from BASE_AUTH_CHOICE_OPTIONS)
+  if (!values.includes("openai-codex")) {
+    values.push("openai-codex");
   }
 
   return values.join("|");

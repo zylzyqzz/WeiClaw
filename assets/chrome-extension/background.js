@@ -1,11 +1,11 @@
-import { buildRelayWsUrl, isRetryableReconnectError, reconnectDelayMs } from './background-utils.js'
+﻿import { buildRelayWsUrl, isRetryableReconnectError, reconnectDelayMs } from './background-utils.js'
 
 const DEFAULT_PORT = 18792
 
 const BADGE = {
   on: { text: 'ON', color: '#FF5A36' },
   off: { text: '', color: '#000000' },
-  connecting: { text: '…', color: '#F59E0B' },
+  connecting: { text: '鈥?, color: '#F59E0B' },
   error: { text: '!', color: '#B91C1C' },
 }
 
@@ -88,7 +88,7 @@ async function persistState() {
   }
 }
 
-// Rehydrate tab state on service worker startup. Fast path — just restores
+// Rehydrate tab state on service worker startup. Fast path 鈥?just restores
 // maps and badges. Relay reconnect happens separately in background.
 async function rehydrateState() {
   try {
@@ -190,7 +190,7 @@ async function ensureRelayConnection() {
   }
 }
 
-// Relay closed — update badges, reject pending requests, auto-reconnect.
+// Relay closed 鈥?update badges, reject pending requests, auto-reconnect.
 // Debugger sessions are kept alive so they survive transient WS drops.
 function onRelayClosed(reason) {
   relayWs = null
@@ -209,7 +209,7 @@ function onRelayClosed(reason) {
       setBadge(tabId, 'connecting')
       void chrome.action.setTitle({
         tabId,
-        title: 'OpenClaw Browser Relay: relay reconnecting…',
+        title: 'WeiClaw Browser Relay: relay reconnecting鈥?,
       })
     }
   }
@@ -271,7 +271,7 @@ async function reannounceAttachedTabs() {
       setBadge(tabId, 'off')
       void chrome.action.setTitle({
         tabId,
-        title: 'OpenClaw Browser Relay (click to attach/detach)',
+        title: 'WeiClaw Browser Relay (click to attach/detach)',
       })
       continue
     }
@@ -280,7 +280,7 @@ async function reannounceAttachedTabs() {
     // Split into two try-catch blocks so debugger failures and relay send
     // failures are handled independently. Previously, a relay send failure
     // would fall into the outer catch and set the badge to 'on' even though
-    // the relay had no record of the tab — causing every subsequent browser
+    // the relay had no record of the tab 鈥?causing every subsequent browser
     // tool call to fail with "no tab connected" until the next reconnect cycle.
     let targetInfo
     try {
@@ -310,17 +310,17 @@ async function reannounceAttachedTabs() {
       setBadge(tabId, 'on')
       void chrome.action.setTitle({
         tabId,
-        title: 'OpenClaw Browser Relay: attached (click to detach)',
+        title: 'WeiClaw Browser Relay: attached (click to detach)',
       })
     } catch {
       // Relay send failed (e.g. WS closed in the gap between ensureRelayConnection
-      // resolving and this loop executing). The tab is still valid — leave badge
+      // resolving and this loop executing). The tab is still valid 鈥?leave badge
       // as 'connecting' so the reconnect/keepalive cycle will retry rather than
       // showing a false-positive 'on' that hides the broken state from the user.
       setBadge(tabId, 'connecting')
       void chrome.action.setTitle({
         tabId,
-        title: 'OpenClaw Browser Relay: relay reconnecting…',
+        title: 'WeiClaw Browser Relay: relay reconnecting鈥?,
       })
     }
   }
@@ -494,7 +494,7 @@ async function attachTab(tabId, opts = {}) {
   tabBySession.set(sessionId, tabId)
   void chrome.action.setTitle({
     tabId,
-    title: 'OpenClaw Browser Relay: attached (click to detach)',
+    title: 'WeiClaw Browser Relay: attached (click to detach)',
   })
 
   if (!opts.skipAttachedEvent) {
@@ -565,7 +565,7 @@ async function detachTab(tabId, reason) {
   setBadge(tabId, 'off')
   void chrome.action.setTitle({
     tabId,
-    title: 'OpenClaw Browser Relay (click to attach/detach)',
+    title: 'WeiClaw Browser Relay (click to attach/detach)',
   })
 
   await persistState()
@@ -586,7 +586,7 @@ async function connectOrToggleForActiveTab() {
       setBadge(tabId, 'off')
       void chrome.action.setTitle({
         tabId,
-        title: 'OpenClaw Browser Relay (click to attach/detach)',
+        title: 'WeiClaw Browser Relay (click to attach/detach)',
       })
       return
     }
@@ -597,14 +597,14 @@ async function connectOrToggleForActiveTab() {
       return
     }
 
-    // User is manually connecting — cancel any pending reconnect.
+    // User is manually connecting 鈥?cancel any pending reconnect.
     cancelReconnect()
 
     tabs.set(tabId, { state: 'connecting' })
     setBadge(tabId, 'connecting')
     void chrome.action.setTitle({
       tabId,
-      title: 'OpenClaw Browser Relay: connecting to local relay…',
+      title: 'WeiClaw Browser Relay: connecting to local relay鈥?,
     })
 
     try {
@@ -615,7 +615,7 @@ async function connectOrToggleForActiveTab() {
       setBadge(tabId, 'error')
       void chrome.action.setTitle({
         tabId,
-        title: 'OpenClaw Browser Relay: relay not running (open options for setup)',
+        title: 'WeiClaw Browser Relay: relay not running (open options for setup)',
       })
       void maybeOpenHelpOnce()
       const message = err instanceof Error ? err.message : String(err)
@@ -735,18 +735,18 @@ async function onDebuggerDetach(source, reason) {
   if (!tabId) return
   if (!tabs.has(tabId)) return
 
-  // User explicitly cancelled or DevTools replaced the connection — respect their intent
+  // User explicitly cancelled or DevTools replaced the connection 鈥?respect their intent
   if (reason === 'canceled_by_user' || reason === 'replaced_with_devtools') {
     void detachTab(tabId, reason)
     return
   }
 
-  // Check if tab still exists — distinguishes navigation from tab close
+  // Check if tab still exists 鈥?distinguishes navigation from tab close
   let tabInfo
   try {
     tabInfo = await chrome.tabs.get(tabId)
   } catch {
-    // Tab is gone (closed) — normal cleanup
+    // Tab is gone (closed) 鈥?normal cleanup
     void detachTab(tabId, reason)
     return
   }
@@ -786,7 +786,7 @@ async function onDebuggerDetach(source, reason) {
   setBadge(tabId, 'connecting')
   void chrome.action.setTitle({
     tabId,
-    title: 'OpenClaw Browser Relay: re-attaching after navigation…',
+    title: 'WeiClaw Browser Relay: re-attaching after navigation鈥?,
   })
 
   // Extend re-attach window from 2.5 s to ~7.7 s (5 attempts).
@@ -819,7 +819,7 @@ async function onDebuggerDetach(source, reason) {
         setBadge(tabId, 'connecting')
         void chrome.action.setTitle({
           tabId,
-          title: 'OpenClaw Browser Relay: attached, waiting for relay reconnect…',
+          title: 'WeiClaw Browser Relay: attached, waiting for relay reconnect鈥?,
         })
       }
       return
@@ -832,11 +832,11 @@ async function onDebuggerDetach(source, reason) {
   setBadge(tabId, 'off')
   void chrome.action.setTitle({
     tabId,
-    title: 'OpenClaw Browser Relay: re-attach failed (click to retry)',
+    title: 'WeiClaw Browser Relay: re-attach failed (click to retry)',
   })
 }
 
-// Tab lifecycle listeners — clean up stale entries.
+// Tab lifecycle listeners 鈥?clean up stale entries.
 chrome.tabs.onRemoved.addListener((tabId) => void whenReady(() => {
   reattachPending.delete(tabId)
   if (!tabs.has(tabId)) return
@@ -886,7 +886,7 @@ chrome.debugger.onDetach.addListener((...args) => void whenReady(() => onDebugge
 
 chrome.action.onClicked.addListener(() => void whenReady(() => connectOrToggleForActiveTab()))
 
-// Refresh badge after navigation completes — service worker may have restarted
+// Refresh badge after navigation completes 鈥?service worker may have restarted
 // during navigation, losing ephemeral badge state.
 chrome.webNavigation.onCompleted.addListener(({ tabId, frameId }) => void whenReady(() => {
   if (frameId !== 0) return
@@ -908,7 +908,7 @@ chrome.runtime.onInstalled.addListener(() => {
   void chrome.runtime.openOptionsPage()
 })
 
-// MV3 keepalive via chrome.alarms — more reliable than setInterval across
+// MV3 keepalive via chrome.alarms 鈥?more reliable than setInterval across
 // service worker restarts. Checks relay health and refreshes badges.
 chrome.alarms.create('relay-keepalive', { periodInMinutes: 0.5 })
 
@@ -985,3 +985,4 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     .catch((err) => sendResponse({ status: 0, ok: false, error: String(err) }))
   return true
 })
+

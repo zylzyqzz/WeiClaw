@@ -21,6 +21,8 @@ $OutputEncoding = [System.Text.Encoding]::UTF8
 
 $GITHUB_RELEASE_URL = "https://github.com/zylzyqzz/WeiClaw/releases/latest/download/weiclaw-runtime.tgz"
 $GHPROXY_URL = "https://ghproxy.net/https://github.com/zylzyqzz/WeiClaw/releases/download/v1.0.1/weiclaw-runtime.tgz"
+$CoreExtensionEnabled = $env:WEICLAW_CORE_EXTENSION_ENABLED -eq "1"
+$CoreExtensionSource = if ($env:WEICLAW_CORE_EXTENSION_SOURCE) { $env:WEICLAW_CORE_EXTENSION_SOURCE } else { "" }
 
 function Write-Step {
   param([string]$Message)
@@ -42,6 +44,37 @@ function Invoke-Step {
     return
   }
   & $Action
+}
+
+function Resolve-RuntimeExtensionPlan {
+  $mode = "public-only"
+  if ($CoreExtensionEnabled) {
+    $mode = "core-extension-placeholder"
+  }
+
+  return @{
+    Mode = $mode
+    Source = $CoreExtensionSource
+  }
+}
+
+function Show-RuntimeExtensionPlan {
+  param([hashtable]$Plan)
+
+  switch ($Plan.Mode) {
+    "public-only" {
+      Write-Info "Core extension slot disabled; continuing with public runtime path."
+    }
+    "core-extension-placeholder" {
+      Write-Info "Core extension slot requested via WEICLAW_CORE_EXTENSION_ENABLED=1."
+      if ($Plan.Source) {
+        Write-Info "Core extension source placeholder detected: $($Plan.Source)"
+      } else {
+        Write-Info "No core extension source placeholder provided."
+      }
+      Write-Info "This public installer does not bundle private Core artifacts; continuing with public runtime path."
+    }
+  }
 }
 
 function Show-Logo {
@@ -215,6 +248,8 @@ Show-Logo
 Write-Step "Checking environment"
 Ensure-Git
 Ensure-Node
+$runtimeExtensionPlan = Resolve-RuntimeExtensionPlan
+Show-RuntimeExtensionPlan -Plan $runtimeExtensionPlan
 Install-Runtime
 Invoke-Step { weiclaw --help | Out-Null } "weiclaw --help"
 Start-Bootstrap

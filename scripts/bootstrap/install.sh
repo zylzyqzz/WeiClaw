@@ -14,6 +14,8 @@ WEICLAW_INSTALL_TARBALL="${WEICLAW_INSTALL_TARBALL:-}"
 WEICLAW_DRY_RUN="${WEICLAW_DRY_RUN:-0}"
 WEICLAW_SKIP_BOOTSTRAP="${WEICLAW_SKIP_BOOTSTRAP:-0}"
 WEICLAW_VERBOSE="${WEICLAW_VERBOSE:-0}"
+WEICLAW_CORE_EXTENSION_ENABLED="${WEICLAW_CORE_EXTENSION_ENABLED:-0}"
+WEICLAW_CORE_EXTENSION_SOURCE="${WEICLAW_CORE_EXTENSION_SOURCE:-}"
 
 GITHUB_RELEASE_URL="https://github.com/zylzyqzz/WeiClaw/releases/latest/download/weiclaw-runtime.tgz"
 GHPROXY_URL="https://ghproxy.net/https://github.com/zylzyqzz/WeiClaw/releases/download/v1.0.1/weiclaw-runtime.tgz"
@@ -55,6 +57,32 @@ run_cmd() {
 
 have() {
   command -v "$1" >/dev/null 2>&1
+}
+
+resolve_runtime_extension_plan() {
+  RUNTIME_EXTENSION_MODE="public-only"
+  RUNTIME_EXTENSION_SOURCE="$WEICLAW_CORE_EXTENSION_SOURCE"
+
+  if [[ "$WEICLAW_CORE_EXTENSION_ENABLED" == "1" ]]; then
+    RUNTIME_EXTENSION_MODE="core-extension-placeholder"
+  fi
+}
+
+announce_runtime_extension_plan() {
+  case "$RUNTIME_EXTENSION_MODE" in
+    public-only)
+      log_info "Core extension slot disabled; continuing with public runtime path."
+      ;;
+    core-extension-placeholder)
+      log_info "Core extension slot requested via WEICLAW_CORE_EXTENSION_ENABLED=1."
+      if [[ -n "$RUNTIME_EXTENSION_SOURCE" ]]; then
+        log_info "Core extension source placeholder detected: $RUNTIME_EXTENSION_SOURCE"
+      else
+        log_info "No core extension source placeholder provided."
+      fi
+      log_info "This public installer does not bundle private Core artifacts; continuing with public runtime path."
+      ;;
+  esac
 }
 
 detect_pm() {
@@ -246,6 +274,8 @@ main() {
   log "Checking environment"
   ensure_git
   ensure_node
+  resolve_runtime_extension_plan
+  announce_runtime_extension_plan
   install_runtime
   run_cmd weiclaw --help >/dev/null
   run_bootstrap
