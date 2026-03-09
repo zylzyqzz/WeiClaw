@@ -155,6 +155,7 @@ Minimal private agent
 - **关闭终端后服务继续运行**：通过 systemd linger 实现，关闭 SSH/终端后服务仍在后台运行
 - **服务状态**：可通过 `weiclaw status` 查看服务状态
 - **手动管理**：
+
   ```bash
   # 查看服务状态
   systemctl --user status weiclaw
@@ -300,6 +301,22 @@ weiclaw setup --bootstrap
 WeiClaw 基于上游开源项目持续演进，保留相关开源协议与归属声明。
 
 保留文件：
+
 - `LICENSE`
 - `NOTICE.md`
 - 上游归属声明
+
+## v2.0.1 China channel foundation
+
+WeiClaw `v2.0.1` adds optional public channel foundations for **WeCom** and **Feishu**.
+They are adapter-layer skeletons only: config loading, webhook route matching, text normalization,
+and doctor/status/test hooks.
+
+They are **not** the default mainline, and they do **not** include any private WeiClaw-Core
+identity, memory, ownership, or commercial implementation.
+
+Docs:
+
+- `/channels/china-channel-foundation`
+- `/channels/wecom`
+- `/channels/feishu`

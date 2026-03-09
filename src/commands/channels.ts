@@ -2,6 +2,11 @@ export type { ChannelsAddOptions } from "./channels/add.js";
 export { channelsAddCommand } from "./channels/add.js";
 export type { ChannelsCapabilitiesOptions } from "./channels/capabilities.js";
 export { channelsCapabilitiesCommand } from "./channels/capabilities.js";
+export {
+  channelsChinaDoctorCommand,
+  channelsChinaStatusCommand,
+  channelsChinaTestCommand,
+} from "./channels/china-foundation.js";
 export type { ChannelsListOptions } from "./channels/list.js";
 export { channelsListCommand } from "./channels/list.js";
 export type { ChannelsLogsOptions } from "./channels/logs.js";

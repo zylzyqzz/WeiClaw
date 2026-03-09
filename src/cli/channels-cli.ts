@@ -2,6 +2,9 @@ import type { Command } from "commander";
 import {
   channelsAddCommand,
   channelsCapabilitiesCommand,
+  channelsChinaDoctorCommand,
+  channelsChinaStatusCommand,
+  channelsChinaTestCommand,
   channelsListCommand,
   channelsLogsCommand,
   channelsRemoveCommand,
@@ -92,6 +95,33 @@ export function registerChannelsCli(program: Command) {
           "docs.openclaw.ai/cli/channels",
         )}\n`,
     );
+
+  channels
+    .command("china-status")
+    .description("Show v2.0.1 optional WeCom/Feishu channel foundation status")
+    .action(async () => {
+      await runChannelsCommand(async () => {
+        await channelsChinaStatusCommand(defaultRuntime);
+      });
+    });
+
+  channels
+    .command("china-doctor")
+    .description("Run v2.0.1 WeCom/Feishu config doctor checks")
+    .action(async () => {
+      await runChannelsCommand(async () => {
+        await channelsChinaDoctorCommand(defaultRuntime);
+      });
+    });
+
+  channels
+    .command("china-test")
+    .description("Run v2.0.1 WeCom/Feishu route skeleton self-checks")
+    .action(async () => {
+      await runChannelsCommand(async () => {
+        await channelsChinaTestCommand(defaultRuntime);
+      });
+    });
 
   channels
     .command("list")

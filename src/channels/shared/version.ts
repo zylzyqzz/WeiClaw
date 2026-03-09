@@ -1,0 +1,1 @@
+export const CHINA_CHANNEL_FOUNDATION_VERSION = "v2.0.1";

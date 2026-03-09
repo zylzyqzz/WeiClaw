@@ -1,47 +1,58 @@
 ---
-summary: "Messaging platforms OpenClaw can connect to"
+summary: "Messaging platforms WeiClaw can connect to"
 read_when:
-  - You want to choose a chat channel for OpenClaw
+  - You want to choose a chat channel for WeiClaw
   - You need a quick overview of supported messaging platforms
 title: "Chat Channels"
 ---
 
 # Chat Channels
 
-OpenClaw can talk to you on any chat app you already use. Each channel connects via the Gateway.
-Text is supported everywhere; media and reactions vary by channel.
+WeiClaw can talk to you on the chat app you already use. Each channel connects through the gateway.
+Text is supported everywhere; media, reactions, and setup depth vary by channel.
 
-## Supported channels
+## Recommended starting point
 
-- [BlueBubbles](/channels/bluebubbles) — **Recommended for iMessage**; uses the BlueBubbles macOS server REST API with full feature support (edit, unsend, effects, reactions, group management — edit currently broken on macOS 26 Tahoe).
-- [Discord](/channels/discord) — Discord Bot API + Gateway; supports servers, channels, and DMs.
-- [Feishu](/channels/feishu) — Feishu/Lark bot via WebSocket (plugin, installed separately).
-- [Google Chat](/channels/googlechat) — Google Chat API app via HTTP webhook.
-- [iMessage (legacy)](/channels/imessage) — Legacy macOS integration via imsg CLI (deprecated, use BlueBubbles for new setups).
-- [IRC](/channels/irc) — Classic IRC servers; channels + DMs with pairing/allowlist controls.
-- [LINE](/channels/line) — LINE Messaging API bot (plugin, installed separately).
-- [Matrix](/channels/matrix) — Matrix protocol (plugin, installed separately).
-- [Mattermost](/channels/mattermost) — Bot API + WebSocket; channels, groups, DMs (plugin, installed separately).
-- [Microsoft Teams](/channels/msteams) — Bot Framework; enterprise support (plugin, installed separately).
-- [Nextcloud Talk](/channels/nextcloud-talk) — Self-hosted chat via Nextcloud Talk (plugin, installed separately).
-- [Nostr](/channels/nostr) — Decentralized DMs via NIP-04 (plugin, installed separately).
-- [Signal](/channels/signal) — signal-cli; privacy-focused.
-- [Synology Chat](/channels/synology-chat) — Synology NAS Chat via outgoing+incoming webhooks (plugin, installed separately).
-- [Slack](/channels/slack) — Bolt SDK; workspace apps.
-- [Telegram](/channels/telegram) — Bot API via grammY; supports groups.
-- [Tlon](/channels/tlon) — Urbit-based messenger (plugin, installed separately).
-- [Twitch](/channels/twitch) — Twitch chat via IRC connection (plugin, installed separately).
-- [WebChat](/web/webchat) — Gateway WebChat UI over WebSocket.
-- [WhatsApp](/channels/whatsapp) — Most popular; uses Baileys and requires QR pairing.
-- [Zalo](/channels/zalo) — Zalo Bot API; Vietnam's popular messenger (plugin, installed separately).
-- [Zalo Personal](/channels/zalouser) — Zalo personal account via QR login (plugin, installed separately).
+- [Telegram](/channels/telegram): still the fastest default setup path in the public repo
+
+## China-region optional foundation in v2.0.1
+
+- [China Channel Foundation](/channels/china-channel-foundation): overview of the v2.0.1 WeCom + Feishu adapter skeleton
+- [WeCom](/channels/wecom): optional WeCom adapter foundation
+- [Feishu](/channels/feishu): optional Feishu adapter foundation
+
+These China-region channels are optional adapter foundations in `v2.0.1`. They are not enabled by
+default and they do not replace the Telegram-first public mainline.
+
+## Other supported channels
+
+- [BlueBubbles](/channels/bluebubbles): recommended iMessage route for new setups
+- [Discord](/channels/discord): Discord Bot API + Gateway
+- [Google Chat](/channels/googlechat): Google Chat app via HTTP webhook
+- [iMessage (legacy)](/channels/imessage): legacy macOS integration via `imsg`
+- [IRC](/channels/irc): classic IRC servers with channels and DMs
+- [Signal](/channels/signal): `signal-cli` based integration
+- [Slack](/channels/slack): workspace app integration
+- [WhatsApp](/channels/whatsapp): Baileys-based integration with QR pairing
+- [WebChat](/web/webchat): browser-based WebChat UI
+
+## Plugin channels
+
+- [LINE](/channels/line)
+- [Matrix](/channels/matrix)
+- [Mattermost](/channels/mattermost)
+- [Microsoft Teams](/channels/msteams)
+- [Nextcloud Talk](/channels/nextcloud-talk)
+- [Nostr](/channels/nostr)
+- [Synology Chat](/channels/synology-chat)
+- [Tlon](/channels/tlon)
+- [Twitch](/channels/twitch)
+- [Zalo](/channels/zalo)
+- [Zalo Personal](/channels/zalouser)
 
 ## Notes
 
-- Channels can run simultaneously; configure multiple and OpenClaw will route per chat.
-- Fastest setup is usually **Telegram** (simple bot token). WhatsApp requires QR pairing and
-  stores more state on disk.
-- Group behavior varies by channel; see [Groups](/channels/groups).
-- DM pairing and allowlists are enforced for safety; see [Security](/gateway/security).
-- Troubleshooting: [Channel troubleshooting](/channels/troubleshooting).
-- Model providers are documented separately; see [Model Providers](/providers/models).
+- Multiple channels can run at the same time.
+- Group behavior differs by channel; see [Groups](/channels/groups).
+- DM pairing and allowlists remain part of the public safety model; see [Security](/gateway/security).
+- Troubleshooting is documented in [Channel troubleshooting](/channels/troubleshooting).
