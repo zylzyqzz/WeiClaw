@@ -24,11 +24,11 @@ NC='\033[0m'
 
 print_logo() {
   cat <<'EOF'
- __      __
- \ \ /\ / /
-  \ V  V /
-   \_/\_/
-   WeiClaw
+ __  __
+ \ \/ /
+  \  /
+   \/
+ WeiClaw
 EOF
   printf "%b%s%b\n\n" "$DIM" "Minimal private agent" "$NC"
 }
@@ -218,13 +218,27 @@ install_runtime() {
   return 1
 }
 
+# Detect if running in interactive terminal
+is_interactive() {
+  [[ -t 0 ]] && [[ -t 1 ]]
+}
+
 run_bootstrap() {
   if [[ "$WEICLAW_SKIP_BOOTSTRAP" == "1" ]]; then
     log "Skipping bootstrap"
+    log ""
+    log "To run setup manually, use: weiclaw setup --bootstrap"
     return
   fi
-  log "Starting minimal setup"
-  run_cmd weiclaw setup --bootstrap
+
+  if is_interactive; then
+    log "Starting minimal setup..."
+    run_cmd weiclaw setup --bootstrap
+  else
+    log "Installation complete"
+    log ""
+    log "To run setup manually, use: weiclaw setup --bootstrap"
+  fi
 }
 
 main() {

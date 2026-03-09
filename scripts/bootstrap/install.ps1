@@ -45,11 +45,11 @@ function Invoke-Step {
 }
 
 function Show-Logo {
-  Write-Host " __      __" -ForegroundColor Red
-  Write-Host " \ \ /\ / /" -ForegroundColor Red
-  Write-Host "  \ V  V /" -ForegroundColor Red
-  Write-Host "   \_/\_/" -ForegroundColor Red
-  Write-Host "   WeiClaw" -ForegroundColor Red
+  Write-Host " __  __" -ForegroundColor Red
+  Write-Host " \ \/ /" -ForegroundColor Red
+  Write-Host "  \  /" -ForegroundColor Red
+  Write-Host "   \/" -ForegroundColor Red
+  Write-Host " WeiClaw" -ForegroundColor Red
   Write-Host "Minimal private agent" -ForegroundColor DarkGray
   Write-Host ""
 }
@@ -191,12 +191,24 @@ function Install-Runtime {
 }
 
 function Start-Bootstrap {
+  # Detect if running in interactive terminal
+  $isInteractive = [Console]::IsInputRedirected -eq $false -and [Console]::IsOutputRedirected -eq $false
+
   if ($SkipBootstrap) {
     Write-Step "Skipping bootstrap"
+    Write-Host ""
+    Write-Host "To run setup manually, use: weiclaw setup --bootstrap" -ForegroundColor DarkGray
     return
   }
-  Write-Step "Starting minimal setup"
-  Invoke-Step { weiclaw setup --bootstrap } "weiclaw setup --bootstrap"
+
+  if ($isInteractive) {
+    Write-Step "Starting minimal setup..."
+    Invoke-Step { weiclaw setup --bootstrap } "weiclaw setup --bootstrap"
+  } else {
+    Write-Step "Installation complete"
+    Write-Host ""
+    Write-Host "To run setup manually, use: weiclaw setup --bootstrap" -ForegroundColor DarkGray
+  }
 }
 
 Show-Logo
