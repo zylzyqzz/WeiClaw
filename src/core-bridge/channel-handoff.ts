@@ -1,9 +1,10 @@
 import type { TemplateContext } from "../auto-reply/templating.js";
-import type { CoreBridgeRuntimeLogger } from "./types.js";
+import type { CoreBridgeResult, CoreBridgeRuntimeLogger } from "./types.js";
 import {
   buildCoreBridgeInboundEventFromTemplateContext,
   handoffCoreBridgeEvent,
 } from "./runtime-bridge.js";
+import { consumeBridgeContext, createBridgeContextConsumptionLog } from "./context-consumer.js";
 
 export function resolveCoreBridgeProviderFromContext(
   context: TemplateContext,
@@ -26,12 +27,12 @@ export async function handoffRuntimeCoreBridgeContext(params: {
   context: TemplateContext;
   logger?: CoreBridgeRuntimeLogger;
   env?: NodeJS.ProcessEnv;
-}): Promise<void> {
+}): Promise<CoreBridgeResult | null> {
   const provider = resolveCoreBridgeProviderFromContext(params.context);
   if (!provider) {
-    return;
+    return null;
   }
-  await handoffCoreBridgeEvent({
+  const result = await handoffCoreBridgeEvent({
     source: `runtime:${provider}`,
     logger: params.logger,
     env: params.env,
@@ -41,4 +42,23 @@ export async function handoffRuntimeCoreBridgeContext(params: {
       context: params.context,
     }),
   });
+
+  const consumptionLog = createBridgeContextConsumptionLog({
+    handoffAttempted: true,
+    result,
+  });
+
+  params.logger?.log(
+    `[core-bridge] bridge response received resolutionState=${consumptionLog.resolutionState ?? "none"} consumed=${consumptionLog.bridgeContextConsumed}`,
+  );
+
+  if (consumptionLog.bridgeContextConsumed) {
+    params.logger?.log(`[core-bridge] bridge context consumed hints=${consumptionLog.notes.join(", ") || "none"}`);
+  }
+
+  if (consumptionLog.bridgeFallback) {
+    params.logger?.log(`[core-bridge] bridge fallback resolutionState=${consumptionLog.resolutionState}`);
+  }
+
+  return result;
 }

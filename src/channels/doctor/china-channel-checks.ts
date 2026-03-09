@@ -28,7 +28,7 @@ export function formatChinaChannelStatusLines(
   );
   const bridgeStatus = resolveCoreBridgeStatus();
   lines.push(
-    `core-bridge: enabled=${bridgeStatus.enabled} mode=${bridgeStatus.mode} endpoint=${bridgeStatus.endpoint || "none"} timeoutMs=${bridgeStatus.timeoutMs}`,
+    `core-bridge: enabled=${bridgeStatus.enabled} mode=${bridgeStatus.mode} endpoint=${bridgeStatus.endpoint || "none"} timeoutMs=${bridgeStatus.timeoutMs} contractVersion=${bridgeStatus.contractVersion} contextConsumptionEnabled=${bridgeStatus.contextConsumptionEnabled}`,
   );
   return lines;
 }
@@ -46,7 +46,7 @@ export function runChinaChannelDoctor(
     );
   }
   runtime.log(
-    `core-bridge: enabled=${bridge.enabled} mode=${bridge.mode} endpoint=${bridge.endpoint || "none"} timeoutMs=${bridge.timeoutMs} ready=${bridge.ready}`,
+    `core-bridge: enabled=${bridge.enabled} mode=${bridge.mode} endpoint=${bridge.endpoint || "none"} timeoutMs=${bridge.timeoutMs} contractVersion=${bridge.contractVersion} contextConsumptionEnabled=${bridge.contextConsumptionEnabled} ready=${bridge.ready}`,
   );
   return { version: CHINA_CHANNEL_FOUNDATION_VERSION, statuses, bridge };
 }

@@ -1,5 +1,9 @@
 import type { Command } from "commander";
-import { resolveCoreBridgeStatus } from "../core-bridge/status.js";
+import {
+  CORE_BRIDGE_CONTRACT_VERSION,
+  CORE_BRIDGE_RESOLUTION_FIELDS,
+  resolveCoreBridgeStatus,
+} from "../core-bridge/status.js";
 import { defaultRuntime } from "../runtime.js";
 import { formatDocsLink } from "../terminal/links.js";
 import { theme } from "../terminal/theme.js";
@@ -19,6 +23,8 @@ function printCoreBridgeStatus(opts: CoreBridgeCommandOptions): void {
   defaultRuntime.log(`mode=${status.mode}`);
   defaultRuntime.log(`endpoint=${status.endpoint || "none"}`);
   defaultRuntime.log(`timeoutMs=${status.timeoutMs}`);
+  defaultRuntime.log(`contractVersion=${status.contractVersion}`);
+  defaultRuntime.log(`contextConsumptionEnabled=${status.contextConsumptionEnabled}`);
   defaultRuntime.log(`ready=${status.ready}`);
   defaultRuntime.log(`issues=${status.issues.length === 0 ? "none" : status.issues.join("; ")}`);
 }
@@ -69,6 +75,23 @@ export function registerCoreBridgeCli(program: Command): void {
               status.mode === "http"
                 ? status.endpoint || "missing WEICLAW_CORE_BRIDGE_ENDPOINT"
                 : "not-required-in-noop-mode",
+          },
+          {
+            check: "context-consumption",
+            ok: status.contextConsumptionEnabled,
+            detail: status.contextConsumptionEnabled
+              ? "enabled for runtime integration"
+              : "disabled - bridge must be enabled with http mode",
+          },
+          {
+            check: "contract-version",
+            ok: status.contractVersion === CORE_BRIDGE_CONTRACT_VERSION,
+            detail: `contract v${status.contractVersion}`,
+          },
+          {
+            check: "resolution-fields",
+            ok: status.supportedResolutionFields.length === CORE_BRIDGE_RESOLUTION_FIELDS.length,
+            detail: `${status.supportedResolutionFields.length} fields supported`,
           },
         ],
       };

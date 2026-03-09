@@ -339,13 +339,23 @@ export async function runReplyAgent(params: {
     });
   try {
     const runStartedAt = Date.now();
-    await handoffRuntimeCoreBridgeContext({
+    const bridgeResult = await handoffRuntimeCoreBridgeContext({
       commandBody,
       context: sessionCtx,
       logger: defaultRuntime,
     });
+
+    const bridgeContextInfo = bridgeResult
+      ? {
+          consumed: bridgeResult.context !== null,
+          resolutionState: bridgeResult.context?.resolutionState ?? null,
+          notes: bridgeResult.context?.notes ?? [],
+        }
+      : undefined;
+
     const runtimeMemoryIntegration = await applyRuntimeMemoryBeforeTurn({
       commandBody,
+      bridgeContext: bridgeContextInfo,
     });
     const runOutcome = await runAgentTurnWithFallback({
       commandBody: runtimeMemoryIntegration.commandBody,

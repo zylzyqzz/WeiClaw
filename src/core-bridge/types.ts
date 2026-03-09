@@ -11,8 +11,25 @@ export type CoreBridgeInboundEvent = {
   metadata: Record<string, unknown>;
 };
 
+export type CoreBridgeResolutionState =
+  | "resolved"
+  | "unresolved"
+  | "unclaimed_device"
+  | "claim_required"
+  | "error";
+
+export type CoreBridgeProvisioningSummary = {
+  deviceBound: boolean;
+  claimRequired: boolean;
+  ownerKnown: boolean;
+  agentReady: boolean;
+  memoryReady: boolean;
+};
+
 export type CoreBridgeResolvedContext = {
-  resolved: boolean;
+  resolutionState: CoreBridgeResolutionState;
+  provisioningSummary: CoreBridgeProvisioningSummary | null;
+  namespaceHints: string[];
   ownerRef: string | null;
   agentRef: string | null;
   memoryNamespaces: string[];

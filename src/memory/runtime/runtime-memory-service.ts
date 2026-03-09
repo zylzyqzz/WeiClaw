@@ -5,12 +5,14 @@ import {
 } from "./context-injector.js";
 import { selectCaptureCandidates } from "./capture-policy.js";
 import { resolveRuntimeMemoryStatus, type RuntimeMemoryStatus } from "./status.js";
+import type { BridgeMemoryHints } from "./bridge-memory-hints.js";
 
 export type RuntimeMemoryReadResult = {
   prompt: string;
   injected: boolean;
   results: MemoryCoreSearchResult[];
   contextSnippet: string | null;
+  namespaceHints: string[];
 };
 
 export type RuntimeMemoryCaptureResult = {
@@ -33,6 +35,7 @@ export class RuntimeMemoryService {
     prompt: string;
     queryText: string;
     namespace?: string;
+    bridgeHints?: BridgeMemoryHints;
   }): Promise<RuntimeMemoryReadResult> {
     if (
       !this.status.memoryCoreEnabled ||
@@ -44,13 +47,25 @@ export class RuntimeMemoryService {
         injected: false,
         results: [],
         contextSnippet: null,
+        namespaceHints: [],
       };
     }
 
     let runtime: ReturnType<typeof createMemoryCoreRuntime> | null = null;
     try {
       runtime = createMemoryCoreRuntime(this.env);
-      const namespaceRef = params.namespace ?? this.status.defaultNamespace;
+
+      let namespaceRef = params.namespace ?? this.status.defaultNamespace;
+      const namespaceHints: string[] = [];
+
+      if (params.bridgeHints && params.bridgeHints.namespaces.length > 0) {
+        const hints = params.bridgeHints.namespaces;
+        namespaceHints.push(...hints);
+        if (!params.namespace) {
+          namespaceRef = hints[0];
+        }
+      }
+
       const results = runtime.query.queryMemory({
         namespaceRef,
         text: params.queryText,
@@ -69,6 +84,7 @@ export class RuntimeMemoryService {
         injected: contextSnippet !== null,
         results,
         contextSnippet,
+        namespaceHints,
       };
     } finally {
       runtime?.close();
