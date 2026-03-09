@@ -26,6 +26,37 @@ export type CoreBridgeProvisioningSummary = {
   memoryReady: boolean;
 };
 
+/**
+ * Agent Profile from WeiClaw-Core (private)
+ * Reserved interface for future agent customization
+ */
+export type CoreBridgeAgentProfile = {
+  /** Agent role/personality definition */
+  role?: string;
+  /** System prompt override */
+  systemPrompt?: string;
+  /** Available tools for this agent */
+  tools?: string[];
+  /** Model preferences */
+  modelPreferences?: {
+    provider?: string;
+    model?: string;
+  };
+};
+
+/**
+ * Dynamic skill distribution from WeiClaw-Core (private)
+ * Reserved interface for runtime skill injection
+ */
+export type CoreBridgeDynamicSkills = {
+  /** Skill names enabled for this session */
+  enabledSkills?: string[];
+  /** Skill-specific parameters */
+  skillParams?: Record<string, Record<string, unknown>>;
+  /** Priority order for skill execution */
+  skillOrder?: string[];
+};
+
 export type CoreBridgeResolvedContext = {
   resolutionState: CoreBridgeResolutionState;
   provisioningSummary: CoreBridgeProvisioningSummary | null;
@@ -34,6 +65,9 @@ export type CoreBridgeResolvedContext = {
   agentRef: string | null;
   memoryNamespaces: string[];
   notes: string[];
+  // Reserved for WeiClaw-Core private extension
+  agentProfile?: CoreBridgeAgentProfile;
+  dynamicSkills?: CoreBridgeDynamicSkills;
 };
 
 export type CoreBridgeResult = {

@@ -2,6 +2,8 @@ import type {
   CoreBridgeResult,
   CoreBridgeResolvedContext,
   CoreBridgeResolutionState,
+  CoreBridgeAgentProfile,
+  CoreBridgeDynamicSkills,
 } from "./types.js";
 
 export type BridgeContextConsumptionResult = {
@@ -12,6 +14,9 @@ export type BridgeContextConsumptionResult = {
   notes: string[];
   ownerRef: string | null;
   agentRef: string | null;
+  // Reserved for WeiClaw-Core private extension
+  agentProfile?: CoreBridgeAgentProfile;
+  dynamicSkills?: CoreBridgeDynamicSkills;
 };
 
 export type BridgeContextConsumptionLog = {
@@ -21,6 +26,8 @@ export type BridgeContextConsumptionLog = {
   bridgeFallback: boolean;
   resolutionState: CoreBridgeResolutionState | null;
   notes: string[];
+  hasAgentProfile: boolean;
+  hasDynamicSkills: boolean;
 };
 
 function extractResolutionState(context: CoreBridgeResolvedContext | null): CoreBridgeResolutionState | null {
@@ -55,6 +62,9 @@ export function consumeBridgeContext(result: CoreBridgeResult): BridgeContextCon
     notes: context.notes ?? [],
     ownerRef: context.ownerRef ?? null,
     agentRef: context.agentRef ?? null,
+    // Reserved for WeiClaw-Core private extension
+    agentProfile: context.agentProfile,
+    dynamicSkills: context.dynamicSkills,
   };
 }
 
@@ -95,6 +105,8 @@ export function createBridgeContextConsumptionLog(params: {
     bridgeFallback,
     resolutionState,
     notes: context?.notes ?? [],
+    hasAgentProfile: Boolean(context?.agentProfile),
+    hasDynamicSkills: Boolean(context?.dynamicSkills),
   };
 }
 

@@ -61,6 +61,7 @@ import {
   applyRuntimeMemoryCaptureAfterTurn,
 } from "../../memory/runtime/mainflow-bridge.js";
 import { handoffRuntimeCoreBridgeContext } from "../../core-bridge/channel-handoff.js";
+import { claimCoreBridgeDevice } from "../../core-bridge/runtime-bridge.js";
 
 const BLOCK_REPLY_SEND_TIMEOUT_MS = 15_000;
 
@@ -358,6 +359,36 @@ export async function runReplyAgent(params: {
       bridgeResult?.context?.resolutionState === "unclaimed_device" ||
       bridgeResult?.context?.resolutionState === "claim_required"
     ) {
+      // 检查用户发送的内容是否像激活码 (例如 8 位纯字母数字)
+      const isLikelyCode = /^[A-Z0-9]{6,10}$/i.test(commandBody.trim());
+
+      if (isLikelyCode) {
+        const claimResult = await claimCoreBridgeDevice({
+          providerKey: sessionCtx.Surface ?? sessionCtx.Provider,
+          externalUserId: sessionCtx.SenderId?.trim() || "unknown-user",
+          activationCode: commandBody.trim(),
+          logger: defaultRuntime,
+        });
+
+        if (claimResult.accepted && claimResult.context?.resolutionState === "resolved") {
+          // 认领成功，可以跳过拦截，直接回复成功话术
+          typing.cleanup();
+          return finalizeWithFollowup(
+            { text: "✨ 设备认领成功！系统身份档案已加载，随时听候调遣。" },
+            queueKey,
+            runFollowupTurn,
+          );
+        } else {
+          // 认领失败
+          typing.cleanup();
+          return finalizeWithFollowup(
+            { text: "❌ 激活码无效或已过期，请核对后重新输入。" },
+            queueKey,
+            runFollowupTurn,
+          );
+        }
+      }
+
       // 使用 notes 中的消息，如果没有则使用默认消息
       const provisioningMessage =
         bridgeResult.context.notes.length > 0

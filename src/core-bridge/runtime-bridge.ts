@@ -140,3 +140,62 @@ export async function handoffCoreBridgeEvent(params: {
     };
   }
 }
+
+export async function claimCoreBridgeDevice(params: {
+  providerKey: string;
+  externalUserId: string;
+  activationCode: string;
+  env?: NodeJS.ProcessEnv;
+  logger?: CoreBridgeRuntimeLogger;
+}): Promise<CoreBridgeResult> {
+  const config = loadCoreBridgeConfig(params.env);
+  const logger = params.logger;
+
+  if (!config.enabled || config.mode !== "http" || !config.endpoint) {
+    return {
+      accepted: false,
+      handledByCore: false,
+      context: null,
+      error: "bridge disabled or not in http mode",
+    };
+  }
+
+  const claimEndpoint = config.endpoint.replace(/\/inbound$/, "/claim");
+
+  try {
+    const response = await fetch(claimEndpoint, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        providerKey: params.providerKey,
+        externalUserId: params.externalUserId,
+        activationCode: params.activationCode,
+      }),
+      signal: createAbortSignal(config.timeoutMs),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`bridge claim http ${response.status}`);
+    }
+    
+    const payload = (await response.json()) as Partial<CoreBridgeResult>;
+    return {
+      accepted: payload.accepted === true,
+      handledByCore: payload.handledByCore === true,
+      context: payload.context ?? null,
+      error: payload.error ?? null,
+    };
+  } catch (error) {
+    const message = toErrorMessage(error);
+    logger?.error(`[core-bridge] bridge claim error error=${message}`);
+    return {
+      accepted: false,
+      handledByCore: false,
+      context: null,
+      error: message,
+    };
+  }
+}
+
