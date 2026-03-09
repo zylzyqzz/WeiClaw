@@ -30,7 +30,9 @@ export type BridgeContextConsumptionLog = {
   hasDynamicSkills: boolean;
 };
 
-function extractResolutionState(context: CoreBridgeResolvedContext | null): CoreBridgeResolutionState | null {
+function extractResolutionState(
+  context: CoreBridgeResolvedContext | null,
+): CoreBridgeResolutionState | null {
   if (!context) {
     return null;
   }

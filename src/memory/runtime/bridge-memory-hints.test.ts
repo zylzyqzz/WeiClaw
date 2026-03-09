@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { BridgeContextConsumptionResult } from "../../core-bridge/context-consumer.js";
-import {
-  extractBridgeMemoryHints,
-  mergeNamespaceHints,
-} from "./bridge-memory-hints.js";
+import { extractBridgeMemoryHints, mergeNamespaceHints } from "./bridge-memory-hints.js";
 
 describe("bridge-memory-hints", () => {
   describe("extractBridgeMemoryHints", () => {

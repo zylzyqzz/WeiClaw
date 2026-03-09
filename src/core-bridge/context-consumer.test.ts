@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import type { CoreBridgeResult, CoreBridgeResolvedContext } from "./types.js";
 import {
   consumeBridgeContext,
   createBridgeContextConsumptionLog,
   shouldGracefulDegrade,
 } from "./context-consumer.js";
+import type { CoreBridgeResult, CoreBridgeResolvedContext } from "./types.js";
 
 describe("context-consumer", () => {
   describe("consumeBridgeContext", () => {

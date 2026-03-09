@@ -15,10 +15,16 @@ import {
   updateSessionStoreEntry,
 } from "../../config/sessions.js";
 import type { TypingMode } from "../../config/types.js";
+import { handoffRuntimeCoreBridgeContext } from "../../core-bridge/channel-handoff.js";
+import { claimCoreBridgeDevice } from "../../core-bridge/runtime-bridge.js";
 import { emitAgentEvent } from "../../infra/agent-events.js";
 import { emitDiagnosticEvent, isDiagnosticsEnabled } from "../../infra/diagnostic-events.js";
 import { generateSecureUuid } from "../../infra/secure-random.js";
 import { enqueueSystemEvent } from "../../infra/system-events.js";
+import {
+  applyRuntimeMemoryBeforeTurn,
+  applyRuntimeMemoryCaptureAfterTurn,
+} from "../../memory/runtime/mainflow-bridge.js";
 import { defaultRuntime } from "../../runtime.js";
 import { estimateUsageCost, resolveModelCostConfig } from "../../utils/usage-format.js";
 import {
@@ -56,12 +62,6 @@ import { createReplyToModeFilterForChannel, resolveReplyToMode } from "./reply-t
 import { incrementRunCompactionCount, persistRunSessionUsage } from "./session-run-accounting.js";
 import { createTypingSignaler } from "./typing-mode.js";
 import type { TypingController } from "./typing.js";
-import {
-  applyRuntimeMemoryBeforeTurn,
-  applyRuntimeMemoryCaptureAfterTurn,
-} from "../../memory/runtime/mainflow-bridge.js";
-import { handoffRuntimeCoreBridgeContext } from "../../core-bridge/channel-handoff.js";
-import { claimCoreBridgeDevice } from "../../core-bridge/runtime-bridge.js";
 
 const BLOCK_REPLY_SEND_TIMEOUT_MS = 15_000;
 
@@ -364,7 +364,7 @@ export async function runReplyAgent(params: {
 
       if (isLikelyCode) {
         const claimResult = await claimCoreBridgeDevice({
-          providerKey: sessionCtx.Surface ?? sessionCtx.Provider,
+          providerKey: sessionCtx.Surface ?? sessionCtx.Provider ?? "unknown",
           externalUserId: sessionCtx.SenderId?.trim() || "unknown-user",
           activationCode: commandBody.trim(),
           logger: defaultRuntime,
@@ -395,11 +395,7 @@ export async function runReplyAgent(params: {
           ? bridgeResult.context.notes.join("; ")
           : "此设备尚未认领，请先完成设备认主流程后再与我对话。";
       typing.cleanup();
-      return finalizeWithFollowup(
-        { text: provisioningMessage },
-        queueKey,
-        runFollowupTurn,
-      );
+      return finalizeWithFollowup({ text: provisioningMessage }, queueKey, runFollowupTurn);
     }
 
     const runtimeMemoryIntegration = await applyRuntimeMemoryBeforeTurn({
