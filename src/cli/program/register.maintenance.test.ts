@@ -134,5 +134,4 @@ describe("registerMaintenanceCommands doctor action", () => {
       }),
     );
   });
-
 });

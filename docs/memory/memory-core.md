@@ -17,4 +17,3 @@ Starting in v2.0.2, long-term memory is a first-class public capability in WeiCl
 - Private commercial hosting logic.
 
 Those higher-level enhancements remain in WeiClaw-Core.
-

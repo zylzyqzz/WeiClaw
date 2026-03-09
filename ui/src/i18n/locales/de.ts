@@ -71,8 +71,7 @@ export const de: TranslationMap = {
       uptime: "Betriebszeit",
       tickInterval: "Tick-Intervall",
       lastChannelsRefresh: "Letzte Kanalaktualisierung",
-      channelsHint:
-        "Verwenden Sie Kanäle, um Ihren Telegram-Bot zu verbinden.",
+      channelsHint: "Verwenden Sie Kanäle, um Ihren Telegram-Bot zu verbinden.",
     },
     stats: {
       instances: "Instanzen",

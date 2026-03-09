@@ -1,18 +1,18 @@
-import { Command } from "commander";
 import fs from "node:fs";
 import path from "node:path";
+import { Command } from "commander";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { listChannelPlugins } from "../channels/plugins/index.js";
 import type { ChannelPlugin } from "../channels/plugins/types.js";
-import { ONBOARD_PROVIDER_AUTH_FLAGS } from "../commands/onboard-provider-auth-flags.js";
-import { listChannelOnboardingAdapters } from "../commands/onboarding/registry.js";
-import { formatAuthChoiceChoicesForCli } from "../commands/auth-choice-options.js";
-import { setActivePluginRegistry } from "../plugins/runtime.js";
-import { createChannelTestPluginBase, createTestRegistry } from "../test-utils/channel-plugins.js";
-import { withEnvAsync } from "../test-utils/env.js";
 import { registerNodesCli } from "../cli/nodes-cli/register.js";
 import { getCoreCliCommandNames } from "../cli/program/command-registry.js";
 import { getSubCliEntries } from "../cli/program/register.subclis.js";
+import { formatAuthChoiceChoicesForCli } from "../commands/auth-choice-options.js";
+import { ONBOARD_PROVIDER_AUTH_FLAGS } from "../commands/onboard-provider-auth-flags.js";
+import { listChannelOnboardingAdapters } from "../commands/onboarding/registry.js";
+import { setActivePluginRegistry } from "../plugins/runtime.js";
+import { createChannelTestPluginBase, createTestRegistry } from "../test-utils/channel-plugins.js";
+import { withEnvAsync } from "../test-utils/env.js";
 
 const EMPTY_REGISTRY = createTestRegistry([]);
 
@@ -58,10 +58,11 @@ describe("WeiClaw minimal regression guardrails", () => {
     setActivePluginRegistry(registry, "weiclaw-defaults");
 
     await withEnvAsync({ WEICLAW_ENABLE_ALL_CHANNELS: "1" }, async () => {
-      expect(listChannelPlugins().map((plugin) => plugin.id).toSorted()).toEqual([
-        "slack",
-        "telegram",
-      ]);
+      expect(
+        listChannelPlugins()
+          .map((plugin) => plugin.id)
+          .toSorted(),
+      ).toEqual(["slack", "telegram"]);
     });
   });
 

@@ -15,8 +15,8 @@ WeiClaw remains the public install entry. A future Core enhancement layer may be
 
 WeiClaw ships installer scripts from the public repository.
 
-| Script                             | Platform             | What it does                                                                                 |
-| ---------------------------------- | -------------------- | -------------------------------------------------------------------------------------------- |
+| Script                             | Platform             | What it does                                                                                |
+| ---------------------------------- | -------------------- | ------------------------------------------------------------------------------------------- |
 | [`install.sh`](#installsh)         | macOS / Linux / WSL  | Installs Node if needed, installs WeiClaw via npm (default) or git, and can run onboarding. |
 | [`install-cli.sh`](#install-clish) | macOS / Linux / WSL  | Installs Node + WeiClaw into a local prefix (`~/.openclaw`). No root required.              |
 | [`install.ps1`](#installps1)       | Windows (PowerShell) | Installs Node if needed, installs WeiClaw via npm (default) or git, and can run onboarding. |

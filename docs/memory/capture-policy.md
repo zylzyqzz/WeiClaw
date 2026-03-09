@@ -28,4 +28,3 @@ The current policy captures only limited categories:
 - No cross-device sync.
 - No owner/claim mapping.
 - No private control-plane logic.
-

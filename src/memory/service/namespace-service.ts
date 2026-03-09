@@ -36,4 +36,3 @@ export class MemoryNamespaceService {
     return byLabel?.namespaceId ?? null;
   }
 }
-

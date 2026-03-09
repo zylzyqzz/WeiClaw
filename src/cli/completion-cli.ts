@@ -663,5 +663,3 @@ function generateFishCompletion(program: Command): string {
   visit(program, []);
   return script;
 }
-
-

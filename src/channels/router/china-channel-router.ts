@@ -1,9 +1,9 @@
-import { loadChinaChannelConfig, type ChinaChannelConfig } from "../config/china-channel-config.js";
-import { defaultRuntime } from "../../runtime.js";
 import {
   buildCoreBridgeInboundEventFromChinaEvent,
   handoffCoreBridgeEvent,
 } from "../../core-bridge/runtime-bridge.js";
+import { defaultRuntime } from "../../runtime.js";
+import { loadChinaChannelConfig, type ChinaChannelConfig } from "../config/china-channel-config.js";
 import { feishuAdapter } from "../feishu/adapter.js";
 import type {
   ChannelInboundEvent,

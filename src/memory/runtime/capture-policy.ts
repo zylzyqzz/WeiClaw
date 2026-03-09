@@ -19,11 +19,7 @@ function classifyKind(text: string): MemoryCaptureKind | null {
   ) {
     return "preference";
   }
-  if (
-    lower.includes("my name is") ||
-    lower.includes("i am ") ||
-    lower.includes("i'm ")
-  ) {
+  if (lower.includes("my name is") || lower.includes("i am ") || lower.includes("i'm ")) {
     return "profile";
   }
   if (

@@ -1,8 +1,8 @@
 import type { Command } from "commander";
 import { defaultRuntime } from "../../runtime.js";
-import { createMemoryCoreRuntime } from "./core-runtime.js";
 import type { MemoryNamespaceScope } from "../core-types.js";
 import { resolveRuntimeMemoryStatus } from "../runtime/status.js";
+import { createMemoryCoreRuntime } from "./core-runtime.js";
 
 type MemoryCoreBaseOptions = {
   json?: boolean;
@@ -52,18 +52,20 @@ export function registerMemoryCoreCli(memory: Command): void {
     .requiredOption("--label <label>", "Namespace label")
     .option("--scope <scope>", "Namespace scope (global|agent|session|custom)", parseScope)
     .option("--json", "Print JSON")
-    .action(async (opts: MemoryCoreBaseOptions & { label: string; scope?: MemoryNamespaceScope }) => {
-      await withMemoryCoreRuntime(async (runtime) => {
-        if (!runtime) {
-          return;
-        }
-        const created = runtime.namespaces.createNamespace({
-          label: opts.label.trim(),
-          scope: opts.scope,
+    .action(
+      async (opts: MemoryCoreBaseOptions & { label: string; scope?: MemoryNamespaceScope }) => {
+        await withMemoryCoreRuntime(async (runtime) => {
+          if (!runtime) {
+            return;
+          }
+          const created = runtime.namespaces.createNamespace({
+            label: opts.label.trim(),
+            scope: opts.scope,
+          });
+          print(created, opts.json);
         });
-        print(created, opts.json);
-      });
-    });
+      },
+    );
 
   namespace
     .command("list")

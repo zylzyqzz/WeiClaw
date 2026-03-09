@@ -2,8 +2,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { shouldSkipMissingA2uiAssets } from "./build-a2ui-gating.ts";
 import { copyA2uiAssets } from "../../scripts/canvas-a2ui-copy.js";
+import { shouldSkipMissingA2uiAssets } from "./build-a2ui-gating.ts";
 
 describe("canvas a2ui copy", () => {
   async function withA2uiFixture(run: (dir: string) => Promise<void>) {
@@ -76,8 +76,6 @@ describe("canvas a2ui copy", () => {
 
   it("reports default skip policy correctly", () => {
     expect(shouldSkipMissingA2uiAssets({} as NodeJS.ProcessEnv)).toBe(true);
-    expect(shouldSkipMissingA2uiAssets({ WEICLAW_BUILD_UI: "1" } as NodeJS.ProcessEnv)).toBe(
-      false,
-    );
+    expect(shouldSkipMissingA2uiAssets({ WEICLAW_BUILD_UI: "1" } as NodeJS.ProcessEnv)).toBe(false);
   });
 });

@@ -1,8 +1,8 @@
+import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { spawn } from "node:child_process";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const hashFile = path.join(repoRoot, "src", "canvas-host", "a2ui", ".bundle.hash");
@@ -95,7 +95,13 @@ export async function bundleA2ui() {
   }
 
   await runCommand("pnpm", ["-s", "exec", "tsc", "-p", path.join(rendererDir, "tsconfig.json")]);
-  await runCommand("pnpm", ["-s", "dlx", "rolldown", "-c", path.join(appDir, "rolldown.config.mjs")]);
+  await runCommand("pnpm", [
+    "-s",
+    "dlx",
+    "rolldown",
+    "-c",
+    path.join(appDir, "rolldown.config.mjs"),
+  ]);
   await fs.writeFile(hashFile, `${currentHash}\n`, "utf8");
 }
 

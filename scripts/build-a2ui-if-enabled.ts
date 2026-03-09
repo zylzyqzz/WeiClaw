@@ -1,5 +1,5 @@
-import { bundleA2ui } from "./build-a2ui.mjs";
 import { shouldBuildA2ui } from "../src/scripts/build-a2ui-gating.ts";
+import { bundleA2ui } from "./build-a2ui.mjs";
 
 if (shouldBuildA2ui()) {
   bundleA2ui().catch((error) => {
@@ -7,5 +7,7 @@ if (shouldBuildA2ui()) {
     process.exit(1);
   });
 } else {
-  console.log("Skipping optional A2UI bundle for WeiClaw default build. Set WEICLAW_BUILD_UI=1 to enable.");
+  console.log(
+    "Skipping optional A2UI bundle for WeiClaw default build. Set WEICLAW_BUILD_UI=1 to enable.",
+  );
 }

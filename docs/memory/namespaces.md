@@ -15,4 +15,3 @@ Each namespace has:
 - `createdAt`
 
 Records reference a namespace through `namespaceId`.
-

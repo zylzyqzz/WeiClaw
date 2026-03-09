@@ -1,41 +1,44 @@
-﻿
-## [1.0.2] - 2026-03-08
+﻿## [1.0.2] - 2026-03-08
 
 ### Added
+
 - Mainland China install entry via jsDelivr bootstrap URLs
 - ghproxy.net runtime proxy fallback after the official GitHub Release URL
 - Source install fallback when both runtime download URLs fail
 - Custom tarball override support for bootstrap installs
 
 ### Changed
+
 - Calibrated bootstrap installers to use the real runtime order: GitHub Release -> ghproxy.net -> source fallback
 - Calibrated README install commands and release wording for international and mainland China users
 
 ### Fixed
+
 - Removed incorrect claims that jsDelivr serves the runtime tgz directly
 - Removed incorrect claims that npm runtime fallback is already available
-
 
 ## [1.0.1] - 2026-03-08
 
 ### Fixed
+
 - Fixed missing workspace templates (AGENTS.md, etc.) in runtime package
 - Fixed bootstrap failure on clean Ubuntu system due to missing docs/reference/templates
-
 
 ## [1.0.0] - 2026-03-08
 
 ### Added
+
 - Automated release system
 - Silent installation support
 - Bootstrap verification
 
 ### Changed
+
 - Runtime packaging process
 
 ### Fixed
-- Installation flow improvements
 
+- Installation flow improvements
 
 # Changelog
 
@@ -3819,4 +3822,3 @@ Thanks @AlexMikhalev, @CoreyH, @John-Rood, @KrauseFx, @MaudeBot, @Nachx639, @Nic
 - Discord: avoid duplicate replies when OpenAI emits repeated `message_end` events.
 - Commands: unify /status (inline) and command auth across providers; group bypass for authorized control commands; remove Discord /clawd slash handler.
 - CLI: run `openclaw agent` via the Gateway by default; use `--local` to force embedded mode.
-

@@ -127,8 +127,8 @@ ${theme.muted("Docs:")} ${formatDocsLink("/cli/update", "docs.openclaw.ai/cli/up
     .option("--timeout <seconds>", "Timeout for update checks in seconds (default: 3)")
     .addHelpText(
       "after",
-        () =>
-          `\n${theme.heading("Examples:")}\n${formatHelpExamples([
+      () =>
+        `\n${theme.heading("Examples:")}\n${formatHelpExamples([
           ["weiclaw update status", "Show channel + version status."],
           ["weiclaw update status --json", "JSON output."],
           ["weiclaw update status --timeout 10", "Custom timeout."],

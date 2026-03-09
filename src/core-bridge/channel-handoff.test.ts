@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { TemplateContext } from "../auto-reply/templating.js";
-import * as runtimeBridge from "./runtime-bridge.js";
 import {
   handoffRuntimeCoreBridgeContext,
   resolveCoreBridgeProviderFromContext,
 } from "./channel-handoff.js";
+import * as runtimeBridge from "./runtime-bridge.js";
 
 function createContext(overrides: Partial<TemplateContext> = {}): TemplateContext {
   return {

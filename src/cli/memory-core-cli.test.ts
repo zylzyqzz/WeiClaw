@@ -3,8 +3,8 @@ import os from "node:os";
 import path from "node:path";
 import { Command } from "commander";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { registerMemoryCli } from "./memory-cli.js";
 import { defaultRuntime } from "../runtime.js";
+import { registerMemoryCli } from "./memory-cli.js";
 
 const tempDirs: string[] = [];
 const envBackup = { ...process.env };
@@ -50,7 +50,15 @@ describe("memory core cli", () => {
   it("creates namespace and adds/queries/deletes records", async () => {
     const log = vi.spyOn(defaultRuntime, "log").mockImplementation(() => {});
 
-    await runMemoryCli(["namespace", "create", "--label", "default", "--scope", "global", "--json"]);
+    await runMemoryCli([
+      "namespace",
+      "create",
+      "--label",
+      "default",
+      "--scope",
+      "global",
+      "--json",
+    ]);
     const createdNamespace = readLastJson(log) as { namespaceId: string };
     expect(createdNamespace.namespaceId).toBeTruthy();
 

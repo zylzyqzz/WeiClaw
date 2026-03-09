@@ -2,11 +2,7 @@ import type { TemplateContext } from "../auto-reply/templating.js";
 import type { ChannelInboundEvent } from "../channels/shared/types.js";
 import { loadCoreBridgeConfig, type CoreBridgeConfig } from "./bridge-config.js";
 import { runNoopCoreBridge } from "./noop-bridge.js";
-import type {
-  CoreBridgeInboundEvent,
-  CoreBridgeResult,
-  CoreBridgeRuntimeLogger,
-} from "./types.js";
+import type { CoreBridgeInboundEvent, CoreBridgeResult, CoreBridgeRuntimeLogger } from "./types.js";
 
 function toErrorMessage(error: unknown): string {
   if (error instanceof Error) {
@@ -16,7 +12,8 @@ function toErrorMessage(error: unknown): string {
 }
 
 function createAbortSignal(timeoutMs: number): AbortSignal {
-  const signalFactory = (AbortSignal as unknown as { timeout?: (ms: number) => AbortSignal }).timeout;
+  const signalFactory = (AbortSignal as unknown as { timeout?: (ms: number) => AbortSignal })
+    .timeout;
   if (typeof signalFactory === "function") {
     return signalFactory(timeoutMs);
   }
@@ -81,7 +78,8 @@ export function buildCoreBridgeInboundEventFromTemplateContext(params: {
     providerKey: params.providerKey,
     externalUserId: context.SenderId?.trim() || "unknown-user",
     externalChatId: context.OriginatingTo?.trim() || context.To?.trim() || null,
-    messageId: context.MessageSidFull?.trim() || context.MessageSid?.trim() || `runtime:${Date.now()}`,
+    messageId:
+      context.MessageSidFull?.trim() || context.MessageSid?.trim() || `runtime:${Date.now()}`,
     messageType: "message.text",
     text: params.commandBody.trim(),
     receivedAt:
@@ -175,11 +173,11 @@ export async function claimCoreBridgeDevice(params: {
       }),
       signal: createAbortSignal(config.timeoutMs),
     });
-    
+
     if (!response.ok) {
       throw new Error(`bridge claim http ${response.status}`);
     }
-    
+
     const payload = (await response.json()) as Partial<CoreBridgeResult>;
     return {
       accepted: payload.accepted === true,
@@ -198,4 +196,3 @@ export async function claimCoreBridgeDevice(params: {
     };
   }
 }
-

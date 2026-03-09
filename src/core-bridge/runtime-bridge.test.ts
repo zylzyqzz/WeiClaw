@@ -85,8 +85,8 @@ describe("core bridge runtime handoff", () => {
       }),
     );
     const request = fetchMock.mock.calls[0]?.[1] as { body?: string };
-    expect(request.body).toContain("\"providerKey\":\"feishu\"");
-    expect(request.body).toContain("\"externalUserId\":\"u2\"");
+    expect(request.body).toContain('"providerKey":"feishu"');
+    expect(request.body).toContain('"externalUserId":"u2"');
     expect(result.handledByCore).toBe(true);
   });
 

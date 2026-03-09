@@ -59,10 +59,7 @@ export function registerStatusHealthSessionsCommands(program: Command) {
           ["weiclaw status --all", "Full diagnosis (read-only)."],
           ["weiclaw status --json", "Machine-readable output."],
           ["weiclaw status --usage", "Show model provider usage/quota snapshots."],
-          [
-            "weiclaw status --deep",
-            "Run Telegram-first channel probes.",
-          ],
+          ["weiclaw status --deep", "Run Telegram-first channel probes."],
           ["weiclaw status --deep --timeout 5000", "Tighten probe timeout."],
         ])}`,
     )

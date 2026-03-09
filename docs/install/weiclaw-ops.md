@@ -112,6 +112,7 @@ weiclaw doctor
 ```
 
 Doctor 命令会自动修复：
+
 - 废弃的配置键
 - 迁移旧配置文件位置
 - 检测并修复 Gateway 服务
@@ -148,12 +149,14 @@ weiclaw setup --bootstrap
 ### 4.2 只重配通道
 
 Telegram:
+
 ```bash
 # 修改 Telegram 配置
 weiclaw config set channels.telegram.botToken "your-bot-token"
 ```
 
 Feishu:
+
 ```bash
 # 修改 Feishu 配置
 weiclaw config set channels.feishu.appId "your-app-id"
@@ -259,6 +262,7 @@ npm run start
 ### 8.3 网络问题
 
 安装器内置自动回退：
+
 1. 官方 GitHub Release
 2. ghproxy.net 代理（适合中国大陆）
 3. 源码克隆（最终兜底）

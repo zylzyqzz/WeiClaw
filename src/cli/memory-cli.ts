@@ -8,9 +8,9 @@ import { loadConfig } from "../config/config.js";
 import { resolveStateDir } from "../config/paths.js";
 import { resolveSessionTranscriptsDirForAgent } from "../config/sessions/paths.js";
 import { setVerbose } from "../globals.js";
+import { registerMemoryCoreCli } from "../memory/cli/core-cli.js";
 import { getMemorySearchManager, type MemorySearchManagerResult } from "../memory/index.js";
 import { listMemoryFiles, normalizeExtraMemoryPaths } from "../memory/internal.js";
-import { registerMemoryCoreCli } from "../memory/cli/core-cli.js";
 import { resolveRuntimeMemoryStatus } from "../memory/runtime/status.js";
 import { defaultRuntime } from "../runtime.js";
 import { formatDocsLink } from "../terminal/links.js";
@@ -613,7 +613,10 @@ export function registerMemoryCli(program: Command) {
             'openclaw memory add --namespace default --kind preference --content "user prefers concise Chinese responses"',
             "Write a persistent memory record.",
           ],
-          ['openclaw memory query --namespace default --text "concise"', "Query persistent memory."],
+          [
+            'openclaw memory query --namespace default --text "concise"',
+            "Query persistent memory.",
+          ],
           ["openclaw memory doctor", "Check persistent memory-core health."],
           ["openclaw memory status --json", "Output machine-readable JSON."],
         ])}\n\n${theme.muted("Docs:")} ${formatDocsLink("/cli/memory", "docs.openclaw.ai/cli/memory")}\n`,

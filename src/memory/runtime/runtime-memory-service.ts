@@ -1,11 +1,8 @@
 import { createMemoryCoreRuntime, type MemoryCoreSearchResult } from "../index.js";
-import {
-  buildMemoryContextSnippet,
-  injectMemoryContextIntoPrompt,
-} from "./context-injector.js";
-import { selectCaptureCandidates } from "./capture-policy.js";
-import { resolveRuntimeMemoryStatus, type RuntimeMemoryStatus } from "./status.js";
 import type { BridgeMemoryHints } from "./bridge-memory-hints.js";
+import { selectCaptureCandidates } from "./capture-policy.js";
+import { buildMemoryContextSnippet, injectMemoryContextIntoPrompt } from "./context-injector.js";
+import { resolveRuntimeMemoryStatus, type RuntimeMemoryStatus } from "./status.js";
 
 export type RuntimeMemoryReadResult = {
   prompt: string;
@@ -139,4 +136,3 @@ export function createRuntimeMemoryService(
 ): RuntimeMemoryService {
   return new RuntimeMemoryService(env);
 }
-

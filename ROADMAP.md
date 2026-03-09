@@ -5,6 +5,7 @@
 WeiClaw is past the "can it run" stage.
 
 The project now has a stable minimal main chain:
+
 - `weiclaw` main CLI
 - `openclaw` compatibility alias
 - TUI
@@ -17,6 +18,7 @@ The project now has a stable minimal main chain:
 That changes the priority.
 
 The next focus is no longer broad feature addition. The next focus is:
+
 - installation productization
 - delivery slimming
 - optional capability isolation
@@ -36,18 +38,22 @@ The next focus is no longer broad feature addition. The next focus is:
 ## Priority Order
 
 Highest priority now:
+
 - P0 installation productization
 - P1 runtime-package delivery slimming
 - P2 channel path solidification
 
 Next priority:
+
 - P3 UI compatibility-chain trimming
 - P4 update and recovery experience
 
 Later but still required:
+
 - P5 documentation and maintenance system hardening
 
 Do not rush-delete yet:
+
 - `src/gateway/server-browser.ts`
 - `src/gateway/server-runtime-config.ts`
 - `src/canvas-host/**`
@@ -310,6 +316,7 @@ Windows, Linux, and macOS differ in package managers, PATH handling, and service
 ### Main-chain regression risk
 
 Every trimming step must keep these green:
+
 - `pnpm tsgo`
 - `pnpm build`
 - `npm run start`
@@ -362,6 +369,7 @@ Every trimming step must keep these green:
 WeiClaw should become lighter, more stable, easier to install, and easier to hand over.
 
 The long-term target is not a larger and more complicated OpenClaw fork. The long-term target is a sharper product:
+
 - lighter by default
 - stable on the main chain
 - easy to install

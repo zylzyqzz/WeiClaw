@@ -92,11 +92,11 @@ clawdock-approve <request-id>
 
 ### Terminal & Devices
 
-| Command                 | Description                                |
-| ----------------------- | ------------------------------------------ |
+| Command                 | Description                                                         |
+| ----------------------- | ------------------------------------------------------------------- |
 | `clawdock-dashboard`    | Deprecated compatibility helper; use `clawdock-cli tui` or Telegram |
-| `clawdock-devices`      | List device pairing requests               |
-| `clawdock-approve <id>` | Approve a device pairing request           |
+| `clawdock-devices`      | List device pairing requests                                        |
+| `clawdock-approve <id>` | Approve a device pairing request                                    |
 
 ### Setup & Configuration
 

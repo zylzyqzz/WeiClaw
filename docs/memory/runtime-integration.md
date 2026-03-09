@@ -43,11 +43,13 @@ Channel Event → Core Bridge Handoff → Bridge Response
 ## Bridge Hints Configuration
 
 Bridge context consumption is enabled when:
+
 - `WEICLAW_CORE_BRIDGE_ENABLED=true`
 - `WEICLAW_CORE_BRIDGE_MODE=http`
 - `WEICLAW_CORE_BRIDGE_ENDPOINT` is configured
 
 Check with:
+
 ```bash
 openclaw core-bridge status
 ```

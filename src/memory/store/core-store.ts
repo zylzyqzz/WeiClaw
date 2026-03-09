@@ -1,6 +1,6 @@
+import { randomUUID } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { randomUUID } from "node:crypto";
 import type {
   MemoryNamespace,
   MemoryNamespaceScope,
@@ -263,4 +263,3 @@ export class MemoryCoreStore {
     return Number(result.changes ?? 0) > 0;
   }
 }
-

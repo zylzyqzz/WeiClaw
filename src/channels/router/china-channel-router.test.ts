@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { routeChinaChannelWebhook } from "./china-channel-router.js";
 import * as runtimeBridge from "../../core-bridge/runtime-bridge.js";
+import { routeChinaChannelWebhook } from "./china-channel-router.js";
 
 const enabledConfig = {
   wecom: {

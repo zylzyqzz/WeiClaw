@@ -41,4 +41,3 @@ export class MemoryRecordService {
     return this.store.deleteMemoryRecord(recordId);
   }
 }
-

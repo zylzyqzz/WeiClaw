@@ -1,5 +1,5 @@
-import { isTruthyEnvValue } from "../infra/env.js";
 import { loadConfig } from "../config/config.js";
+import { isTruthyEnvValue } from "../infra/env.js";
 
 export type BrowserControlServer = {
   stop: () => Promise<void>;

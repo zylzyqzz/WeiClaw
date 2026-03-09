@@ -1,8 +1,8 @@
 import { loadMemoryCoreConfig, type MemoryCoreConfig } from "../config/core-config.js";
-import { MemoryCoreStore } from "../store/core-store.js";
 import { MemoryNamespaceService } from "../service/namespace-service.js";
-import { MemoryRecordService } from "../service/record-service.js";
 import { MemoryQueryService } from "../service/query-service.js";
+import { MemoryRecordService } from "../service/record-service.js";
+import { MemoryCoreStore } from "../store/core-store.js";
 
 export type MemoryCoreRuntime = {
   config: MemoryCoreConfig;
@@ -29,4 +29,3 @@ export function createMemoryCoreRuntime(env: NodeJS.ProcessEnv = process.env): M
     close: () => store.close(),
   };
 }
-

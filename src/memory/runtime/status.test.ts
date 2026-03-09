@@ -36,4 +36,3 @@ describe("runtime memory status", () => {
     expect(status.namespaceReady).toBe(true);
   });
 });
-

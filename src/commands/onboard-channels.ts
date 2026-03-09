@@ -131,11 +131,11 @@ async function collectChannelStatus(params: {
     listChannelOnboardingAdapters()
       .filter((adapter) => WEICLAW_DEFAULT_ONBOARD_CHANNELS.has(adapter.channel))
       .map((adapter) =>
-      adapter.getStatus({
-        cfg: params.cfg,
-        options: params.options,
-        accountOverrides: params.accountOverrides,
-      }),
+        adapter.getStatus({
+          cfg: params.cfg,
+          options: params.options,
+          accountOverrides: params.accountOverrides,
+        }),
       ),
   );
   const statusByChannel = new Map(statusEntries.map((entry) => [entry.channel, entry]));

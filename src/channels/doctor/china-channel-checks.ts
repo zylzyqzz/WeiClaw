@@ -1,5 +1,5 @@
-import type { RuntimeEnv } from "../../runtime.js";
 import { resolveCoreBridgeStatus, type CoreBridgeStatus } from "../../core-bridge/status.js";
+import type { RuntimeEnv } from "../../runtime.js";
 import { loadChinaChannelConfig, type ChinaChannelConfig } from "../config/china-channel-config.js";
 import { feishuAdapter } from "../feishu/adapter.js";
 import { routeChinaChannelWebhook } from "../router/china-channel-router.js";
@@ -54,10 +54,10 @@ export function runChinaChannelDoctor(
 export async function runChinaChannelRouteTest(
   runtime: Pick<RuntimeEnv, "log">,
   config: ChinaChannelConfig = loadChinaChannelConfig(),
-): {
+): Promise<{
   version: string;
   routes: Array<{ channel: string; matched: boolean; statusCode?: number }>;
-} {
+}> {
   const requests: ChannelWebhookRequest[] = [
     {
       method: "POST",

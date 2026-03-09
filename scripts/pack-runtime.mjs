@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
+import { spawn } from "node:child_process";
 import { mkdir, rename, stat } from "node:fs/promises";
 import path from "node:path";
-import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -33,9 +33,7 @@ function run(command, args, options = {}) {
 
 async function main() {
   await mkdir(outDir, { recursive: true });
-  const raw = String(
-    await run("npm", ["pack", "--silent", "--pack-destination", outDir]),
-  )
+  const raw = String(await run("npm", ["pack", "--silent", "--pack-destination", outDir]))
     .trim()
     .split(/\r?\n/)
     .filter(Boolean)

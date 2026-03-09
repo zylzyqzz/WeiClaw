@@ -42,7 +42,9 @@ describe("formatCliBannerLine", () => {
       richTty: false,
     });
 
-    expect(line).toBe("[W] WeiClaw Private 2026.3.3 (abc1234) - Telegram-first execution on WeiClaw.");
+    expect(line).toBe(
+      "[W] WeiClaw Private 2026.3.3 (abc1234) - Telegram-first execution on WeiClaw.",
+    );
   });
 
   it("prefers explicit tagline mode over config", () => {
@@ -56,7 +58,9 @@ describe("formatCliBannerLine", () => {
       mode: "default",
     });
 
-    expect(line).toBe("[W] WeiClaw Private 2026.3.3 (abc1234) - Telegram-first execution on WeiClaw.");
+    expect(line).toBe(
+      "[W] WeiClaw Private 2026.3.3 (abc1234) - Telegram-first execution on WeiClaw.",
+    );
   });
 });
 
@@ -67,4 +71,3 @@ describe("formatWeiClawInstallerLogo", () => {
     expect(logo).toContain("极简私有助手 / Minimal private agent");
   });
 });
-

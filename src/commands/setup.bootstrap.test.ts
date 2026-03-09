@@ -168,9 +168,7 @@ describe("runSetupBootstrap", () => {
       confirm: vi.fn(async () => confirms.shift() ?? false),
       note: vi.fn(async () => {}),
     });
-    probeGatewayReachable
-      .mockResolvedValueOnce({ ok: false })
-      .mockResolvedValueOnce({ ok: true });
+    probeGatewayReachable.mockResolvedValueOnce({ ok: false }).mockResolvedValueOnce({ ok: true });
 
     const { runSetupBootstrap } = await import("./setup-bootstrap.js");
     await runSetupBootstrap(

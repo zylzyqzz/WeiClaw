@@ -4,8 +4,8 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { MemoryCoreStore } from "../store/core-store.js";
 import { MemoryNamespaceService } from "./namespace-service.js";
-import { MemoryRecordService } from "./record-service.js";
 import { MemoryQueryService } from "./query-service.js";
+import { MemoryRecordService } from "./record-service.js";
 
 const tempDirs: string[] = [];
 
@@ -43,4 +43,3 @@ describe("MemoryQueryService", () => {
     }
   });
 });
-

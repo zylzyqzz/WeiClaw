@@ -1,7 +1,7 @@
 import type { MemorySearchResult } from "../core-types.js";
+import { normalizeQueryText } from "../query/text-query.js";
 import type { MemoryCoreStore } from "../store/core-store.js";
 import type { MemoryNamespaceService } from "./namespace-service.js";
-import { normalizeQueryText } from "../query/text-query.js";
 
 export class MemoryQueryService {
   constructor(

@@ -2,15 +2,18 @@
 import { randomBytes } from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { formatCliCommand } from "../cli/command-format.js";
+import { DEFAULT_AGENT_WORKSPACE_DIR, ensureAgentWorkspace } from "../agents/workspace.js";
 import { formatWeiClawInstallerLogo } from "../cli/banner.js";
+import { formatCliCommand } from "../cli/command-format.js";
 import { createConfigIO, type OpenClawConfig, writeConfigFile } from "../config/config.js";
 import { formatConfigPath } from "../config/logging.js";
 import { resolveSessionTranscriptsDir } from "../config/sessions.js";
+import { resolveGatewayService } from "../daemon/service.js";
+import { isSystemdUserServiceAvailable } from "../daemon/systemd.js";
 import { resolveOpenClawPackageRoot } from "../infra/openclaw-root.js";
-import { buildNpmResolutionInstallFields, recordPluginInstall } from "../plugins/installs.js";
-import { installPluginFromNpmSpec } from "../plugins/install.js";
 import { enablePluginInConfig } from "../plugins/enable.js";
+import { installPluginFromNpmSpec } from "../plugins/install.js";
+import { buildNpmResolutionInstallFields, recordPluginInstall } from "../plugins/installs.js";
 import type { RuntimeEnv } from "../runtime.js";
 import { defaultRuntime } from "../runtime.js";
 import { runTui } from "../tui/tui.js";
@@ -18,8 +21,9 @@ import { resolveUserPath, shortenHomePath } from "../utils.js";
 import { createClackPrompter } from "../wizard/clack-prompter.js";
 import type { WizardPrompter } from "../wizard/prompts.js";
 import { WizardCancelledError } from "../wizard/prompts.js";
-import { DEFAULT_AGENT_WORKSPACE_DIR, ensureAgentWorkspace } from "../agents/workspace.js";
-import { probeGatewayReachable } from "./onboard-helpers.js";
+import { buildGatewayInstallPlan, gatewayInstallErrorHint } from "./daemon-install-helpers.js";
+import { DEFAULT_GATEWAY_DAEMON_RUNTIME } from "./daemon-runtime.js";
+import { resolveGatewayInstallToken } from "./gateway-install-token.js";
 import {
   applyKimiCodeConfig,
   applyMoonshotConfig,
@@ -31,16 +35,7 @@ import {
   setMoonshotApiKey,
   setQianfanApiKey,
 } from "./onboard-auth.js";
-import { resolveGatewayInstallToken } from "./gateway-install-token.js";
-import {
-  buildGatewayInstallPlan,
-  gatewayInstallErrorHint,
-} from "./daemon-install-helpers.js";
-import {
-  DEFAULT_GATEWAY_DAEMON_RUNTIME,
-} from "./daemon-runtime.js";
-import { resolveGatewayService } from "../daemon/service.js";
-import { isSystemdUserServiceAvailable } from "../daemon/systemd.js";
+import { probeGatewayReachable } from "./onboard-helpers.js";
 import { ensureSystemdUserLingerInteractive } from "./systemd-linger.js";
 
 // =============================================================================
@@ -60,17 +55,17 @@ type BootstrapPlanChoice = "coding-plan" | "custom";
 
 // 第三次选择（模型）
 type BootstrapModelChoice =
-  | "qianfan"       // 百度千帆
-  | "kimi-coding"   // Moonshot/Kimi
-  | "moonshot"      // Moonshot
-  | "custom";      // 自定义
+  | "qianfan" // 百度千帆
+  | "kimi-coding" // Moonshot/Kimi
+  | "moonshot" // Moonshot
+  | "custom"; // 自定义
 type BootstrapProviderChoice =
-  | "aliyun-bailian"    // 阿里云百炼
-  | "volcengine"        // 火山引擎
-  | "tencent"           // 腾讯云
-  | "qianfan"           // 百度千帆
-  | "liantong"          // 联通云
-  | "custom";          // 自定义
+  | "aliyun-bailian" // 阿里云百炼
+  | "volcengine" // 火山引擎
+  | "tencent" // 腾讯云
+  | "qianfan" // 百度千帆
+  | "liantong" // 联通云
+  | "custom"; // 自定义
 
 type BootstrapChannelChoice = "telegram" | "feishu";
 
@@ -561,7 +556,9 @@ async function ensureFeishuPlugin(params: {
 
   // 如果插件已存在，使用 update 模式重试
   if (!result.ok && result.error?.includes("already exists")) {
-    params.runtime.log("Feishu 插件已存在，正在更新... / Feishu plugin already exists, updating...");
+    params.runtime.log(
+      "Feishu 插件已存在，正在更新... / Feishu plugin already exists, updating...",
+    );
     result = await params.deps.installPluginFromNpmSpec({
       spec: FEISHU_PLUGIN_SPEC,
       logger: {
@@ -651,7 +648,15 @@ async function maybeLaunchTui(params: {
     }
     const child: ReturnType<typeof spawn> = params.deps.spawn(
       process.execPath,
-      [wrapper, "gateway", "--bind", "loopback", "--port", String(DEFAULT_GATEWAY_PORT), "--allow-unconfigured"],
+      [
+        wrapper,
+        "gateway",
+        "--bind",
+        "loopback",
+        "--port",
+        String(DEFAULT_GATEWAY_PORT),
+        "--allow-unconfigured",
+      ],
       {
         cwd: root,
         stdio: "ignore",
@@ -789,8 +794,7 @@ export async function runSetupBootstrap(
             confirm: prompter.confirm,
             note: prompter.note,
           },
-          reason:
-            "Linux 安装默认使用 systemd user service。关闭终端后服务将继续运行。",
+          reason: "Linux 安装默认使用 systemd user service。关闭终端后服务将继续运行。",
           requireConfirm: false,
         });
 
@@ -798,21 +802,25 @@ export async function runSetupBootstrap(
         const service = resolveGatewayService();
         const loaded = await service.isLoaded({ env: process.env });
         if (!loaded) {
-          await prompter.note("正在安装 Gateway 服务... / Installing Gateway service...", "Gateway");
+          await prompter.note(
+            "正在安装 Gateway 服务... / Installing Gateway service...",
+            "Gateway",
+          );
           try {
             const tokenResolution = await resolveGatewayInstallToken({
               config: nextConfig,
               env: process.env,
             });
             if (!tokenResolution.unavailableReason) {
-              const { programArguments, workingDirectory, environment } = await buildGatewayInstallPlan({
-                env: process.env,
-                port: DEFAULT_GATEWAY_PORT,
-                token: tokenResolution.token,
-                runtime: DEFAULT_GATEWAY_DAEMON_RUNTIME,
-                warn: (message, title) => prompter.note(message, title),
-                config: nextConfig,
-              });
+              const { programArguments, workingDirectory, environment } =
+                await buildGatewayInstallPlan({
+                  env: process.env,
+                  port: DEFAULT_GATEWAY_PORT,
+                  token: tokenResolution.token,
+                  runtime: DEFAULT_GATEWAY_DAEMON_RUNTIME,
+                  warn: (message, title) => prompter.note(message, title),
+                  config: nextConfig,
+                });
               await service.install({
                 env: process.env,
                 stdout: process.stdout,
@@ -827,7 +835,10 @@ export async function runSetupBootstrap(
             }
           } catch (err) {
             const errMsg = err instanceof Error ? err.message : String(err);
-            await prompter.note(`Gateway 服务安装失败 / Gateway service install failed: ${errMsg}`, "Gateway");
+            await prompter.note(
+              `Gateway 服务安装失败 / Gateway service install failed: ${errMsg}`,
+              "Gateway",
+            );
             await prompter.note(gatewayInstallErrorHint(), "Gateway");
           }
         }
@@ -907,4 +918,3 @@ export async function runSetupBootstrap(
     throw error;
   }
 }
-

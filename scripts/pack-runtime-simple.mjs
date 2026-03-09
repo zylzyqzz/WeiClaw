@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
+import { spawn } from "node:child_process";
 import { mkdir, rename, stat, readFile } from "node:fs/promises";
 import path from "node:path";
-import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -56,18 +56,13 @@ async function main() {
   const tarballPath = path.join(outDir, tarballName);
 
   try {
-    const output = await run("npm", [
-      "pack",
-      "--ignore-scripts",
-      "--pack-destination",
-      outDir
-    ]);
+    const output = await run("npm", ["pack", "--ignore-scripts", "--pack-destination", outDir]);
 
     console.log("npm pack output:", output.trim());
 
     // Rename to weiclaw-runtime.tgz
     const files = (await run("ls", ["-1", outDir])).trim().split("\n");
-    const actualFile = files.find(f => f.includes(packageName) && f.endsWith(".tgz"));
+    const actualFile = files.find((f) => f.includes(packageName) && f.endsWith(".tgz"));
 
     if (actualFile) {
       const source = path.join(outDir, actualFile);

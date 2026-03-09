@@ -30,12 +30,13 @@ const VERBOSE = process.env.WEICLAW_VERIFY_VERBOSE === "1";
 const checks = [];
 
 function log(message, type = "info") {
-  const prefix = {
-    info: "[INFO]",
-    pass: "[PASS]",
-    fail: "[FAIL]",
-    skip: "[SKIP]",
-  }[type] || "[INFO]";
+  const prefix =
+    {
+      info: "[INFO]",
+      pass: "[PASS]",
+      fail: "[FAIL]",
+      skip: "[SKIP]",
+    }[type] || "[INFO]";
 
   if (type === "fail" || VERBOSE) {
     console.log(`${prefix} ${message}`);
@@ -91,11 +92,7 @@ function runCommand(cmd, args, options = {}) {
 async function verifyWeiclawHelp() {
   const c = check("weiclaw --help");
   try {
-    const result = await runCommand("node", [
-      "scripts/run-node.mjs",
-      "weiclaw",
-      "--help",
-    ]);
+    const result = await runCommand("node", ["scripts/run-node.mjs", "weiclaw", "--help"]);
     if (result.code === 0) {
       c.pass("Command executed successfully");
     } else {
@@ -109,11 +106,7 @@ async function verifyWeiclawHelp() {
 async function verifyOpenclawHelp() {
   const c = check("openclaw --help");
   try {
-    const result = await runCommand("node", [
-      "scripts/run-node.mjs",
-      "openclaw",
-      "--help",
-    ]);
+    const result = await runCommand("node", ["scripts/run-node.mjs", "openclaw", "--help"]);
     if (result.code === 0) {
       c.pass("Command executed successfully");
     } else {
@@ -156,18 +149,22 @@ async function verifyStart() {
   const c = check("start");
   try {
     // Just verify the start command can be invoked (don't wait for full startup)
-    const child = spawn("node", [
-      "scripts/run-node.mjs",
-      "gateway",
-      "--bind",
-      "loopback",
-      "--port",
-      "19789",
-      "--allow-unconfigured",
-    ], {
-      cwd: repoRoot,
-      stdio: ["ignore", "pipe", "pipe"],
-    });
+    const child = spawn(
+      "node",
+      [
+        "scripts/run-node.mjs",
+        "gateway",
+        "--bind",
+        "loopback",
+        "--port",
+        "19789",
+        "--allow-unconfigured",
+      ],
+      {
+        cwd: repoRoot,
+        stdio: ["ignore", "pipe", "pipe"],
+      },
+    );
 
     // Wait 5 seconds to see if it starts
     await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -242,13 +239,7 @@ async function verifyReadme() {
     const content = await readFile(readmePath, "utf-8");
 
     // Check for key sections that must exist
-    const required = [
-      "One-Command Install",
-      "First-Run Flow",
-      "Telegram",
-      "update",
-      "rollback",
-    ];
+    const required = ["One-Command Install", "First-Run Flow", "Telegram", "update", "rollback"];
 
     const missing = required.filter((section) => !content.includes(section));
 

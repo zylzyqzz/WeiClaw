@@ -96,10 +96,7 @@ export function registerOnboardCommand(program: Command) {
     .option("--custom-api-key <key>", "Custom provider API key (optional)")
     .option("--custom-model-id <id>", "Custom provider model ID")
     .option("--custom-provider-id <id>", "Custom provider ID (optional; auto-derived by default)")
-    .option(
-      "--custom-compatibility <mode>",
-      "Custom provider API compatibility: openai (default)",
-    )
+    .option("--custom-compatibility <mode>", "Custom provider API compatibility: openai (default)")
     .option("--gateway-port <port>", "Gateway port")
     .option("--gateway-bind <mode>", "Gateway bind: loopback|tailnet|lan|auto|custom")
     .option("--gateway-auth <mode>", "Gateway auth: token|password")

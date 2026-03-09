@@ -11,15 +11,15 @@ Starting in v2.0.6, WeiClaw public runtime can consume the resolved context retu
 
 The bridge response includes these stable fields that public WeiClaw can consume:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `resolutionState` | `"resolved"` \| `"unresolved"` \| `"unclaimed_device"` \| `"claim_required"` \| `"error"` | Overall resolution state from Core |
-| `provisioningSummary` | object \| null | Device binding, claim, owner, agent, memory readiness |
-| `namespaceHints` | string[] | Suggested namespace identifiers for memory queries |
-| `ownerRef` | string \| null | Owner reference from Core (for logging only) |
-| `agentRef` | string \| null | Agent reference from Core (for logging only) |
-| `memoryNamespaces` | string[] | Memory namespace list from Core |
-| `notes` | string[] | Observability notes for public logs |
+| Field                 | Type                                                                                      | Description                                           |
+| --------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `resolutionState`     | `"resolved"` \| `"unresolved"` \| `"unclaimed_device"` \| `"claim_required"` \| `"error"` | Overall resolution state from Core                    |
+| `provisioningSummary` | object \| null                                                                            | Device binding, claim, owner, agent, memory readiness |
+| `namespaceHints`      | string[]                                                                                  | Suggested namespace identifiers for memory queries    |
+| `ownerRef`            | string \| null                                                                            | Owner reference from Core (for logging only)          |
+| `agentRef`            | string \| null                                                                            | Agent reference from Core (for logging only)          |
+| `memoryNamespaces`    | string[]                                                                                  | Memory namespace list from Core                       |
+| `notes`               | string[]                                                                                  | Observability notes for public logs                   |
 
 ## Context Consumption Flow
 
@@ -54,6 +54,7 @@ openclaw core-bridge doctor
 ```
 
 The status output includes:
+
 - `contractVersion`: "2.0.6"
 - `contextConsumptionEnabled`: Whether runtime integration is active
 - `supportedResolutionFields`: List of supported fields

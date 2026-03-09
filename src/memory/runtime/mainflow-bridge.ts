@@ -1,6 +1,6 @@
 import type { ReplyPayload } from "../../auto-reply/types.js";
-import { createRuntimeMemoryService } from "./runtime-memory-service.js";
 import { extractBridgeMemoryHints, mergeNamespaceHints } from "./bridge-memory-hints.js";
+import { createRuntimeMemoryService } from "./runtime-memory-service.js";
 
 export type RuntimeMemoryPromptIntegration = {
   commandBody: string;

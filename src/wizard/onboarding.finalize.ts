@@ -329,10 +329,7 @@ export async function finalizeOnboardingWizard(
       });
       launchedTui = true;
     } else {
-      await prompter.note(
-        `When you're ready: ${formatCliCommand("weiclaw tui")}`,
-        "Later",
-      );
+      await prompter.note(`When you're ready: ${formatCliCommand("weiclaw tui")}`, "Later");
     }
   } else if (opts.skipUi) {
     await prompter.note("Skipping terminal launch prompt.", "TUI");

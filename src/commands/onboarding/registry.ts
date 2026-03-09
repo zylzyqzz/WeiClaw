@@ -4,9 +4,7 @@ import { isTruthyEnvValue } from "../../infra/env.js";
 import type { ChannelChoice } from "../onboard-types.js";
 import type { ChannelOnboardingAdapter } from "./types.js";
 
-const BUILTIN_ONBOARDING_ADAPTERS: ChannelOnboardingAdapter[] = [
-  telegramOnboardingAdapter,
-];
+const BUILTIN_ONBOARDING_ADAPTERS: ChannelOnboardingAdapter[] = [telegramOnboardingAdapter];
 
 function shouldExposeOnboardingChannel(channel: ChannelChoice): boolean {
   if (

@@ -112,9 +112,11 @@ export function formatCliBannerArt(options: BannerOptions = {}): string {
     return W_ASCII.join("\n");
   }
 
-  return W_ASCII.map((line) => splitGraphemes(line).map((ch) => theme.accent(ch)).join("")).join(
-    "\n",
-  );
+  return W_ASCII.map((line) =>
+    splitGraphemes(line)
+      .map((ch) => theme.accent(ch))
+      .join(""),
+  ).join("\n");
 }
 
 export function formatWeiClawInstallerLogo(options: { richTty?: boolean } = {}): string {

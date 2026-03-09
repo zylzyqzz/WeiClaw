@@ -1,5 +1,5 @@
-import type { MemorySearchResult } from "../core-types.js";
 import type { MemoryCoreRuntime } from "../cli/core-runtime.js";
+import type { MemorySearchResult } from "../core-types.js";
 
 export async function loadMemoryContextForRuntime(params: {
   runtime: MemoryCoreRuntime;
@@ -14,4 +14,3 @@ export async function loadMemoryContextForRuntime(params: {
     limit,
   });
 }
-

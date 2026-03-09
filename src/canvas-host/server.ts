@@ -476,5 +476,3 @@ export async function startCanvasHost(opts: CanvasHostServerOpts): Promise<Canva
     },
   };
 }
-
-

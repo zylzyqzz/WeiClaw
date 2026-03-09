@@ -1,12 +1,12 @@
 import { Command } from "commander";
 import { describe, expect, it } from "vitest";
+import { createOpenClawTools } from "../agents/openclaw-tools.js";
 import { createOpenClawCodingTools } from "../agents/pi-tools.js";
 import { normalizeToolName } from "../agents/tool-policy-shared.js";
-import { createOpenClawTools } from "../agents/openclaw-tools.js";
-import { applyOpenAIConfig, OPENAI_DEFAULT_MODEL } from "../commands/openai-model-default.js";
-import { LITELLM_DEFAULT_MODEL_REF } from "../commands/onboard-auth.credentials.js";
-import { applyLitellmConfig, LITELLM_BASE_URL } from "../commands/onboard-auth.config-litellm.js";
 import { registerCronCli } from "../cli/cron-cli/register.js";
+import { applyLitellmConfig, LITELLM_BASE_URL } from "../commands/onboard-auth.config-litellm.js";
+import { LITELLM_DEFAULT_MODEL_REF } from "../commands/onboard-auth.credentials.js";
+import { applyOpenAIConfig, OPENAI_DEFAULT_MODEL } from "../commands/openai-model-default.js";
 import { resolveTelegramAccount } from "../telegram/accounts.js";
 
 describe("WeiClaw minimal usable closure", () => {

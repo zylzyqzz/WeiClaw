@@ -1,10 +1,10 @@
 import type { TemplateContext } from "../auto-reply/templating.js";
-import type { CoreBridgeResult, CoreBridgeRuntimeLogger } from "./types.js";
+import { consumeBridgeContext, createBridgeContextConsumptionLog } from "./context-consumer.js";
 import {
   buildCoreBridgeInboundEventFromTemplateContext,
   handoffCoreBridgeEvent,
 } from "./runtime-bridge.js";
-import { consumeBridgeContext, createBridgeContextConsumptionLog } from "./context-consumer.js";
+import type { CoreBridgeResult, CoreBridgeRuntimeLogger } from "./types.js";
 
 export function resolveCoreBridgeProviderFromContext(
   context: TemplateContext,
@@ -53,11 +53,15 @@ export async function handoffRuntimeCoreBridgeContext(params: {
   );
 
   if (consumptionLog.bridgeContextConsumed) {
-    params.logger?.log(`[core-bridge] bridge context consumed hints=${consumptionLog.notes.join(", ") || "none"}`);
+    params.logger?.log(
+      `[core-bridge] bridge context consumed hints=${consumptionLog.notes.join(", ") || "none"}`,
+    );
   }
 
   if (consumptionLog.bridgeFallback) {
-    params.logger?.log(`[core-bridge] bridge fallback resolutionState=${consumptionLog.resolutionState}`);
+    params.logger?.log(
+      `[core-bridge] bridge fallback resolutionState=${consumptionLog.resolutionState}`,
+    );
   }
 
   return result;

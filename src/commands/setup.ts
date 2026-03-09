@@ -30,10 +30,7 @@ export async function setupCommand(
   runtime: RuntimeEnv = defaultRuntime,
 ) {
   if (opts?.bootstrap) {
-    await runSetupBootstrap(
-      { workspace: opts.workspace, skipTui: Boolean(opts.skipTui) },
-      runtime,
-    );
+    await runSetupBootstrap({ workspace: opts.workspace, skipTui: Boolean(opts.skipTui) }, runtime);
     return;
   }
 

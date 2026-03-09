@@ -334,6 +334,7 @@ memory control-plane extensions.
 ## v2.0.3 memory runtime integration
 
 WeiClaw `v2.0.3` integrates public memory-core into the runtime main flow:
+
 - read memory before response (bounded context injection),
 - use memory during prompt assembly,
 - and optional controlled auto-capture after response.

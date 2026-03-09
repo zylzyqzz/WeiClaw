@@ -103,4 +103,3 @@ describe("RuntimeMemoryService", () => {
     expect(onResult.captured).toBeGreaterThan(0);
   });
 });
-
