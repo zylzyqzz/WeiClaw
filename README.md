@@ -1,11 +1,10 @@
 # WeiClaw 极简私有助手
 
 ```
- __     __
- \ \ /\ / /
-  \ V  V /
-   \_/\_/
-   WeiClaw
+╔══════════════════╗
+║    WeiClaw      ║
+║  极简私有助手    ║
+╚══════════════════╝
 ```
 
 **Minimal private agent** - 基于 OpenClaw 改造的极简私有 AI 助手。
@@ -73,7 +72,7 @@ iwr -useb https://cdn.jsdelivr.net/gh/zylzyqzz/WeiClaw@main/scripts/bootstrap/in
 1. 自动检测并安装 Git、Node.js（如未安装）
 2. 下载并安装 runtime 包
 3. 启动引导流程（Bootstrap）
-4. 引导完成后可选择是否立即打开 TUI
+4. 根据终端环境自动决定是否打开 TUI
 
 ## 引导安装流程
 
@@ -83,39 +82,77 @@ iwr -useb https://cdn.jsdelivr.net/gh/zylzyqzz/WeiClaw@main/scripts/bootstrap/in
 WeiClaw
 Minimal private agent
 
+请选择接入方案 / Select plan
+1. Coding Plan         推荐 / Recommended
+2. 自定义 / Custom
+
+请选择云服务商 / Select provider
+1. 阿里云百炼
+2. 火山引擎
+3. 腾讯云
+4. 百度千帆
+5. 联通云
+
+连接地址 / Endpoint: https://coding.dashscope.aliyuncs.com/v1 (示例)
+
 请选择模型 / Select model
-1. qianfan/deepseek-v3.2      推荐 / Recommended
-2. kimi-coding/k2p5          代码 / Coding
-3. moonshot/kimi-k2.5        推理 / Reasoning
-4. Custom                    自定义 / Advanced
+1. qwen3.5-plus
+2. qwen3-coder-next
+...
+
+请输入 API Key...
 
 请选择通道 / Select channel
 1. Telegram
 2. Feishu
 
 请输入 Telegram Bot Token / Enter Telegram Bot Token
-
-是否立即打开 TUI？/ Open TUI now? [Y/n]
 ```
 
-## 模型与通道
+### Coding Plan 云服务商说明
 
-### 模型配置
+选择 Coding Plan 后，可选择以下云服务商：
 
-推荐模型：
+- **阿里云百炼**：默认推荐，预置 URL `https://coding.dashscope.aliyuncs.com/v1`
+- **火山引擎**：预置 URL `https://ark.cn-beijing.volces.com/api/coding/v3`
+- **腾讯云**：预置 URL `https://api.lkeap.cloud.tencent.com/coding/v3`
+- **百度千帆**：预置 URL `https://qianfan.baidubce.com/v2/coding`
+- **联通云**：预置 URL `https://aigw-gzgy2.cucloud.cn:8443/v1`
+- **自定义**：完全手动填写 URL、模型、API Key
 
-| 模型 | 用途 |
-|------|------|
-| `qianfan/deepseek-v3.2` | 综合balanced |
-| `kimi-coding/k2p5` | 代码 |
-| `moonshot/kimi-k2.5` | 推理 |
+### 安装后行为
 
-自定义模型：选择 `Custom`，填入 Base URL + Model ID + API Key。
+- **交互式终端**：安装完成后自动进入引导流程
+- **非交互式终端**（如 SSH）：安装完成后显示下一步命令 `weiclaw setup --bootstrap`
+
+### TUI 自动打开行为
+
+- **适合自动打开 TUI 的环境**：本地交互终端
+- **不适合自动打开的环境**：SSH 远程、Termux 手机终端等，会显示提示信息
+
+### Linux 后台运行
+
+- **自动后台运行**：Linux 系统上，引导流程完成后自动安装 systemd user service
+- **关闭终端后服务继续运行**：通过 systemd linger 实现，关闭 SSH/终端后服务仍在后台运行
+- **服务状态**：可通过 `weiclaw status` 查看服务状态
+- **手动管理**：
+  ```bash
+  # 查看服务状态
+  systemctl --user status weiclaw
+
+  # 重启服务
+  systemctl --user restart weiclaw
+
+  # 停止服务
+  systemctl --user stop weiclaw
+  ```
 
 ### 通道配置
 
 - **Telegram**：只需 Bot Token，最轻量
+  - **自动 webhook 清理**：使用 polling 模式时自动检测并清理残留 webhook，避免"服务活着但机器人不回话"
 - **Feishu/Lark**：需要 App ID + App Secret，引导流程中可选
+  - **自动处理已存在插件**：如果插件目录已存在，自动使用更新模式安装
 
 ## 常用命令
 

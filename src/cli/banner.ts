@@ -97,14 +97,13 @@ export function formatCliBannerLine(version: string, options: BannerOptions = {}
 }
 
 const W_ASCII = [
-  " __      __",
-  " \\ \\ /\\ / /",
-  "  \\ V  V /",
-  "   \\_/\\_/",
-  "   WeiClaw",
+  "╔══════════════════╗",
+  "║    WeiClaw      ║",
+  "║  极简私有助手    ║",
+  "╚══════════════════╝",
 ];
 
-const INSTALLER_SUBTITLE = "极简私有助手 / Minimal private agent";
+const INSTALLER_SUBTITLE = "Minimal private agent";
 
 export function formatCliBannerArt(options: BannerOptions = {}): string {
   const rich = options.richTty ?? isRich();

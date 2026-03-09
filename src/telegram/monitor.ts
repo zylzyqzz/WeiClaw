@@ -95,8 +95,16 @@ const isGrammyHttpError = (err: unknown): boolean => {
 
 export async function monitorTelegramProvider(opts: MonitorTelegramOpts = {}) {
   const log = opts.runtime?.error ?? console.error;
+  const infoLog = opts.runtime?.log ?? console.log;
   let activeRunner: ReturnType<typeof run> | undefined;
   let forceRestarted = false;
+
+  // 记录接收模式
+  if (opts.useWebhook) {
+    infoLog("[Telegram] Using webhook mode");
+  } else {
+    infoLog("[Telegram] Using polling mode");
+  }
 
   // Register handler for Grammy HttpError unhandled rejections.
   // This catches network errors that escape the polling loop's try-catch
@@ -241,13 +249,21 @@ export async function monitorTelegramProvider(opts: MonitorTelegramOpts = {}) {
       if (webhookCleared) {
         return "ready";
       }
+      infoLog("[Telegram] Checking for existing webhook conflict...");
       try {
+        // 先检查当前 webhook 状态
+        const webhookInfo = await bot.api.getWebhookInfo().catch(() => null);
+        if (webhookInfo && webhookInfo.url) {
+          infoLog(`[Telegram] Detected existing webhook: ${webhookInfo.url}`);
+        }
         await withTelegramApiErrorLogging({
           operation: "deleteWebhook",
           runtime: opts.runtime,
-          fn: () => bot.api.deleteWebhook({ drop_pending_updates: false }),
+          // 清空 pending updates 避免积压消息导致冲突
+          fn: () => bot.api.deleteWebhook({ drop_pending_updates: true }),
         });
         webhookCleared = true;
+        infoLog("[Telegram] Webhook cleared and pending updates dropped - polling should work now");
         return "ready";
       } catch (err) {
         const shouldRetry = await waitBeforeRetryOnRecoverableSetupError(
