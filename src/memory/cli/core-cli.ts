@@ -2,6 +2,7 @@ import type { Command } from "commander";
 import { defaultRuntime } from "../../runtime.js";
 import { createMemoryCoreRuntime } from "./core-runtime.js";
 import type { MemoryNamespaceScope } from "../core-types.js";
+import { resolveRuntimeMemoryStatus } from "../runtime/status.js";
 
 type MemoryCoreBaseOptions = {
   json?: boolean;
@@ -190,15 +191,16 @@ export function registerMemoryCoreCli(memory: Command): void {
           return;
         }
         const namespaces = runtime.namespaces.listNamespaces();
+        const runtimeStatus = resolveRuntimeMemoryStatus();
         const report = {
           enabled: runtime.config.enabled,
           dbPath: runtime.store.getDatabasePath(),
           defaultNamespace: runtime.config.defaultNamespace,
           namespaces: namespaces.length,
+          runtime: runtimeStatus,
           status: "ok",
         };
         print(report, opts.json);
       });
     });
 }
-

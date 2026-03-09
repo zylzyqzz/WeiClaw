@@ -22,4 +22,7 @@ openclaw memory doctor
 - `WEICLAW_MEMORY_DB_PATH` (default: `<WEICLAW_MEMORY_DATA_DIR>/memory-core.sqlite`)
 - `WEICLAW_MEMORY_DEFAULT_NAMESPACE` (default: `default`)
 - `WEICLAW_MEMORY_QUERY_LIMIT` (default: `20`)
-
+- `WEICLAW_MEMORY_RUNTIME_ENABLED` (default: `false`)
+- `WEICLAW_MEMORY_READ_BEFORE_RESPONSE` (default: `true`)
+- `WEICLAW_MEMORY_AUTO_CAPTURE_ENABLED` (default: `false`)
+- `WEICLAW_MEMORY_CONTEXT_LIMIT` (default: `1200`)

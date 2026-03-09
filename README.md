@@ -330,3 +330,13 @@ including add/list/query/delete workflows through CLI.
 WeiClaw-Core no longer decides whether long-term memory exists at all. It remains responsible for
 higher-layer enhancements such as ownership-bound identity mapping, cross-device sync, and private
 memory control-plane extensions.
+
+## v2.0.3 memory runtime integration
+
+WeiClaw `v2.0.3` integrates public memory-core into the runtime main flow:
+- read memory before response (bounded context injection),
+- use memory during prompt assembly,
+- and optional controlled auto-capture after response.
+
+Memory remains bounded and policy-controlled, not unlimited by default. Higher-layer identity and
+cross-device enhancements still belong to WeiClaw-Core.

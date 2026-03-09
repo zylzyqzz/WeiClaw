@@ -81,8 +81,13 @@ describe("memory core cli", () => {
     const log = vi.spyOn(defaultRuntime, "log").mockImplementation(() => {});
 
     await runMemoryCli(["doctor", "--json"]);
-    const report = readLastJson(log) as { status: string; defaultNamespace: string };
+    const report = readLastJson(log) as {
+      status: string;
+      defaultNamespace: string;
+      runtime: { runtimeEnabled: boolean };
+    };
     expect(report.status).toBe("ok");
     expect(report.defaultNamespace).toBe("default");
+    expect(typeof report.runtime.runtimeEnabled).toBe("boolean");
   });
 });

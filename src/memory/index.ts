@@ -14,3 +14,5 @@ export type {
 } from "./core-types.js";
 export { createMemoryCoreRuntime } from "./cli/core-runtime.js";
 export { loadMemoryContextForRuntime } from "./service/runtime-hook.js";
+export { createRuntimeMemoryService } from "./runtime/runtime-memory-service.js";
+export { resolveRuntimeMemoryStatus } from "./runtime/status.js";

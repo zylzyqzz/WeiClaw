@@ -11,6 +11,7 @@ import { setVerbose } from "../globals.js";
 import { getMemorySearchManager, type MemorySearchManagerResult } from "../memory/index.js";
 import { listMemoryFiles, normalizeExtraMemoryPaths } from "../memory/internal.js";
 import { registerMemoryCoreCli } from "../memory/cli/core-cli.js";
+import { resolveRuntimeMemoryStatus } from "../memory/runtime/status.js";
 import { defaultRuntime } from "../runtime.js";
 import { formatDocsLink } from "../terminal/links.js";
 import { colorize, isRich, theme } from "../terminal/theme.js";
@@ -344,7 +345,9 @@ export async function runMemoryStatus(opts: MemoryCommandOptions) {
     embeddingProbe?: Awaited<ReturnType<MemoryManager["probeEmbeddingAvailability"]>>;
     indexError?: string;
     scan?: MemorySourceScan;
+    runtimeStatus: ReturnType<typeof resolveRuntimeMemoryStatus>;
   }> = [];
+  const runtimeStatus = resolveRuntimeMemoryStatus();
 
   for (const agentId of agentIds) {
     const managerPurpose = opts.index ? "default" : "status";
@@ -417,7 +420,7 @@ export async function runMemoryStatus(opts: MemoryCommandOptions) {
               extraPaths: status.extraPaths,
             })
           : undefined;
-        allResults.push({ agentId, status, embeddingProbe, indexError, scan });
+        allResults.push({ agentId, status, embeddingProbe, indexError, scan, runtimeStatus });
       },
     });
   }
@@ -437,7 +440,7 @@ export async function runMemoryStatus(opts: MemoryCommandOptions) {
   const label = (text: string) => muted(`${text}:`);
 
   for (const result of allResults) {
-    const { agentId, status, embeddingProbe, indexError, scan } = result;
+    const { agentId, status, embeddingProbe, indexError, scan, runtimeStatus } = result;
     const filesIndexed = status.files ?? 0;
     const chunksIndexed = status.chunks ?? 0;
     const totalFiles = scan?.totalFiles ?? null;
@@ -467,7 +470,28 @@ export async function runMemoryStatus(opts: MemoryCommandOptions) {
       `${label("Dirty")} ${status.dirty ? warn("yes") : muted("no")}`,
       `${label("Store")} ${info(storePath)}`,
       `${label("Workspace")} ${info(workspacePath)}`,
+      `${label("Memory core")} ${
+        runtimeStatus.memoryCoreEnabled ? success("enabled") : warn("disabled")
+      }`,
+      `${label("Runtime integration")} ${
+        runtimeStatus.runtimeEnabled ? success("enabled") : muted("disabled")
+      }`,
+      `${label("Read before response")} ${
+        runtimeStatus.readBeforeResponse ? success("enabled") : muted("disabled")
+      }`,
+      `${label("Auto capture")} ${
+        runtimeStatus.autoCaptureEnabled ? success("enabled") : muted("disabled")
+      }`,
+      `${label("Default namespace")} ${info(runtimeStatus.defaultNamespace)}`,
+      `${label("Runtime query limit")} ${info(String(runtimeStatus.queryLimit))}`,
+      `${label("Runtime context limit")} ${info(String(runtimeStatus.contextLimit))}`,
     ].filter(Boolean) as string[];
+    if (runtimeStatus.issues.length > 0) {
+      lines.push(label("Runtime issues"));
+      for (const issue of runtimeStatus.issues) {
+        lines.push(`  ${warn(issue)}`);
+      }
+    }
     if (embeddingProbe) {
       const state = embeddingProbe.ok ? "ready" : "unavailable";
       const stateColor = embeddingProbe.ok ? theme.success : theme.warn;

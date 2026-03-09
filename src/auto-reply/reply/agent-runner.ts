@@ -56,6 +56,10 @@ import { createReplyToModeFilterForChannel, resolveReplyToMode } from "./reply-t
 import { incrementRunCompactionCount, persistRunSessionUsage } from "./session-run-accounting.js";
 import { createTypingSignaler } from "./typing-mode.js";
 import type { TypingController } from "./typing.js";
+import {
+  applyRuntimeMemoryBeforeTurn,
+  applyRuntimeMemoryCaptureAfterTurn,
+} from "../../memory/runtime/mainflow-bridge.js";
 
 const BLOCK_REPLY_SEND_TIMEOUT_MS = 15_000;
 
@@ -334,8 +338,11 @@ export async function runReplyAgent(params: {
     });
   try {
     const runStartedAt = Date.now();
-    const runOutcome = await runAgentTurnWithFallback({
+    const runtimeMemoryIntegration = await applyRuntimeMemoryBeforeTurn({
       commandBody,
+    });
+    const runOutcome = await runAgentTurnWithFallback({
+      commandBody: runtimeMemoryIntegration.commandBody,
       followupRun,
       sessionCtx,
       opts,
@@ -523,6 +530,15 @@ export async function runReplyAgent(params: {
       hasReminderCommitment && successfulCronAdds === 0 && !coveredByExistingCron
         ? appendUnscheduledReminderNote(replyPayloads)
         : replyPayloads;
+
+    try {
+      await applyRuntimeMemoryCaptureAfterTurn({
+        userText: commandBody,
+        payloads: guardedReplyPayloads,
+      });
+    } catch {
+      // Runtime memory capture is best-effort and must not block reply delivery.
+    }
 
     await signalTypingIfNeeded(guardedReplyPayloads, typingSignals);
 
