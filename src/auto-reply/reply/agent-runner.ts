@@ -60,6 +60,7 @@ import {
   applyRuntimeMemoryBeforeTurn,
   applyRuntimeMemoryCaptureAfterTurn,
 } from "../../memory/runtime/mainflow-bridge.js";
+import { handoffRuntimeCoreBridgeContext } from "../../core-bridge/channel-handoff.js";
 
 const BLOCK_REPLY_SEND_TIMEOUT_MS = 15_000;
 
@@ -338,6 +339,11 @@ export async function runReplyAgent(params: {
     });
   try {
     const runStartedAt = Date.now();
+    await handoffRuntimeCoreBridgeContext({
+      commandBody,
+      context: sessionCtx,
+      logger: defaultRuntime,
+    });
     const runtimeMemoryIntegration = await applyRuntimeMemoryBeforeTurn({
       commandBody,
     });

@@ -37,20 +37,20 @@ describe("china channel checks", () => {
   it("formats status lines with enabled flag and webhook path", () => {
     const lines = formatChinaChannelStatusLines(config);
 
-    expect(lines).toEqual([
-      "wecom: ready enabled=true webhookPath=/channels/wecom/webhook",
-      "feishu: ready enabled=true webhookPath=/channels/feishu/webhook",
-    ]);
+    expect(lines[0]).toBe("wecom: ready enabled=true webhookPath=/channels/wecom/webhook");
+    expect(lines[1]).toBe("feishu: ready enabled=true webhookPath=/channels/feishu/webhook");
+    expect(lines[2]).toContain("core-bridge: enabled=");
   });
 
-  it("runs doctor and route self-checks with structured output", () => {
+  it("runs doctor and route self-checks with structured output", async () => {
     const runtime = { log: vi.fn() };
 
     const doctor = runChinaChannelDoctor(runtime, config);
-    const routeTest = runChinaChannelRouteTest(runtime, config);
+    const routeTest = await runChinaChannelRouteTest(runtime, config);
 
     expect(doctor.version).toBe("v2.0.1");
     expect(doctor.statuses).toHaveLength(2);
+    expect(doctor.bridge.mode).toBe("noop");
     expect(routeTest.version).toBe("v2.0.1");
     expect(routeTest.routes).toEqual([
       { channel: "wecom", matched: true, statusCode: 200 },

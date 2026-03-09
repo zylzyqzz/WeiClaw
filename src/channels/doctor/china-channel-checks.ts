@@ -1,4 +1,5 @@
 import type { RuntimeEnv } from "../../runtime.js";
+import { resolveCoreBridgeStatus, type CoreBridgeStatus } from "../../core-bridge/status.js";
 import { loadChinaChannelConfig, type ChinaChannelConfig } from "../config/china-channel-config.js";
 import { feishuAdapter } from "../feishu/adapter.js";
 import { routeChinaChannelWebhook } from "../router/china-channel-router.js";
@@ -9,6 +10,7 @@ import { wecomAdapter } from "../wecom/adapter.js";
 export type ChinaChannelDiagnostics = {
   version: string;
   statuses: ChannelHealthStatus[];
+  bridge: CoreBridgeStatus;
 };
 
 export function collectChinaChannelStatuses(
@@ -20,10 +22,15 @@ export function collectChinaChannelStatuses(
 export function formatChinaChannelStatusLines(
   config: ChinaChannelConfig = loadChinaChannelConfig(),
 ): string[] {
-  return collectChinaChannelStatuses(config).map(
+  const lines = collectChinaChannelStatuses(config).map(
     (status) =>
       `${status.channel}: ${status.status} enabled=${status.enabled} webhookPath=${status.webhookPath}`,
   );
+  const bridgeStatus = resolveCoreBridgeStatus();
+  lines.push(
+    `core-bridge: enabled=${bridgeStatus.enabled} mode=${bridgeStatus.mode} endpoint=${bridgeStatus.endpoint || "none"} timeoutMs=${bridgeStatus.timeoutMs}`,
+  );
+  return lines;
 }
 
 export function runChinaChannelDoctor(
@@ -31,16 +38,20 @@ export function runChinaChannelDoctor(
   config: ChinaChannelConfig = loadChinaChannelConfig(),
 ): ChinaChannelDiagnostics {
   const statuses = collectChinaChannelStatuses(config);
+  const bridge = resolveCoreBridgeStatus();
   runtime.log(`WeiClaw ${CHINA_CHANNEL_FOUNDATION_VERSION} China channel doctor`);
   for (const status of statuses) {
     runtime.log(
       `${status.channel}: status=${status.status} enabled=${status.enabled} missing=${status.missingFields.join(",") || "none"}`,
     );
   }
-  return { version: CHINA_CHANNEL_FOUNDATION_VERSION, statuses };
+  runtime.log(
+    `core-bridge: enabled=${bridge.enabled} mode=${bridge.mode} endpoint=${bridge.endpoint || "none"} timeoutMs=${bridge.timeoutMs} ready=${bridge.ready}`,
+  );
+  return { version: CHINA_CHANNEL_FOUNDATION_VERSION, statuses, bridge };
 }
 
-export function runChinaChannelRouteTest(
+export async function runChinaChannelRouteTest(
   runtime: Pick<RuntimeEnv, "log">,
   config: ChinaChannelConfig = loadChinaChannelConfig(),
 ): {
@@ -68,17 +79,19 @@ export function runChinaChannelRouteTest(
     },
   ];
 
-  const routes = requests.map((request) => {
-    const result = routeChinaChannelWebhook(request, config);
-    runtime.log(
-      `${request.path}: matched=${result.matched} statusCode=${result.response?.statusCode ?? "none"}`,
-    );
-    return {
-      channel: result.channel ?? request.path,
-      matched: result.matched,
-      statusCode: result.response?.statusCode,
-    };
-  });
+  const routes = await Promise.all(
+    requests.map(async (request) => {
+      const result = await routeChinaChannelWebhook(request, config);
+      runtime.log(
+        `${request.path}: matched=${result.matched} statusCode=${result.response?.statusCode ?? "none"}`,
+      );
+      return {
+        channel: result.channel ?? request.path,
+        matched: result.matched,
+        statusCode: result.response?.statusCode,
+      };
+    }),
+  );
 
   return {
     version: CHINA_CHANNEL_FOUNDATION_VERSION,

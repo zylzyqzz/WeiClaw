@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { routeChinaChannelWebhook } from "./china-channel-router.js";
+import * as runtimeBridge from "../../core-bridge/runtime-bridge.js";
 
 const enabledConfig = {
   wecom: {
@@ -22,8 +23,21 @@ const enabledConfig = {
 };
 
 describe("routeChinaChannelWebhook", () => {
-  it("does not match disabled channels by default", () => {
-    const result = routeChinaChannelWebhook(
+  beforeEach(() => {
+    vi.spyOn(runtimeBridge, "handoffCoreBridgeEvent").mockResolvedValue({
+      accepted: false,
+      handledByCore: false,
+      context: null,
+      error: null,
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("does not match disabled channels by default", async () => {
+    const result = await routeChinaChannelWebhook(
       {
         method: "POST",
         path: "/channels/wecom/webhook",
@@ -39,8 +53,8 @@ describe("routeChinaChannelWebhook", () => {
     expect(result).toEqual({ matched: false });
   });
 
-  it("routes a WeCom text webhook into the shared message shape", () => {
-    const result = routeChinaChannelWebhook(
+  it("routes a WeCom text webhook into the shared message shape", async () => {
+    const result = await routeChinaChannelWebhook(
       {
         method: "POST",
         path: "/channels/wecom/webhook",
@@ -56,10 +70,16 @@ describe("routeChinaChannelWebhook", () => {
     expect(result.event?.message?.text).toBe("hello");
     expect(result.response?.statusCode).toBe(200);
     expect(result.response?.contentType).toBe("application/xml");
+    expect(runtimeBridge.handoffCoreBridgeEvent).toHaveBeenCalledTimes(1);
+    expect(runtimeBridge.handoffCoreBridgeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        source: "channels:wecom",
+      }),
+    );
   });
 
-  it("routes a Feishu url verification request and echoes challenge", () => {
-    const result = routeChinaChannelWebhook(
+  it("routes a Feishu url verification request and echoes challenge", async () => {
+    const result = await routeChinaChannelWebhook(
       {
         method: "POST",
         path: "/channels/feishu/webhook",
@@ -77,5 +97,11 @@ describe("routeChinaChannelWebhook", () => {
     expect(result.event?.eventType).toBe("url_verification");
     expect(result.response?.statusCode).toBe(200);
     expect(result.response?.body).toContain("challenge-1");
+    expect(runtimeBridge.handoffCoreBridgeEvent).toHaveBeenCalledTimes(1);
+    expect(runtimeBridge.handoffCoreBridgeEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        source: "channels:feishu",
+      }),
+    );
   });
 });

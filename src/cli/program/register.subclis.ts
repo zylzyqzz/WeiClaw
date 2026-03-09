@@ -243,6 +243,15 @@ const entries: SubCliEntry[] = [
     },
   },
   {
+    name: "core-bridge",
+    description: "Inspect Core Bridge extension slot status",
+    hasSubcommands: true,
+    register: async (program) => {
+      const mod = await import("../core-bridge-cli.js");
+      mod.registerCoreBridgeCli(program);
+    },
+  },
+  {
     name: "directory",
     description: "Lookup contact/group IDs for configured channels",
     hasSubcommands: true,

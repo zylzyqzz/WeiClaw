@@ -33,6 +33,24 @@ The public installer may read placeholder configuration such as:
 
 These placeholders only reserve structure. They do not download, unpack, or activate any private Core implementation from this repository.
 
+## v2.0.5 Core Bridge seam
+
+WeiClaw `v2.0.5` adds a runtime Core Bridge handoff seam for normalized channel events.
+
+- Supported public sources: Telegram, WeCom, Feishu normalized inbound events
+- Bridge config is opt-in and defaults to disabled
+- Default mode is `noop`; optional `http` mode can hand off events to an external bridge endpoint
+- If bridge is disabled, unavailable, or times out, WeiClaw falls back to the public standalone path
+
+Bridge env variables:
+
+- `WEICLAW_CORE_BRIDGE_ENABLED`
+- `WEICLAW_CORE_BRIDGE_MODE` (`noop` or `http`)
+- `WEICLAW_CORE_BRIDGE_ENDPOINT`
+- `WEICLAW_CORE_BRIDGE_TIMEOUT_MS`
+
+This seam only defines a stable extension handoff. It does not include private Core ownership, claim, channel identity mapping, or memory control-plane logic.
+
 ## Public and private responsibility split
 
 WeiClaw public repo:

@@ -1,4 +1,9 @@
 import { loadChinaChannelConfig, type ChinaChannelConfig } from "../config/china-channel-config.js";
+import { defaultRuntime } from "../../runtime.js";
+import {
+  buildCoreBridgeInboundEventFromChinaEvent,
+  handoffCoreBridgeEvent,
+} from "../../core-bridge/runtime-bridge.js";
 import { feishuAdapter } from "../feishu/adapter.js";
 import type {
   ChannelInboundEvent,
@@ -15,12 +20,17 @@ export type ChinaChannelRouteResult = {
   response?: ChannelWebhookResponse;
 };
 
-export function routeChinaChannelWebhook(
+export async function routeChinaChannelWebhook(
   request: ChannelWebhookRequest,
   config: ChinaChannelConfig = loadChinaChannelConfig(),
-): ChinaChannelRouteResult {
+): Promise<ChinaChannelRouteResult> {
   if (config.wecom.enabled && wecomAdapter.matchesPath(request.path, config.wecom)) {
     const event = wecomAdapter.parseInboundEvent(request, config.wecom);
+    await handoffCoreBridgeEvent({
+      source: "channels:wecom",
+      logger: defaultRuntime,
+      event: buildCoreBridgeInboundEventFromChinaEvent(event),
+    });
     return {
       matched: true,
       channel: "wecom",
@@ -35,6 +45,11 @@ export function routeChinaChannelWebhook(
 
   if (config.feishu.enabled && feishuAdapter.matchesPath(request.path, config.feishu)) {
     const event = feishuAdapter.parseInboundEvent(request, config.feishu);
+    await handoffCoreBridgeEvent({
+      source: "channels:feishu",
+      logger: defaultRuntime,
+      event: buildCoreBridgeInboundEventFromChinaEvent(event),
+    });
     return {
       matched: true,
       channel: "feishu",

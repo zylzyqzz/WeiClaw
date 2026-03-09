@@ -18,6 +18,6 @@ export async function channelsChinaDoctorCommand(runtime: RuntimeEnv): Promise<v
 }
 
 export async function channelsChinaTestCommand(runtime: RuntimeEnv): Promise<void> {
-  const result = runChinaChannelRouteTest(runtime, loadChinaChannelConfig());
+  const result = await runChinaChannelRouteTest(runtime, loadChinaChannelConfig());
   runtime.log(JSON.stringify(result, null, 2));
 }

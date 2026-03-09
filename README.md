@@ -340,3 +340,14 @@ WeiClaw `v2.0.3` integrates public memory-core into the runtime main flow:
 
 Memory remains bounded and policy-controlled, not unlimited by default. Higher-layer identity and
 cross-device enhancements still belong to WeiClaw-Core.
+
+## v2.0.5 core bridge extension seam
+
+WeiClaw `v2.0.5` adds a public Core Bridge seam for normalized channel events.
+Telegram, WeCom, and Feishu events can be handed off through a unified bridge input shape.
+
+The bridge is optional and defaults to disabled/noop mode.
+When disabled, unavailable, or failing, WeiClaw falls back to the existing public standalone path
+without blocking Telegram-first or China channel foundations.
+
+This public seam does not include any private WeiClaw-Core owner/claim/channel-identity/memory-control-plane implementation.
