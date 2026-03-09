@@ -14,6 +14,10 @@ Linux, or Windows (via WSL2; strongly recommended).
 It configures a local Gateway or a remote Gateway connection, plus channels, skills,
 and workspace defaults in one guided flow.
 
+<Note>
+The install and onboarding entry stays unified through WeiClaw. Users set up WeiClaw here; they do not install WeiClaw-Core directly.
+</Note>
+
 ```bash
 openclaw onboard
 ```

@@ -17,6 +17,10 @@ and chat in the browser, or open `http://127.0.0.1:18789/` on the
 Docs: [Dashboard](/web/dashboard) and [Control UI](/web/control-ui).
 </Info>
 
+<Note>
+Install WeiClaw through the public WeiClaw entry only. Some enhanced capabilities may ship later via extensions or runtime packages, but users do not install WeiClaw-Core directly.
+</Note>
+
 ## Prereqs
 
 - Node 22 or newer
@@ -28,7 +32,7 @@ Check your Node version with `node --version` if you are unsure.
 ## Quick setup (CLI)
 
 <Steps>
-  <Step title="Install OpenClaw (recommended)">
+  <Step title="Install WeiClaw (recommended)">
     <Tabs>
       <Tab title="macOS/Linux">
         ```bash

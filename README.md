@@ -9,6 +9,20 @@
 
 **Minimal private agent** - 基于 OpenClaw 改造的极简私有 AI 助手。
 
+## 项目分层说明
+
+WeiClaw 是公开主仓，也是当前对外安装和使用的主入口。
+
+部分增强能力会在后续通过扩展包或运行包方式提供，但公开版本本身已经可以正常安装、启动和使用。
+
+用户安装的是 WeiClaw，不需要直接安装任何私有核心仓。仓库分层用于代码边界管理，不改变统一安装入口。
+
+边界文档：
+
+- `docs/repo-boundary.md`
+- `docs/development-guardrails.md`
+- `docs/repo-routing-checklist.md`
+
 ## 项目亮点
 
 - **极简安装**：一行命令完成安装，自动引导配置
@@ -243,18 +257,38 @@ npm run start
 weiclaw setup --bootstrap
 ```
 
+## 安装分发闭环状态
+
+### ✅ 已闭环
+
+- **Bootstrap 安装入口**：国际/中国双入口（GitHub raw + jsDelivr CDN）
+- **Runtime 下载回退链**：
+  1. 官方 GitHub Release
+  2. ghproxy.net 代理镜像
+  3. 源码克隆（最终兜底，包含 Gitee 镜像）
+- **引导流程**：交互式/非交互式自动适配
+- **一键更新**：重新运行安装脚本即可升级
+
+### ⏳ 完善中
+
+- **npm 发布**：`@weiclaw/runtime` 尚未发布到 npm（需要先完成 npm 发布流程）
+- **国内 CDN**：目前依赖 ghproxy.net 第三方服务
+
+## 运维命令
+
+详细运维命令请参考 [运维文档](./docs/install/weiclaw-ops.md)，包括：
+
+- 更新 WeiClaw
+- 回滚版本
+- 配置损坏恢复
+- 只重配模型/通道/TUI
+- 服务管理
+
 ## 当前限制
 
 - **jsDelivr**：仅作为脚本入口的备用源，不可直接镜像 runtime .tgz 包
 - **npm fallback**：尚未发布 `@weiclaw/runtime` 到 npm，暂不作为默认回退链
 - **国内分发**：依赖 GitHub Release + ghproxy.net 第三方公共服务
-
-## Roadmap
-
-- [ ] 发布 @weiclaw/runtime 到 npm（更稳定的回退源）
-- [ ] 更稳定的国内分发源
-- [ ] Feishu/Lark 通道完善
-- [ ] 更多模型接入
 
 ## License / Attribution
 
